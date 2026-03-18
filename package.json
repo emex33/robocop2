@@ -1,0 +1,28 @@
+{
+  "name": "robocop",
+  "version": "1.0.0",
+  "description": "AI Robot Caller - Deepgram Voice Agent + SIP via drachtio",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "docker:up": "docker compose up -d --build",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f app"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.10.0",
+    "cors": "^2.8.5",
+    "csv-parse": "^5.5.6",
+    "dotenv": "^16.4.5",
+    "drachtio-srf": "^4.5.0",
+    "express": "^4.21.0",
+    "googleapis": "^171.4.0",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^1.4.5-lts.1",
+    "uuid": "^10.0.0",
+    "winston": "^3.14.0",
+    "ws": "^8.18.0"
+  }
+}

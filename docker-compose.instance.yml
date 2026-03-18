@@ -1,0 +1,52 @@
+services:
+  drachtio:
+    image: drachtio/drachtio-server:latest
+    restart: unless-stopped
+    network_mode: host
+    command: >
+      drachtio
+      --contact "sip:*:${SIP_PORT:-5060};transport=udp"
+      --external-ip ${EXTERNAL_IP:-45.87.212.182}
+      --port ${DRACHTIO_ADMIN_PORT:-9022}
+      --loglevel info
+      --secret ${DRACHTIO_SECRET:-cymru}
+
+  rtpengine:
+    image: drachtio/rtpengine:latest
+    restart: unless-stopped
+    privileged: true
+    environment:
+      - CLOUD=1
+    ports:
+      - "${RTPENGINE_PORT_MIN:-60000}-${RTPENGINE_PORT_MAX:-60200}:${RTPENGINE_PORT_MIN:-60000}-${RTPENGINE_PORT_MAX:-60200}/udp"
+    networks:
+      - net
+
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: ${ENV_FILE:-.env}
+    depends_on:
+      - drachtio
+      - rtpengine
+    ports:
+      - "${DASHBOARD_PORT:-3000}:${DASHBOARD_PORT:-3000}"
+      - "${RTP_PORT_MIN:-20000}-${RTP_PORT_MAX:-20100}:${RTP_PORT_MIN:-20000}-${RTP_PORT_MAX:-20100}/udp"
+    environment:
+      - EXTERNAL_RTP_IP=${EXTERNAL_IP:-45.87.212.182}
+      - RTP_PORT_MIN=${RTP_PORT_MIN:-20000}
+      - RTP_PORT_MAX=${RTP_PORT_MAX:-20100}
+      - DRACHTIO_HOST=${DRACHTIO_HOST:-172.18.0.1}
+      - DRACHTIO_PORT=${DRACHTIO_ADMIN_PORT:-9022}
+      - DASHBOARD_PORT=${DASHBOARD_PORT:-3000}
+    volumes:
+      - ./src:/app/src
+      - ./config:/app/config
+      - ./${DATA_DIR:-data}:/app/data
+      - ./${LOG_DIR:-logs}:/app/logs
+    networks:
+      - net
+
+networks:
+  net:
+    driver: bridge

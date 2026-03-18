@@ -1,0 +1,12 @@
+node_modules
+dashboard-ui/node_modules
+.env
+.env.*
+logs
+logs-*
+*.pdf
+*.txt
+.git
+data
+data-*
+src/dashboard/public/dist

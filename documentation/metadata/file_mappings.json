@@ -1,0 +1,3722 @@
+{
+  "77358300-698d-45a2-ae8e-4dce7ba0803e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "1. Set up your environment",
+    "chunk_index": 0
+  },
+  "702e3eee-b484-45bd-945e-6f8b1f8ebf51": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "1. Set up your environment",
+    "chunk_index": 1
+  },
+  "3c3ee940-ac09-4586-a34c-f7bfa82d94d3": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "1. Set up your environment",
+    "chunk_index": 2
+  },
+  "5c15fb08-ea65-4685-b60f-7fd93043535b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "1. Set up your environment",
+    "chunk_index": 3
+  },
+  "598143e9-7607-49ce-a73d-9efea98c5a23": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "1. Set up your environment",
+    "chunk_index": 4
+  },
+  "f83a6164-acb8-4e2e-a930-bd53e76f18b6": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "2. Install the Deepgram SDK",
+    "chunk_index": 5
+  },
+  "f04b340b-dc08-4e1d-97dd-f2615aed2204": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "2. Install the Deepgram SDK",
+    "chunk_index": 6
+  },
+  "15ea276a-5a18-4a66-945f-26bbfaabcf1f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "2. Install the Deepgram SDK",
+    "chunk_index": 7
+  },
+  "a976f6fd-c642-4bd2-aaec-bc1435426e76": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "2. Install the Deepgram SDK",
+    "chunk_index": 8
+  },
+  "6ca7e6c7-d540-41d5-b8fd-07efb2a75632": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "2. Install the Deepgram SDK",
+    "chunk_index": 9
+  },
+  "ef6bef91-6f21-4f0b-842e-d77b09bbde4f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "3. Import dependencies and set up the main function",
+    "chunk_index": 10
+  },
+  "cc89512f-8b6e-495e-8ad0-269cf60f424b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "4. Initialize the Voice Agent",
+    "chunk_index": 11
+  },
+  "4c3a3a19-fc4a-44d0-8fc4-ccf46038a2f7": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "4. Initialize the Voice Agent",
+    "chunk_index": 12
+  },
+  "de98b8a9-e8c1-4856-bb76-ba8a416d2f88": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "4. Initialize the Voice Agent",
+    "chunk_index": 13
+  },
+  "5c5a9048-fc1c-44fa-b0e8-e5963466aac8": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "4. Initialize the Voice Agent",
+    "chunk_index": 14
+  },
+  "b82c98b3-c6e2-4761-a6a0-a76bf988a665": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "4. Initialize the Voice Agent",
+    "chunk_index": 15
+  },
+  "7a3d42aa-0b4f-42ed-ba71-00e750198426": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "5. Configure the Agent",
+    "chunk_index": 16
+  },
+  "1411b6d5-c830-4cef-922b-c41ddc4d6af7": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "5. Configure the Agent",
+    "chunk_index": 17
+  },
+  "84b17957-618b-4d41-88c2-fe2bbeb399cd": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "5. Configure the Agent",
+    "chunk_index": 18
+  },
+  "5bf82403-9d51-4261-800a-bc87fe2da0a0": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "5. Configure the Agent",
+    "chunk_index": 19
+  },
+  "8f221fc7-5109-4ea7-8cfb-7c002f74f10c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "6. Send Keep Alive messages",
+    "chunk_index": 20
+  },
+  "1f523d54-0e3a-4a8b-a805-6d9b67bef155": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "6. Send Keep Alive messages",
+    "chunk_index": 21
+  },
+  "4634a436-a4fe-4f15-be66-735541fd1b26": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "6. Send Keep Alive messages",
+    "chunk_index": 22
+  },
+  "b06492f9-5c18-4973-b053-79b8c2e94c6a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "6. Send Keep Alive messages",
+    "chunk_index": 23
+  },
+  "c3b0f4f4-e42f-4bf6-a004-b91243a1aff6": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 24
+  },
+  "51e47648-d1ef-40f9-bde9-60b43de023e0": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 25
+  },
+  "258942c0-2d3d-452e-b1d1-33c727d6258b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 26
+  },
+  "89e6c33b-c9fc-4023-962d-4cbd6f0f4f94": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 27
+  },
+  "91b046eb-c1db-4181-9aab-0f246c549413": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 28
+  },
+  "8d4296bb-01f2-43a7-9a0d-84e46678ddb0": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 29
+  },
+  "315cbca9-725f-4853-9a1a-550c06866f80": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 30
+  },
+  "ed6beb28-928a-4c6d-8b52-b347546c4273": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 31
+  },
+  "1d3f5bfd-1117-457f-a6cc-91dc9751ebd4": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 32
+  },
+  "4f5249d8-7422-4f6b-8414-ff758c4949f9": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 33
+  },
+  "b0fc9b5d-fc63-4406-9b73-a474b1193822": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 34
+  },
+  "37587bfb-f0c0-46bc-85f6-91471555331f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 35
+  },
+  "530c3ffb-d9f8-4c15-b3c5-1250d3a9c3fb": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 36
+  },
+  "5dabec9e-dea0-4774-af13-d4e8ee771996": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 37
+  },
+  "38461aa5-53e8-445e-ad5e-18c01494e4a9": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 38
+  },
+  "29bc6149-2681-4626-bcf8-69bdd34c17b7": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 39
+  },
+  "84035615-4db0-4004-8961-d33dd69b7f20": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 40
+  },
+  "98fe741b-684d-4c48-bc88-b2ed76522fc9": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 41
+  },
+  "37e7d2b2-e926-4fca-89a6-be03566c8ab9": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 42
+  },
+  "d797806d-56b6-4eb9-8976-1c2e6a40e144": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 43
+  },
+  "40cb845a-32a7-44d9-9348-f4284d04e4e8": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 44
+  },
+  "cd63be6c-e5c6-449b-a6eb-4cb4daafe5bd": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 45
+  },
+  "9860c3c6-7402-470d-853d-3e63989ab848": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 46
+  },
+  "6c9a9b14-322f-4e84-aa59-1a1d7d075b5b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 47
+  },
+  "1255d2be-9181-4c20-a84b-ec898d29192c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 48
+  },
+  "03476890-9525-4645-a9f6-121a8f882ca7": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 49
+  },
+  "31e8ae84-ebfe-4b47-a0f9-1e95adc5ba47": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 50
+  },
+  "c56c277e-e238-42a0-bf09-f39cc8816808": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Setup Event Handlers and Other Functions",
+    "chunk_index": 51
+  },
+  "50ee2b1a-c805-4800-8f92-1655a9ed9b6d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Run the Voice Agent",
+    "chunk_index": 52
+  },
+  "b836f325-ce3c-4772-bca6-1f269e081dde": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Run the Voice Agent",
+    "chunk_index": 53
+  },
+  "f1cdb453-0f49-4c17-ad3d-ac749f8aa53b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Run the Voice Agent",
+    "chunk_index": 54
+  },
+  "bcd789b3-8dcd-4a74-8500-0731360bddf2": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Run the Voice Agent",
+    "chunk_index": 55
+  },
+  "8f02f5b1-368a-4591-b6b0-76a9c12c3549": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Run the Voice Agent",
+    "chunk_index": 56
+  },
+  "f007a21a-179a-42f2-aa3a-e1a253f8a68c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "7. Run the Voice Agent",
+    "chunk_index": 57
+  },
+  "44713cd9-37e6-4811-ba1e-8ff3316150e2": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 58
+  },
+  "2d53603b-7878-4039-902b-e1a487a0e9ad": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 59
+  },
+  "0ba42aac-4414-4ed2-a0c4-712709bb0581": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 60
+  },
+  "3ff51a6b-7da4-47f7-8d58-2b8e231fe81c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 61
+  },
+  "8d271b7f-08c3-445a-b188-9d0235f7571f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 62
+  },
+  "f310713f-e926-4fc1-bbdf-0c08b29a0e3d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 63
+  },
+  "82f81fd2-0501-4e10-bad1-868e3c7cf4d4": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 64
+  },
+  "88a59db6-32b3-4503-b347-b978d37c6f31": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 65
+  },
+  "e5ba2fb4-a4fe-4570-b7b8-099488079f84": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 66
+  },
+  "e40bcfc0-8f61-4b7b-9d8d-50617f4d6ac7": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 67
+  },
+  "7ce319ba-8bc1-47f8-9c33-0153a56f0ce2": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 68
+  },
+  "350deca6-dea6-46e4-84f4-39ec3821ca5e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 69
+  },
+  "da7e825f-a1b0-4fb3-bcc9-88abdc7e350d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 70
+  },
+  "3dbe4e32-e37c-4cce-bb01-b73481610d23": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 71
+  },
+  "c3ad5506-d0a7-4377-af1b-c89e3dc11760": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 72
+  },
+  "46e6ecee-ff9c-4959-9f34-93f0f81a161e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 73
+  },
+  "6f77b9e3-70d7-4e6d-8437-5d3c3d4b9c85": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 74
+  },
+  "f736616f-6834-42d6-a0f0-ec9e59eff4f3": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 75
+  },
+  "9133daa3-9876-4639-b635-256f2ffd534e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 76
+  },
+  "ef262e9a-5e8c-4368-8a22-1b6cdce2eeed": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 77
+  },
+  "e1aba9ea-5ca4-4436-89fd-f9a7c79bf6a6": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 78
+  },
+  "a9d58fb9-7653-4f02-821b-8a129fb82ccf": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 79
+  },
+  "fa3a8bf1-7af3-4611-8ae1-04298ed8bf04": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 80
+  },
+  "f1617d04-45ce-429f-a3f2-0f496a589dde": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 81
+  },
+  "185717ce-94d8-4b00-a372-737105d9dfc0": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 82
+  },
+  "fe912b60-058a-4181-ab02-1291aab652d8": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 83
+  },
+  "73fa0c78-da2b-45ea-9f5a-0f6ed75b24d4": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 84
+  },
+  "555c9f69-dd5d-4795-ba3a-567c953cbc30": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 85
+  },
+  "b782bef5-68d0-4e7a-a289-23bac4afad0f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 86
+  },
+  "651314a6-3157-4e76-a151-d6ab2062121a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 87
+  },
+  "b5fa3fae-3a7c-464c-93d4-00c8afb03b3a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 88
+  },
+  "2aaa7f79-169a-40c0-b8cd-c6909cf28860": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 89
+  },
+  "e4adc9e5-c3bf-4c8a-873b-db82ac8d0702": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 90
+  },
+  "0f3a8b94-6df5-47a2-a628-2e1e698daf4b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 91
+  },
+  "28616b6f-a0f0-456b-83e2-0c530c0f8889": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 92
+  },
+  "290bdcf3-72d2-4d1f-bf22-b9376fc4a540": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 93
+  },
+  "d5ee6501-4afd-4a3b-a397-dd0509865738": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 94
+  },
+  "1e665189-f719-43a5-9041-9e07e6a2f3ee": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "8. Putting it all together",
+    "chunk_index": 95
+  },
+  "84ae9a50-63ea-4e05-9c31-144eb480cdd0": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Implementation Examples",
+    "chunk_index": 96
+  },
+  "a44dd794-72f1-4b7d-aaa5-b49bd8211089": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Rate Limits",
+    "chunk_index": 97
+  },
+  "589c546d-9220-44c2-99bd-5bf7c07d259a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Endpoint Changes",
+    "chunk_index": 98
+  },
+  "8b1bda1f-8336-4f2d-a767-a1cfff778915": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Endpoint Changes",
+    "chunk_index": 99
+  },
+  "96f27cbe-0f17-4981-93f2-66a17239f6ce": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Removed Message Types",
+    "chunk_index": 100
+  },
+  "fc214e28-2d58-4381-8c8d-689cc3de55eb": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Removed Message Types",
+    "chunk_index": 101
+  },
+  "90f1ac76-2c01-46e3-9bff-2a4cd5ca76d1": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "New Message Types",
+    "chunk_index": 102
+  },
+  "143dded1-27fa-4d2c-86cc-5ba974ce6f82": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "New Message Types",
+    "chunk_index": 103
+  },
+  "579b0c7a-7f67-4299-9989-4727c0f86a02": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "`Welcome` Message Changes",
+    "chunk_index": 104
+  },
+  "ce8f0ae7-d537-4b78-bc7f-37fd48593ec1": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "`Welcome` Message Changes",
+    "chunk_index": 105
+  },
+  "dc172ce6-b9f5-40f5-a280-3bb5bad929d1": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Early Access: `Welcome`",
+    "chunk_index": 106
+  },
+  "cf2e3fc8-ad28-4831-9de2-47f13d70faa2": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Early Access: `Welcome`",
+    "chunk_index": 107
+  },
+  "d7093943-e171-4da2-b67f-c6ba3f2b055c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "V1: `Welcome`",
+    "chunk_index": 108
+  },
+  "38c7b29b-66b9-4661-8a86-2a3d88cc10f3": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "V1: `Welcome`",
+    "chunk_index": 109
+  },
+  "a46add27-c0f1-434f-85f3-cc81b3178f60": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "`SettingsConfiguration` Becomes `Settings`",
+    "chunk_index": 110
+  },
+  "05a3a46d-4560-4e96-9343-48aa3944921a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Early Access: `SettingsConfiguration`",
+    "chunk_index": 111
+  },
+  "75c6f60e-58cc-4fcc-821d-6465fd25d697": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Early Access: `SettingsConfiguration`",
+    "chunk_index": 112
+  },
+  "8c5068f0-0fad-46d0-b0c4-0c1efc88efe1": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Early Access: `SettingsConfiguration`",
+    "chunk_index": 113
+  },
+  "6005a6b7-1ae3-4f3e-b279-fe693c1952f0": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "V1: `Settings`",
+    "chunk_index": 114
+  },
+  "c3c9154e-73eb-4345-a5e6-c87a6ace8949": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "V1: `Settings`",
+    "chunk_index": 115
+  },
+  "b772b75f-99f2-4533-b2be-8989e878d01f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "V1: `Settings`",
+    "chunk_index": 116
+  },
+  "6e8f7c54-f1be-4cd2-821e-83d6d88d5fd0": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "V1: `Settings`",
+    "chunk_index": 117
+  },
+  "b1da8733-4487-4fa3-b040-1344b613f760": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "V1: `Settings`",
+    "chunk_index": 118
+  },
+  "aa5f4585-45ce-4f0b-b0b5-bb022592292c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "`UpdateSpeak` Changes",
+    "chunk_index": 119
+  },
+  "2ea8b2b8-8cbf-4742-9459-075ad194bd6e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "`UpdateSpeak` Changes",
+    "chunk_index": 120
+  },
+  "3357cdbe-cccc-4f0c-8f6c-7d57797dc50f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Early Access: `UpdateSpeak`",
+    "chunk_index": 121
+  },
+  "6d15cefe-f824-48fb-a9d0-63d37f78cd1b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Early Access: `UpdateSpeak`",
+    "chunk_index": 122
+  },
+  "6befb80f-bf3e-4999-98aa-4fca56548590": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "V1: `UpdateSpeak`",
+    "chunk_index": 123
+  },
+  "9783a81d-66fb-4f5a-ae2e-d1cd0441e178": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "V1: `UpdateSpeak`",
+    "chunk_index": 124
+  },
+  "2df3e940-531a-4858-8b78-f74b0c322752": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "`InjectAgentMessage` Changes",
+    "chunk_index": 125
+  },
+  "53b6192d-20cb-4087-8703-9cf7a6b11c4e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "`InjectAgentMessage` Changes",
+    "chunk_index": 126
+  },
+  "b30c3518-62eb-4ee2-8de2-d13b5fea65be": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Early Access: `InjectAgentMessage`",
+    "chunk_index": 127
+  },
+  "9a96f477-dbc2-4a64-b809-f77b250ecde3": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Early Access: `InjectAgentMessage`",
+    "chunk_index": 128
+  },
+  "7a0752fe-8489-4456-995b-50d4a21976b1": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "V1: `InjectAgentMessage`",
+    "chunk_index": 129
+  },
+  "9bc6716b-5853-43f8-bd14-3e5ed117f6d7": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "V1: `InjectAgentMessage`",
+    "chunk_index": 130
+  },
+  "230abbf4-9f0a-439a-b805-87a75293318c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Early Access: `FunctionCallRequest`",
+    "chunk_index": 131
+  },
+  "685c52c9-299b-4434-8365-15c7e7dc5515": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Early Access: `FunctionCallRequest`",
+    "chunk_index": 132
+  },
+  "4e7682a7-d921-42d8-92f2-fba4424585d1": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Early Access: `FunctionCallRequest`",
+    "chunk_index": 133
+  },
+  "18d8e3fe-c056-49b0-826b-cf804ca8d616": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "V1: `FunctionCallRequest`",
+    "chunk_index": 134
+  },
+  "cf59c167-9794-4734-ae3f-f5a19bcbdb90": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "V1: `FunctionCallRequest`",
+    "chunk_index": 135
+  },
+  "a58bdb6d-6631-44dc-93fe-e96243889093": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Early Access: `FunctionCallResponse`",
+    "chunk_index": 136
+  },
+  "90978f86-6fe0-4d22-842e-5c74bc25ba74": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Early Access: `FunctionCallResponse`",
+    "chunk_index": 137
+  },
+  "9e45a48d-891b-4e01-9239-a5201ecb2ea5": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "V1: `FunctionCallResponse`",
+    "chunk_index": 138
+  },
+  "9c5f9d6c-f930-473b-952e-cd2036f95959": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "V1: `FunctionCallResponse`",
+    "chunk_index": 139
+  },
+  "b9b582e3-bdfb-4a9b-bdb5-8d61aa372dd7": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "`Error` Response Changes",
+    "chunk_index": 140
+  },
+  "46d6921c-9f7a-4882-ba64-6889d9db96e9": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "`Error` Response Changes",
+    "chunk_index": 141
+  },
+  "d58470b8-f8f4-4930-a8ae-99ecfd9d761a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Early Access: `Error`",
+    "chunk_index": 142
+  },
+  "9efe5fd2-ea95-4729-9128-6198e4c5fbd0": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Early Access: `Error`",
+    "chunk_index": 143
+  },
+  "8261a9a7-aed7-4ed6-8945-d5d625845d4f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "V1: `Error`",
+    "chunk_index": 144
+  },
+  "fa8487fa-585a-4613-a79a-499d814b12e5": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "V1: `Error`",
+    "chunk_index": 145
+  },
+  "498bae4e-94df-4297-bd41-8ac040522e02": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "FunctionCallRequest",
+    "chunk_index": 146
+  },
+  "42844cf4-03c7-447d-bf14-e040f342fba2": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "FunctionCallRequest",
+    "chunk_index": 147
+  },
+  "61401c6b-db7c-4bb4-a509-43d72158cfca": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "FunctionCallRequest",
+    "chunk_index": 148
+  },
+  "422a9f2a-c417-4fcd-9ffb-44599699d386": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "FunctionCallRequest",
+    "chunk_index": 149
+  },
+  "7965f509-02e0-499c-9b3d-be1180ceadcc": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "FunctionCallRequest",
+    "chunk_index": 150
+  },
+  "ed127d14-644d-40e3-8e32-bf0dc04812e0": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "FunctionCallResponse",
+    "chunk_index": 151
+  },
+  "1a0e2876-da6b-4c56-8c76-6c5d56c3ce5b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "FunctionCallResponse",
+    "chunk_index": 152
+  },
+  "5cc75025-4163-48b0-9899-d95390321776": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "FunctionCallResponse",
+    "chunk_index": 153
+  },
+  "1faf623f-de7c-48dd-8e50-1a3763da1b27": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "FunctionCallResponse",
+    "chunk_index": 154
+  },
+  "ef91689b-8dc7-4f72-920d-1020740e5d49": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "FunctionCallResponse",
+    "chunk_index": 155
+  },
+  "f338696d-7845-462e-bd45-5bff7a304189": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Implementation Tips",
+    "chunk_index": 156
+  },
+  "23162bbb-8f45-49da-abf2-2d16b4cd62c1": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Implementation Tips",
+    "chunk_index": 157
+  },
+  "5a1a94be-0223-4609-b3a9-058f5e7355ff": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Migration Checklist",
+    "chunk_index": 158
+  },
+  "bdff8f05-42fa-422d-ad14-080afe9da9ee": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Migration Checklist",
+    "chunk_index": 159
+  },
+  "5339af5d-59b8-4b3c-99e0-e31f8cde147f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Common Migration Issues",
+    "chunk_index": 160
+  },
+  "4e3ef618-6b77-4aec-8277-44756a3fa698": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Common Migration Issues",
+    "chunk_index": 161
+  },
+  "3a0ff2c8-f994-4375-bc6f-c86292d43b62": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "New Capabilities in V1",
+    "chunk_index": 162
+  },
+  "7c804909-60ee-4e11-adaa-184f42e60cdd": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "New Capabilities in V1",
+    "chunk_index": 163
+  },
+  "90dfd7e9-abe8-42aa-8fdf-814772090b32": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Outputs: Server Events",
+    "chunk_index": 164
+  },
+  "faa3dcee-6776-4a3b-83ca-5dccc2d9790b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Deepgram Self-Hosted",
+    "chunk_index": 165
+  },
+  "846ebea0-4274-4c51-977e-25f0e6aa49a5": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Deepgram Self-Hosted",
+    "chunk_index": 166
+  },
+  "8bc2d642-afc3-4267-9cbc-0a38bfe6f58f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Deepgram Self-Hosted",
+    "chunk_index": 167
+  },
+  "70b02681-5d5f-49d3-a176-821c56de3592": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Deepgram Self-Hosted",
+    "chunk_index": 168
+  },
+  "752f422f-6452-4630-8c1b-9a1ed826bcaa": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Deepgram Self-Hosted",
+    "chunk_index": 169
+  },
+  "fa5c948c-0829-46e0-8549-f34594cd5ea4": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Deepgram Self-Hosted",
+    "chunk_index": 170
+  },
+  "4e1ca7f5-9867-42cc-9a7c-483da402af99": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Settings Overview",
+    "chunk_index": 171
+  },
+  "0c90a1c7-cd4c-4508-a837-38751173e93f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Settings Overview",
+    "chunk_index": 172
+  },
+  "cba83309-4d83-4d3f-a7b8-df8fd53d641d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Settings",
+    "chunk_index": 173
+  },
+  "d5e23f66-761e-4562-b4b7-a857bc40e119": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Settings",
+    "chunk_index": 174
+  },
+  "0ebb4ad4-1536-46fb-bf53-f9ccf431cc29": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Audio",
+    "chunk_index": 175
+  },
+  "e6dec45c-ae31-4d26-8b73-e7de6eeba706": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Audio",
+    "chunk_index": 176
+  },
+  "087bbd54-f328-44fa-9366-5d3dc7653193": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Agent",
+    "chunk_index": 177
+  },
+  "2b810b13-34b4-4599-b8ea-ac33957b8332": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Agent",
+    "chunk_index": 178
+  },
+  "40d5be31-1d34-48fe-8a4e-fd07636110d5": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "`agent.listen.provider.language` and `agent.speak.provider.language`",
+    "chunk_index": 179
+  },
+  "3bcc8ea8-b0c6-499f-9048-3a79e84cb0ad": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "`agent.listen.provider.language` and `agent.speak.provider.language`",
+    "chunk_index": 180
+  },
+  "39803a58-8530-49ea-bfe7-fc7800a524af": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "`agent.listen.provider.model`",
+    "chunk_index": 181
+  },
+  "3933e095-b457-4019-a541-f96514576929": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "`agent.listen.provider.model`",
+    "chunk_index": 182
+  },
+  "72760ae0-8017-471c-99d4-03fb79223058": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "`agent.listen.provider.model`",
+    "chunk_index": 183
+  },
+  "ef399158-74ca-4e14-b213-0233d8f69b32": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "`agent.think.context_length`",
+    "chunk_index": 184
+  },
+  "bf934304-2953-4b30-8ed1-cdd1c318ab0b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "`agent.think.context_length`",
+    "chunk_index": 185
+  },
+  "356c5593-8922-4f1e-828c-950630960ba4": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "`agent.context`",
+    "chunk_index": 186
+  },
+  "60606c94-f1a6-4887-a615-95ea0b47643e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "`agent.context`",
+    "chunk_index": 187
+  },
+  "4399d877-ca2a-4d02-8145-4e78fea8dfc4": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "`agent.listen.provider.smart_format`",
+    "chunk_index": 188
+  },
+  "5ee7debe-a29e-405c-b4fa-67a06b5297e9": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "`agent.listen.provider.smart_format`",
+    "chunk_index": 189
+  },
+  "40714650-3d99-4195-9442-5bffeb4062a1": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Full Example",
+    "chunk_index": 190
+  },
+  "148990ba-992d-40be-a42f-7aa8c6e31424": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Full Example",
+    "chunk_index": 191
+  },
+  "edaeedc8-abe3-4265-bb3e-314816be10eb": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Full Example",
+    "chunk_index": 192
+  },
+  "f360fc68-2ab5-45d9-a076-e797a0c20af1": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Architecture Overview",
+    "chunk_index": 193
+  },
+  "167602db-daeb-4e7a-a9cb-5cde9853b41d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Architecture Overview",
+    "chunk_index": 194
+  },
+  "1c1c19d7-ebb7-44d9-a4c5-c36b716a5b2e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Session-Based Agent Switching",
+    "chunk_index": 195
+  },
+  "27f66b04-c7c9-4f42-b475-9c1f685f3a29": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Session-Based Agent Switching",
+    "chunk_index": 196
+  },
+  "dc7179f0-7a96-478c-b50c-e6a6af5e0ebb": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Audio Task Persistence Pattern",
+    "chunk_index": 197
+  },
+  "b6f7da1a-b889-40e0-92e0-7029f2ba647f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Audio Task Persistence Pattern",
+    "chunk_index": 198
+  },
+  "95f67487-c981-4b57-8077-ce270af230fa": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "1. Qualifier Agent (`agents/qualifier/config.py`)",
+    "chunk_index": 199
+  },
+  "43706527-89dd-4852-a442-74f5ee58a41e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "1. Qualifier Agent (`agents/qualifier/config.py`)",
+    "chunk_index": 200
+  },
+  "f5efbd53-596b-4770-b611-eda45e880bc2": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "1. Qualifier Agent (`agents/qualifier/config.py`)",
+    "chunk_index": 201
+  },
+  "d44b6fba-9877-49bb-b8c1-7b2bb685c882": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "2. Advisor Agent (`agents/advisor/config.py`)",
+    "chunk_index": 202
+  },
+  "8eb87080-4cb8-4d0f-a53c-4189e795ec56": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "2. Advisor Agent (`agents/advisor/config.py`)",
+    "chunk_index": 203
+  },
+  "d741e4d0-a167-4133-9a12-194445e5bdd3": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "3. Closer Agent (`agents/closer/config.py`)",
+    "chunk_index": 204
+  },
+  "cb37a6f2-404b-4b81-8020-0061bca0f4f6": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "3. Closer Agent (`agents/closer/config.py`)",
+    "chunk_index": 205
+  },
+  "9f8ef691-f83d-4bbe-9621-b1dd86a612eb": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "How Agent Transitions Work",
+    "chunk_index": 206
+  },
+  "4d1b3ee6-06d2-4934-813e-d6b0b6cb3c72": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "How Agent Transitions Work",
+    "chunk_index": 207
+  },
+  "0f3a76b5-c3f4-4761-be2e-dd0b5001cb4a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Function Definitions",
+    "chunk_index": 208
+  },
+  "0afd6785-0921-488f-92ae-ee4e35162371": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Function Definitions",
+    "chunk_index": 209
+  },
+  "870c8878-e215-4520-98e9-acbf28fd073b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Function Definitions",
+    "chunk_index": 210
+  },
+  "b23a6c3d-977f-40f2-9716-036d3c67ffe3": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Function Definitions",
+    "chunk_index": 211
+  },
+  "d0719847-beec-4480-99b0-56cd33e600e8": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "2. Configure Environment",
+    "chunk_index": 212
+  },
+  "7664bc19-1407-492b-b9c7-fe2bdbc3a5fd": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "2. Configure Environment",
+    "chunk_index": 213
+  },
+  "00006dd4-d480-446b-b1d2-d68e7826841e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "2. Configure Environment",
+    "chunk_index": 214
+  },
+  "203f897d-c046-4ea7-9690-356e3ef6184d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "2. Configure Environment",
+    "chunk_index": 215
+  },
+  "9da7e5b2-39c8-4501-8296-7e466059e7e8": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "2. Configure Environment",
+    "chunk_index": 216
+  },
+  "b0a6e2f2-ded6-4862-bfe4-c8d328190c83": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "3. Start Public Tunnel",
+    "chunk_index": 217
+  },
+  "5964b816-8127-4aeb-bbcd-bf9d256bfebe": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "3. Start Public Tunnel",
+    "chunk_index": 218
+  },
+  "e81a2f26-e661-4a99-b538-6efc78e29539": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "4. Run the System",
+    "chunk_index": 219
+  },
+  "34124987-1b9d-42ff-9a83-c55b603591dc": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "4. Run the System",
+    "chunk_index": 220
+  },
+  "51b1a786-8ac5-4e67-ab16-937eb4b9fef0": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "4. Run the System",
+    "chunk_index": 221
+  },
+  "e5a35d82-47be-4873-8e33-245b33861d45": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "4. Run the System",
+    "chunk_index": 222
+  },
+  "cb7adb3c-acb5-4c04-af36-5fdf087a40a9": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Phase 1: Qualifier Agent",
+    "chunk_index": 223
+  },
+  "9e954f66-0b6c-4216-8c4e-e8d693d0f103": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Phase 1: Qualifier Agent",
+    "chunk_index": 224
+  },
+  "ee75382e-1a65-4594-9051-c7ef5b2fd8ba": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Phase 2: Advisor Agent",
+    "chunk_index": 225
+  },
+  "b3e7129e-1d08-47ff-ac32-7358ec99c40c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Phase 2: Advisor Agent",
+    "chunk_index": 226
+  },
+  "558c5230-76c2-45f8-b52f-b6ba593c7f98": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Phase 3: Closer Agent",
+    "chunk_index": 227
+  },
+  "e0fa369b-3935-4bf5-8803-dc4afd00b1df": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Phase 3: Closer Agent",
+    "chunk_index": 228
+  },
+  "31a6711a-7518-4538-b0ef-31f1aa9d78e3": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Project Structure",
+    "chunk_index": 229
+  },
+  "0720cba4-ee21-4140-b62f-cf423ff37e4e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Project Structure",
+    "chunk_index": 230
+  },
+  "dff71493-965f-4e43-b2f7-d7224dbe0157": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Modify Agent Behavior",
+    "chunk_index": 231
+  },
+  "6941edf4-c31c-4f72-8f7a-44a275f302ac": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Modify Agent Behavior",
+    "chunk_index": 232
+  },
+  "9c0c35c1-e283-4ee2-9e60-6f1b4b6cf43d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Modify Agent Behavior",
+    "chunk_index": 233
+  },
+  "5ddb6847-f9ea-4f86-8c97-9e2633abff22": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Modify Agent Behavior",
+    "chunk_index": 234
+  },
+  "e6b9e358-533f-4fe4-95c1-cb5118082746": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Modify Agent Behavior",
+    "chunk_index": 235
+  },
+  "eb34dbc4-0e03-4c85-8ceb-e4324d39e9b8": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Modify Agent Behavior",
+    "chunk_index": 236
+  },
+  "da1c956e-dcb8-4ff2-9f38-22a36958a24d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Modify Agent Behavior",
+    "chunk_index": 237
+  },
+  "1d92997f-ae0c-4f1d-8c91-fc52452383df": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Modify Agent Behavior",
+    "chunk_index": 238
+  },
+  "cb1cacc6-e9ea-4ff0-a744-f353bee48a90": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Add New Agents",
+    "chunk_index": 239
+  },
+  "2f324860-8102-478f-ae03-45c441ea009d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Add New Agents",
+    "chunk_index": 240
+  },
+  "93679f22-6aa7-4d26-a2e5-a8fea6740d4d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Change Summarization",
+    "chunk_index": 241
+  },
+  "8b9c521f-acfe-47b2-aa2b-76411af81ce9": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Change Summarization",
+    "chunk_index": 242
+  },
+  "a05986b2-d745-4b1c-a750-f37b077a8807": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "How Function Calling Works",
+    "chunk_index": 243
+  },
+  "cd596dab-bb33-4afc-9ed8-e351290e108c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Configuring Function Calling",
+    "chunk_index": 244
+  },
+  "614a1bac-71dd-4291-ae0d-74d0f784e37e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Configuring Function Calling",
+    "chunk_index": 245
+  },
+  "10992438-0137-48c6-b1e9-1e3e944453c5": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Configuring Function Calling",
+    "chunk_index": 246
+  },
+  "3a4ecab4-a55d-426b-a20a-e15929db42f2": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Client-Side Function Calling",
+    "chunk_index": 247
+  },
+  "4e6f8ecd-ea67-42d3-af03-8238d44d1a3a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Client-Side Function Calling",
+    "chunk_index": 248
+  },
+  "ad74361e-29d3-4893-b712-dc7b538ed765": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Client-Side Function Calling",
+    "chunk_index": 249
+  },
+  "01b8876f-7b72-4fc6-8f5c-9bb1aedb297e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Client-Side Function Calling",
+    "chunk_index": 250
+  },
+  "7e64643f-173f-4eb0-bf25-060dcdebd296": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Client-Side Function Calling",
+    "chunk_index": 251
+  },
+  "97bb8a89-bf9e-4e25-8617-1826ab2c83a4": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Client-Side Function Calling",
+    "chunk_index": 252
+  },
+  "4673cd57-abe9-4cf2-99f9-81f5dcb229ca": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Function Calling Message Flow",
+    "chunk_index": 253
+  },
+  "3e5b6023-df4f-4902-81cc-ad03cb4d0af1": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Function Calling Message Flow",
+    "chunk_index": 254
+  },
+  "7124a9d4-f10a-4764-a055-737bf362a71c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Function Calling Message Flow",
+    "chunk_index": 255
+  },
+  "21920a9c-6758-4b8e-a0b3-ff9654e924cb": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Function Calling Message Flow",
+    "chunk_index": 256
+  },
+  "21674f6e-931b-427a-98b4-612f7fd87b5b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Function Calling Message Flow",
+    "chunk_index": 257
+  },
+  "0aa1c0d4-e1fd-439f-96c0-bf892d006df1": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Getting Started",
+    "chunk_index": 258
+  },
+  "10f68c48-0ea7-45cd-aeab-8b3277bb7093": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Getting Started",
+    "chunk_index": 259
+  },
+  "ef2839d6-a301-40f1-a47d-a51c50d971fd": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Create `agent_functions.py`",
+    "chunk_index": 260
+  },
+  "12e8d06f-885c-4f04-be48-c5e9f9237a2a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Create `agent_functions.py`",
+    "chunk_index": 261
+  },
+  "9169b510-8e4d-462c-8491-e39bf7e09eb0": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Create `agent_functions.py`",
+    "chunk_index": 262
+  },
+  "ff694027-6aa0-4047-b4aa-0f9a246e765b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Create `agent_functions.py`",
+    "chunk_index": 263
+  },
+  "2c8794ff-ebb1-48b0-8710-770a4d41186a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Create `agent_functions.py`",
+    "chunk_index": 264
+  },
+  "bd4fb481-f335-4b7c-90b4-c1a2de7a9340": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Implement the Functions",
+    "chunk_index": 265
+  },
+  "ec3822cf-df92-48ad-be3f-92d92aaa1101": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Implement the Functions",
+    "chunk_index": 266
+  },
+  "72ba5214-83d2-4262-b8f7-029ad5c00740": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Implement the Functions",
+    "chunk_index": 267
+  },
+  "17f82ce5-6f38-4916-ad1f-b33a33c8f608": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Agent Filler",
+    "chunk_index": 268
+  },
+  "429c365b-30b2-42df-affa-0f9ae6d0d256": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Create Function Definitions",
+    "chunk_index": 269
+  },
+  "0c0a9aae-3945-4297-80d5-c91be07ccdd4": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Create Function Definitions",
+    "chunk_index": 270
+  },
+  "dd46f042-286c-49a8-b6c4-ee6bfd9b92aa": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Create Function Definitions",
+    "chunk_index": 271
+  },
+  "32ede5a2-8d9c-483d-a903-6fcebb24b89a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Create Function Definitions",
+    "chunk_index": 272
+  },
+  "e184364c-08b7-44cd-889a-25dd10df4cd3": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Create Function Definitions",
+    "chunk_index": 273
+  },
+  "5674edb6-7180-4cb0-9512-5d02170e1e63": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Create Function Definitions",
+    "chunk_index": 274
+  },
+  "18453b73-a1a6-4f89-9ed2-0b350c5bf418": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Create Function Definitions",
+    "chunk_index": 275
+  },
+  "20b1ce9b-ed71-4e5d-ad49-8cbfdd65b76b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Create Function Definitions",
+    "chunk_index": 276
+  },
+  "c18ef50e-88b4-4239-af06-d4f4ca22502d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Create Function Definitions",
+    "chunk_index": 277
+  },
+  "09444036-b301-469e-8ab8-53c2020cad16": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Create Function Definitions",
+    "chunk_index": 278
+  },
+  "a768cafd-abfb-40a6-a228-48ae341615c8": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Create Function Definitions",
+    "chunk_index": 279
+  },
+  "dfacf5eb-f34b-4eff-b339-39fa141aca4c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Create a Function Map",
+    "chunk_index": 280
+  },
+  "67967a29-a7e6-4e88-a219-e1df0e962e78": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Create a Function Map",
+    "chunk_index": 281
+  },
+  "df70d05b-7448-4223-b7ef-cfef78a4cefc": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Create a Function Map",
+    "chunk_index": 282
+  },
+  "5bd71664-a6b1-4536-8845-4de13dfe4dc9": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Create `agent_templates.py`",
+    "chunk_index": 283
+  },
+  "f2190934-6f1f-46c4-a46b-eabbb116f8cd": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Create `agent_templates.py`",
+    "chunk_index": 284
+  },
+  "792ac291-3066-4283-b3c8-1c473ce572fb": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Configure the Voice Agent Prompt & Settings",
+    "chunk_index": 285
+  },
+  "e4b3c7dc-a65d-42aa-8ca4-517cb133a715": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Configure the Voice Agent Prompt & Settings",
+    "chunk_index": 286
+  },
+  "85e413ce-8c4c-4996-b27c-a4d917f3b7c8": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Configure the Voice Agent Prompt & Settings",
+    "chunk_index": 287
+  },
+  "3fd4eeaf-4348-4663-91f5-a5b4c84924b8": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Configure the Voice Agent Prompt & Settings",
+    "chunk_index": 288
+  },
+  "3c5486b3-f65f-42d6-8ac1-9a7e55b64aae": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Configure the Voice Agent Prompt & Settings",
+    "chunk_index": 289
+  },
+  "5b84ebba-ebf3-4f6e-b084-7db57949de28": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Configure the Voice Agent Prompt & Settings",
+    "chunk_index": 290
+  },
+  "d4890699-5688-4452-9c9c-bd1b8a0388b0": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Configure the Voice Agent Prompt & Settings",
+    "chunk_index": 291
+  },
+  "6480c259-6114-43e6-a35a-b0a835fc1c57": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Configure the Voice Agent Prompt & Settings",
+    "chunk_index": 292
+  },
+  "1edff35b-621a-44d4-8b3c-11f6c52433ff": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Configure the Voice Agent Prompt & Settings",
+    "chunk_index": 293
+  },
+  "a3105520-a5f0-411d-ac2f-06d03513cece": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Configure the Voice Agent Prompt & Settings",
+    "chunk_index": 294
+  },
+  "1aa6075d-52b7-427b-806c-5d33e7eea0cb": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Configure the Voice Agent Prompt & Settings",
+    "chunk_index": 295
+  },
+  "37f34e31-7f21-4951-a348-14e2493c4983": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Configure the Voice Agent Prompt & Settings",
+    "chunk_index": 296
+  },
+  "dff76e42-09db-40dc-a366-e16037606a3d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Configure the Voice Agent Prompt & Settings",
+    "chunk_index": 297
+  },
+  "a3761ca9-4b0f-4a51-8fd1-ad0d9b20842c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Configure the Voice Agent Prompt & Settings",
+    "chunk_index": 298
+  },
+  "f5b6e052-0807-4e99-8383-cb5cefe5619b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "AGENT_AUDIO_SAMPLE_RATE = 16000\n  AGENT_AUDIO_BYTES_PER_SEC = 2 * AGENT_AUDIO_SAMPLE_RATE",
+    "chunk_index": 299
+  },
+  "26768907-7d31-40a7-a50f-27a5fcfc779b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "AGENT_AUDIO_SAMPLE_RATE = 16000\n  AGENT_AUDIO_BYTES_PER_SEC = 2 * AGENT_AUDIO_SAMPLE_RATE",
+    "chunk_index": 300
+  },
+  "17e9b475-be98-4274-9000-ccc71e5d0899": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "AGENT_AUDIO_SAMPLE_RATE = 16000\n  AGENT_AUDIO_BYTES_PER_SEC = 2 * AGENT_AUDIO_SAMPLE_RATE",
+    "chunk_index": 301
+  },
+  "8140ceb8-7348-4ca2-ad1b-e57cb0c1e330": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "AGENT_AUDIO_SAMPLE_RATE = 16000\n  AGENT_AUDIO_BYTES_PER_SEC = 2 * AGENT_AUDIO_SAMPLE_RATE",
+    "chunk_index": 302
+  },
+  "7118795f-f19e-4d99-840f-fb8d708c9fba": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "AGENT_AUDIO_SAMPLE_RATE = 16000\n  AGENT_AUDIO_BYTES_PER_SEC = 2 * AGENT_AUDIO_SAMPLE_RATE",
+    "chunk_index": 303
+  },
+  "80c89770-b6ca-4912-a630-7f8ef9f56f45": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Call the functions from `client.py`",
+    "chunk_index": 304
+  },
+  "cb10ae64-7d41-42c6-bf30-c026e7d0691d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Call the functions from `client.py`",
+    "chunk_index": 305
+  },
+  "e97ef2d8-34c2-47c5-ba30-923efcfe97ca": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Call the functions from `client.py`",
+    "chunk_index": 306
+  },
+  "273046b1-1ba4-48fc-b2d1-5be6f98d883b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Call the functions from `client.py`",
+    "chunk_index": 307
+  },
+  "7655d57e-fbf6-4de7-a776-3e5c768e68fb": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Call the functions from `client.py`",
+    "chunk_index": 308
+  },
+  "ed039f1d-b2c0-419b-bce7-dfb7604824d6": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Call the functions from `client.py`",
+    "chunk_index": 309
+  },
+  "a3e32a30-0f86-496c-a14e-9f35a8e3ffad": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Call the functions from `client.py`",
+    "chunk_index": 310
+  },
+  "3a1dbba1-1d1f-4652-b100-bba804a9d12e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 311
+  },
+  "6ea6f8b7-cac3-4ec7-baab-8aec3827fc16": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 312
+  },
+  "e1176150-89cf-4012-865e-806bb698bc58": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Handling the message",
+    "chunk_index": 313
+  },
+  "fbe7a30f-5ea1-488f-99e5-9817ce5e78bf": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Handling the message",
+    "chunk_index": 314
+  },
+  "a2ddb556-2cf6-4ba0-901c-809ce8219b79": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Handling the message",
+    "chunk_index": 315
+  },
+  "a824b0ef-7b4b-4c05-abd2-19c5e0385b69": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Handling the message",
+    "chunk_index": 316
+  },
+  "2df44503-80a5-49de-880b-38b50a4eec77": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example payload",
+    "chunk_index": 317
+  },
+  "d25b5ae4-f8f7-401f-b9b1-2fced2f2e6ec": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example payload",
+    "chunk_index": 318
+  },
+  "beeac4bc-6530-4f55-92eb-f8ed7ccbeaab": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example payload",
+    "chunk_index": 319
+  },
+  "8e8708a8-02c7-41f6-ba40-278b1e902ae8": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Related messages",
+    "chunk_index": 320
+  },
+  "f8832def-c239-44f8-842b-08e88fff7907": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Related messages",
+    "chunk_index": 321
+  },
+  "df97ab94-b5c9-4469-bf9e-fcd1dabf1c62": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Related messages",
+    "chunk_index": 322
+  },
+  "19c6bf77-ca71-4351-b4d4-ee7f55cdef61": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Related messages",
+    "chunk_index": 323
+  },
+  "3e19b62e-3550-4a60-9b51-ed8c6df3dfc0": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 324
+  },
+  "5ed7a4a6-ea31-46fc-808b-ddbd564cd885": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 325
+  },
+  "eaad5333-47a1-4d20-8b21-bc8dcbae8ca3": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Fields",
+    "chunk_index": 326
+  },
+  "ba6844f5-6d88-4b2c-9d4d-53837e4c2f15": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Fields",
+    "chunk_index": 327
+  },
+  "0524af8b-b7d4-4a26-a395-5f96b73233df": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example payload",
+    "chunk_index": 328
+  },
+  "31a6f77b-2454-4f75-b084-a5a09db28357": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example payload",
+    "chunk_index": 329
+  },
+  "0e7668eb-a1bd-46f3-b0bc-bc32016b1007": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example payload",
+    "chunk_index": 330
+  },
+  "8ac002a2-6fe0-4e5b-896a-b865407014e9": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Related messages",
+    "chunk_index": 331
+  },
+  "e7bb12b3-bfcf-491d-a203-d6635f47582e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Related messages",
+    "chunk_index": 332
+  },
+  "e9e5ffda-abad-452e-96bf-eef6d00abe2d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Related messages",
+    "chunk_index": 333
+  },
+  "f44f1de3-47c9-43fd-adb5-8f31bc1c3f23": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Related messages",
+    "chunk_index": 334
+  },
+  "98ff0869-e2fb-4a9a-acbd-74fb81ade7f9": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 335
+  },
+  "60f8ecf8-d3a8-42c1-bd8f-5ea1569b3fc0": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 336
+  },
+  "990718ba-36ab-4e93-9b4f-871d7f28bcd5": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Conversation Context History",
+    "chunk_index": 337
+  },
+  "a5dea3df-d48e-4072-a132-81207f4e22b2": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Conversation Context History",
+    "chunk_index": 338
+  },
+  "ac19d596-896c-4966-8f19-2bdc7af92044": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 339
+  },
+  "6d2a28ad-0d51-4898-930b-d40be92c8ca5": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 340
+  },
+  "55264261-7c5a-4436-baec-8a67b474ec3a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Function Call Context History",
+    "chunk_index": 341
+  },
+  "ccd3edaa-e122-4607-bd82-25c602f2358e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Function Call Context History",
+    "chunk_index": 342
+  },
+  "254aaa39-74e8-4a96-9cc8-5508da09ffba": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Function Call Context History",
+    "chunk_index": 343
+  },
+  "a9e7ead1-28ed-40ee-9a0f-6cab8429f13c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Function Call Context History",
+    "chunk_index": 344
+  },
+  "4580beb6-3f04-4634-a380-e4fd501097c8": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 345
+  },
+  "ca1bc6cb-d2ee-41e8-8543-6ff7da648e07": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 346
+  },
+  "84b78fa6-fd73-4c8e-b234-e94359f94325": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "List of Client Messages",
+    "chunk_index": 347
+  },
+  "ddaa5836-e9aa-49f7-81d3-7146f3ab15f1": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "List of Client Messages",
+    "chunk_index": 348
+  },
+  "45809b0d-f03e-413b-8f42-c681d67094b6": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "List of Client Messages",
+    "chunk_index": 349
+  },
+  "bc318c60-0108-461a-8302-3b9d9ef855a5": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "List of Client Messages",
+    "chunk_index": 350
+  },
+  "a9f51e61-9ee7-421b-91fa-cec8007d4a94": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 351
+  },
+  "6f0dc050-d124-48c8-a0e6-76764a4e9ed9": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 352
+  },
+  "b1909728-ad7b-41a7-8eb1-1acf2ad89f04": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 353
+  },
+  "73638b21-9ce3-448d-831a-ed420d5e92c6": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 354
+  },
+  "8426c0d4-cd43-4a2d-8573-6ec58d2b803d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 355
+  },
+  "23b62500-2360-4a77-afc2-a927cde1b041": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 356
+  },
+  "1cbb2bd8-482e-4d22-a4a5-b08605a95d67": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 357
+  },
+  "d653f835-ec8a-4afa-ace1-6ce890e301c4": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 358
+  },
+  "e3306f21-2c2c-45d9-9dce-d4b015a42606": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Next Steps",
+    "chunk_index": 359
+  },
+  "5e9589c7-e483-4d5e-9f37-f423fe6dd61e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Next Steps",
+    "chunk_index": 360
+  },
+  "9cca0b56-2f04-4402-bce6-cf9c660ab55e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 361
+  },
+  "abece1ac-4436-45c2-a60a-78fa01b0a840": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 362
+  },
+  "ef60323a-2997-4ed3-9123-b4bb2038fe05": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 363
+  },
+  "75cc76ff-a05e-478f-a0e1-20dcfc3c5aa2": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 364
+  },
+  "48b312e3-6b19-4b20-9a13-fe33b186b967": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 365
+  },
+  "f8af4c95-3c11-4f9a-ae84-f9690469a3b7": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 366
+  },
+  "0d946213-ebbd-423c-8e93-554da5deeec3": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 367
+  },
+  "40751625-838a-449e-bbc2-c87716f5f16d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 368
+  },
+  "69f4d982-7a6e-4e30-8211-421cfeb8acd4": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 369
+  },
+  "2f17541d-dfca-4add-b4e9-ef32f475d9a2": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 370
+  },
+  "3156095a-991c-46e0-8a58-1575704d17fe": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 371
+  },
+  "a257f1de-d1ed-4cdd-b131-8fd17e0076d1": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 372
+  },
+  "a2a91a17-eaa9-4fab-84a8-eca854f68fb8": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 373
+  },
+  "3fb58f4e-9b54-4c82-8f45-ca3928ecfdde": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 374
+  },
+  "c90f2221-d710-4dd0-96fc-1c444755677b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 375
+  },
+  "1a42edb3-aa3e-4fcb-b4a1-9d5a28253542": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 376
+  },
+  "9e6c0c42-7e69-4c54-aef9-a9dea7f267be": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 377
+  },
+  "f4f7aeb5-9f0a-420c-8163-2e07ce751eaf": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 378
+  },
+  "5dd12341-f915-4f0f-8b47-244b833e348b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 379
+  },
+  "87f20e0a-8640-488a-a579-c76099c548e9": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 380
+  },
+  "1d325d63-3133-4d71-a388-1532b7526b55": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 381
+  },
+  "81c9baa0-e6e8-412f-8e3d-69b1bc40151f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 382
+  },
+  "62e8e157-59cd-40e6-9d9e-585ab0615915": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 383
+  },
+  "ff90a244-d2de-49aa-8ee7-325297a1ce1f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 384
+  },
+  "1a64156c-a617-48a5-89d9-139f20b5e48a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 385
+  },
+  "a0417609-3bef-4d53-b85e-0949ccdb46a1": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 386
+  },
+  "67054a94-b31f-446d-b4c0-1b3fa0c88b29": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 387
+  },
+  "0a418343-1614-4e08-9e6d-204a8e9654f4": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 388
+  },
+  "d1b97028-5132-4c76-8719-be965c264022": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 389
+  },
+  "9dc98c76-bd20-40d1-af5f-f36bf4f53f4c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 390
+  },
+  "e596401c-880a-44b7-b6ad-3566cb8e50b6": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 391
+  },
+  "2aa3d889-c746-4250-a689-707fb5fd97f6": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 392
+  },
+  "9e241700-aa2d-4ab0-abc9-f0eec71230fd": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 393
+  },
+  "0196e502-6865-4995-8aa6-0f128a29b18c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 394
+  },
+  "1b2fb654-b497-434f-8c83-e673b5bbea35": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 395
+  },
+  "f7c1e8a5-590e-46c0-91d2-2abe99d8fe45": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 396
+  },
+  "f51e1f94-c0d2-444a-87a0-898435f54ac4": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 397
+  },
+  "5a5938fb-08d7-4ca7-8933-651e5f79b267": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Use Cases",
+    "chunk_index": 398
+  },
+  "b459e3e1-36f4-4d0e-88dc-75a995618fa5": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Use Cases",
+    "chunk_index": 399
+  },
+  "893dae60-5404-4dd4-ad42-2f00fc2baa9a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Use Cases",
+    "chunk_index": 400
+  },
+  "9079d52a-0a99-4c59-85f3-417226b2d3d4": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Use Cases",
+    "chunk_index": 401
+  },
+  "0efedf6e-922d-482b-bf88-cd092d0a2f7a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 402
+  },
+  "c1f2f1cb-d7fa-4986-b9f0-7a5079a7e012": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 403
+  },
+  "9386c98e-2a62-4e0a-8252-8f7b9382c789": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 404
+  },
+  "bc8d75e0-a9d2-46d4-8f8e-fcee65d2b860": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 405
+  },
+  "48a19e9a-5664-4d26-8d06-43c76fa80b7e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payloads",
+    "chunk_index": 406
+  },
+  "ae5dcec6-9d16-45a9-9059-769f4adbe285": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Use Cases",
+    "chunk_index": 407
+  },
+  "ed6315fa-5833-469e-aaf4-d8eea8431436": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Use Cases",
+    "chunk_index": 408
+  },
+  "730ccc54-a06d-469f-8f8c-c9a1120958a6": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Use Cases",
+    "chunk_index": 409
+  },
+  "10cdfac3-baa0-4664-afdd-b38117832252": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Use Cases",
+    "chunk_index": 410
+  },
+  "bfabd49b-f07d-4ba2-8911-eec139860066": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 411
+  },
+  "4cb669d5-f5fb-4545-a58f-afd61ea35cec": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 412
+  },
+  "3c16b6d9-df20-4ca6-afd2-2cdde0da7aae": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 413
+  },
+  "b335cf78-51e5-416e-a8d6-e8572ea0f99c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 414
+  },
+  "ddffa063-7891-4752-85e8-7254e16dfed8": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 415
+  },
+  "65ec1edb-e83c-47de-bae1-45820c37be0c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 416
+  },
+  "147d6652-46c7-4e22-96a8-d03c53e6a1aa": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 417
+  },
+  "0f83af1d-ce4c-4c5e-b40a-b01edd068be0": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "List of Server Events",
+    "chunk_index": 418
+  },
+  "6949ebd5-a89b-4203-9a36-96b427f16679": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "List of Server Events",
+    "chunk_index": 419
+  },
+  "3588b0ba-9a79-45c1-b9d9-1315c9a4e044": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 420
+  },
+  "066ba78b-c500-4284-a8e5-afa7eccf4da9": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 421
+  },
+  "17101990-809b-43b6-8692-e1dee383ac06": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 422
+  },
+  "29891f0d-fd6a-48e8-89ff-cc078629db26": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 423
+  },
+  "d834fb68-3cc3-4624-8c2a-aec611592e23": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 424
+  },
+  "4b13ee90-f25b-474d-9249-f3725054519a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 425
+  },
+  "42005649-1d6c-4bac-9edf-6ce9cc16d497": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 426
+  },
+  "5af4cc27-4d47-426e-8e70-acac6a4b078f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 427
+  },
+  "3f45bd0a-f89f-43b0-ac84-b10c9381a829": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 428
+  },
+  "8ce105a4-86c5-49eb-835e-0649dbdc4375": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 429
+  },
+  "dfdedf9b-702c-49ce-aff4-f8f9f841fdb9": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 430
+  },
+  "2df12868-3f7a-454a-aac5-7f24d4bb3f9d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 431
+  },
+  "c393729f-5b79-4b89-a844-27f693e12f37": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 432
+  },
+  "7df47e4c-6fb0-4fb1-932b-9e41bd86a91b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 433
+  },
+  "69cd8f97-94b3-4c03-b816-c6466dc24753": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 434
+  },
+  "f3c330a2-9d34-4131-941b-2e48c303f23f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 435
+  },
+  "c1432877-c1eb-48c6-829f-a5995f98f1d9": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 436
+  },
+  "b70bdfd8-5591-4f6f-aec3-21fff6f8fbb9": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 437
+  },
+  "9965f65c-ea38-45d2-9d6e-7b126e39dbaa": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 438
+  },
+  "1686c793-b50c-48c1-8288-0abc3bfcba09": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 439
+  },
+  "dc81d521-b5a1-4ced-825e-e7a4cd29824c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 440
+  },
+  "aff9e0be-fe64-4731-951b-8f77bae2bf39": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 441
+  },
+  "fc930161-2900-4305-8e05-5c84916e74b4": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 442
+  },
+  "a1529fec-9146-4344-a481-8f93a28da028": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 443
+  },
+  "faed2823-e645-4e40-92f8-d95170a60e33": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 444
+  },
+  "c202dfdf-cd4d-473a-ad6c-13d00f15ddd2": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 445
+  },
+  "5c90e7aa-a96f-46cf-a17b-9239771ac090": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 446
+  },
+  "7fa2b792-445e-413a-a272-7964de55f12f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 447
+  },
+  "85c1a51c-349a-4827-a493-27d482739a07": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 448
+  },
+  "7b6aa167-4c1f-4359-a973-735ac5b1e476": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 449
+  },
+  "67231698-dff2-4443-83bd-2a7cdd9d3284": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 450
+  },
+  "0ac54113-8acb-4ec9-b4a1-203ecaf04557": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 451
+  },
+  "8d017cde-7c71-4a2c-8a75-454cbbb7bdef": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 452
+  },
+  "6a1a8af0-7c79-45cd-9d94-2c1e16e5068e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 453
+  },
+  "241b3e47-2236-4d27-b131-e4aa93e9d03d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 454
+  },
+  "f6852b87-70b0-41e4-a48e-0e8e5ba8b6ad": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 455
+  },
+  "9ceb5a0e-a844-481c-925d-6e1e7b4d8dd6": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 456
+  },
+  "9747e49c-b86e-4b55-a8cf-0afcf4598f6a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 457
+  },
+  "21fb8c9d-bdc4-46d2-aaa9-c2f5950b4fa3": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 458
+  },
+  "eb675734-a864-4f8b-9f89-4f6527228801": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 459
+  },
+  "cd8865e2-566f-415a-a7e7-04dcec7655e2": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 460
+  },
+  "55226f4d-96af-4d8d-8f56-66d01742a606": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 461
+  },
+  "cfb5e09d-9bd2-470f-af32-6ecc91e7151d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 462
+  },
+  "390b29a2-49c9-485e-8fa8-b104beeb3386": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 463
+  },
+  "c3368190-ad91-4e49-ae3c-638c54f2d89d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 464
+  },
+  "605fc53a-3e88-4710-84c8-9bad293ccaaa": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 465
+  },
+  "272b928e-3cbb-4c18-b780-3770723fe336": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 466
+  },
+  "160d30ee-c88c-419d-b41f-a434663ef559": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 467
+  },
+  "fa2c2734-dcb9-4eb3-9a73-ee9cd1bc2c01": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 468
+  },
+  "525107ff-3304-4bbf-ab76-e0e40cd76a48": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 469
+  },
+  "8d3a41c6-fb78-442c-b8fe-0170d46f03d8": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 470
+  },
+  "5289f2bc-84a9-4ebd-9b19-1af7c901625e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 471
+  },
+  "016db994-4290-47be-8a05-34f32cb3c270": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 472
+  },
+  "ac76de3b-cccd-4ae2-a394-807ed25a219e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 473
+  },
+  "ca5d2155-ae98-468a-b2de-a222fce6640a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 474
+  },
+  "ed83bfee-2b10-45a4-98e6-b7535a9675c0": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 475
+  },
+  "39747e6c-fb86-411a-93d0-c37a4f1f6808": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 476
+  },
+  "e76c794f-6f80-4295-aa40-c16310e505ba": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 477
+  },
+  "56ca6b49-16a3-434f-b11e-ba9774ec5c7a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 478
+  },
+  "98de528d-0700-4fd9-97b6-0086cc214834": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 479
+  },
+  "1df526fe-d4f3-4e8c-a4b9-93ddd4c940cb": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 480
+  },
+  "52360986-df8f-4c94-9f40-7bc724e0ce99": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 481
+  },
+  "6d654b8e-4cd2-4e17-8310-6bb5aa0a2a30": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 482
+  },
+  "cc943fc5-616a-4395-ba6c-2d81bc4f8f68": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 483
+  },
+  "b788ccbd-c964-4b0f-be70-f60cae4408e3": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 484
+  },
+  "08fa3d31-bb27-4097-b243-dfb4d34450b5": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 485
+  },
+  "4d49848f-8597-4600-9fe4-2bd57053e970": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 486
+  },
+  "72788bfe-4b24-4e46-96e0-9a59983da52b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 487
+  },
+  "4209f727-129e-4141-b40b-e93e445c4c1d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 488
+  },
+  "a358829d-1551-4f58-a950-0be5cac3d8aa": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 489
+  },
+  "885978bf-2317-44ba-b190-3bfe1a958d32": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 490
+  },
+  "eb98ecb3-41bd-4634-a478-b204c77bef42": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Types of Warnings",
+    "chunk_index": 491
+  },
+  "126bbd76-c465-4948-b939-9614d30f849f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Types of Warnings",
+    "chunk_index": 492
+  },
+  "966d17c8-cdf4-4f34-9235-cabd0249261b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Types of Warnings",
+    "chunk_index": 493
+  },
+  "85cdfb6e-9ba1-4a15-a4cf-222c8ab2196a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Types of Warnings",
+    "chunk_index": 494
+  },
+  "cdf67683-36ee-4e25-9c69-99cde594dfc0": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 495
+  },
+  "8469ac07-2e81-430f-bbc6-3fe97b99c05d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Purpose",
+    "chunk_index": 496
+  },
+  "e5768a3e-ba7c-402f-8e9d-213ed7fa5eab": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Conversation Context History",
+    "chunk_index": 497
+  },
+  "8ca142bc-5d33-45bb-85cc-179f783c017b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Conversation Context History",
+    "chunk_index": 498
+  },
+  "37856b8a-3fb3-42d7-a1f8-a332eb59c503": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 499
+  },
+  "64d3faf8-b4b0-43be-af08-6f778ba0ce03": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 500
+  },
+  "1ec10dc6-024f-4d12-8645-1e5a8c3b411e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Function Call Context History",
+    "chunk_index": 501
+  },
+  "de65853f-630e-40ab-b0e8-0bb9af8afa43": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Function Call Context History",
+    "chunk_index": 502
+  },
+  "39eae2a9-6c90-4689-8970-24e01db93d90": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Function Call Context History",
+    "chunk_index": 503
+  },
+  "864e16bd-c99f-402a-a0d4-99e0dd4145f5": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Function Call Context History",
+    "chunk_index": 504
+  },
+  "4edf3f70-9be8-424c-b512-2fe4d214d315": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 505
+  },
+  "bc003c52-2aea-47a3-800f-3d6247b3a0e6": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 506
+  },
+  "9abcdc2f-493c-4640-84c6-daabc76ff622": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 507
+  },
+  "699f542f-435e-412c-bdd9-2237377ba13f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 508
+  },
+  "0cc5f25d-6e77-47eb-afde-749f8c7023b4": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 509
+  },
+  "663000ef-399b-4ed8-9a37-4d54618a7754": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 510
+  },
+  "8bbedbf7-80f7-4c57-be25-2a463b6f2522": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Supported LLM providers",
+    "chunk_index": 511
+  },
+  "2fa2d9f8-67dd-4669-a9fd-078cd82aab79": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Supported LLM providers",
+    "chunk_index": 512
+  },
+  "831c046f-518f-4d3c-89ae-77aba150e9a8": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 513
+  },
+  "40efd2e1-6cd7-4718-be84-c08d202d4b71": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 514
+  },
+  "31ccc324-179e-4ab1-ae71-ef4d2c41f432": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 515
+  },
+  "701d4ed8-3d40-4ff3-a203-9ff61fde2461": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 516
+  },
+  "a39aa37d-867f-4bad-9fbc-a1317851a7a5": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 517
+  },
+  "c81dc7dc-3c92-407c-bf24-d70be19b2ad5": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 518
+  },
+  "2c4a815a-0db0-467a-8bbe-648644f7d0d2": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 519
+  },
+  "e976e4f7-9c38-4682-9a9b-8aa9495425bb": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 520
+  },
+  "ea1a7623-efec-4a8c-859b-de209af39e73": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 521
+  },
+  "f56485a3-2a4a-4a59-bb11-56630a00156f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "OpenAI",
+    "chunk_index": 522
+  },
+  "c92c6004-d57c-424b-81e8-c004207c5a4c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "OpenAI",
+    "chunk_index": 523
+  },
+  "9ffd6234-224f-4480-947e-88da5dfb6e3e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Anthropic",
+    "chunk_index": 524
+  },
+  "4549481d-a0e0-4157-85a2-908a5b3b6408": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Anthropic",
+    "chunk_index": 525
+  },
+  "171aa4d5-cb3c-4cd7-bf02-3765e68e8114": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Google",
+    "chunk_index": 526
+  },
+  "e7d5a267-97e0-4e63-8580-77c0c1a117f1": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Google",
+    "chunk_index": 527
+  },
+  "8331b6f2-7c01-465a-8f83-4afabb5c5801": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example using Deepgram's managed Google LLM",
+    "chunk_index": 528
+  },
+  "95ea4faf-8ec3-432e-8473-6dbe337d7db8": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example using Deepgram's managed Google LLM",
+    "chunk_index": 529
+  },
+  "bfd353f4-9778-4db5-a096-30cb4cad52fe": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example using a custom Google endpoint (BYO)",
+    "chunk_index": 530
+  },
+  "9a0c7a85-13fc-4723-9ba0-db2fbd20ed97": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example using a custom Google endpoint (BYO)",
+    "chunk_index": 531
+  },
+  "37e2bb72-c6ee-4871-ae90-6e2d2d1dde83": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example using a custom Google endpoint (BYO)",
+    "chunk_index": 532
+  },
+  "916270d5-fa27-494b-b114-fed45fa325e2": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example using a custom Google endpoint (BYO)",
+    "chunk_index": 533
+  },
+  "626332df-3702-4d5f-b7e8-d909c20865cc": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Groq",
+    "chunk_index": 534
+  },
+  "b2158852-f4d1-4671-9fac-4b4549f62e30": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Groq",
+    "chunk_index": 535
+  },
+  "3179237b-6443-4f00-b411-a9975eef72b6": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 536
+  },
+  "a5548c1e-58a5-4ddf-a068-73edb2850862": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example Payload",
+    "chunk_index": 537
+  },
+  "10c0e063-df0d-4307-9371-e8432b7747b6": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Passing a custom (BYO) LLM through a Cloud Provider",
+    "chunk_index": 538
+  },
+  "1a69409d-5829-4104-99e2-991e05350f31": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Passing a custom (BYO) LLM through a Cloud Provider",
+    "chunk_index": 539
+  },
+  "2a26c403-6083-458a-ab1b-735d8f1ddfa4": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Passing a custom (BYO) LLM through a Cloud Provider",
+    "chunk_index": 540
+  },
+  "b4f07d5b-b46d-4066-98c7-0a4f16d63f26": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Passing a custom (BYO) LLM through a Cloud Provider",
+    "chunk_index": 541
+  },
+  "d6dc6690-029a-47d3-bc49-fa5d55497e89": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Using Multiple LLM Providers",
+    "chunk_index": 542
+  },
+  "ad57b104-f610-4492-bb17-b281dff81212": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Using Multiple LLM Providers",
+    "chunk_index": 543
+  },
+  "6fba8d6a-9b62-43da-86f0-6a63f8e05cd4": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example",
+    "chunk_index": 544
+  },
+  "1db406dc-b77e-43f6-8215-2dfb1ae006d1": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example",
+    "chunk_index": 545
+  },
+  "b38f58a1-736e-446c-b26e-fc79acfd996e": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Deepgram TTS models",
+    "chunk_index": 546
+  },
+  "85f4967a-79d3-45c6-93de-48c0b3afc9eb": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Deepgram TTS models",
+    "chunk_index": 547
+  },
+  "9d0a55fa-903a-4b2c-a0f2-1475c6d3436b": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example",
+    "chunk_index": 548
+  },
+  "698cd837-4481-468a-a113-e6facdcffa3a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example",
+    "chunk_index": 549
+  },
+  "716a788b-3f61-4e9f-b1f1-43174d5ca9ba": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Deepgram-managed Cartesia TTS models",
+    "chunk_index": 550
+  },
+  "ea1c117f-8d19-4ed3-a4be-d51281695ce0": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Deepgram-managed Cartesia TTS models",
+    "chunk_index": 551
+  },
+  "0eb684b8-dc26-4aa7-acd4-fe5657999f2f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example",
+    "chunk_index": 552
+  },
+  "92e2c8ba-00d0-4b33-bc5b-68f428f5044d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example",
+    "chunk_index": 553
+  },
+  "0171402e-ee62-470f-ac5f-df61f751a058": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "OpenAI",
+    "chunk_index": 554
+  },
+  "50120eb2-7d2e-4068-af47-dfbc71823c07": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "OpenAI",
+    "chunk_index": 555
+  },
+  "0abe02b5-9e62-4fde-a82c-d936efd81e5c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example",
+    "chunk_index": 556
+  },
+  "88cd3034-929f-41be-978b-47ff9d92e639": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example",
+    "chunk_index": 557
+  },
+  "e3eebb53-8153-4df2-89cf-b57897003cb8": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Eleven Labs",
+    "chunk_index": 558
+  },
+  "28290626-2367-4b48-b679-398149d1012f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Eleven Labs",
+    "chunk_index": 559
+  },
+  "97b6cfdd-baf6-4a7b-b4b1-0872c68e4e59": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example",
+    "chunk_index": 560
+  },
+  "a8695f33-b98c-4061-9dce-d5cd725e1325": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example",
+    "chunk_index": 561
+  },
+  "526f8d41-e6b0-418c-8d4e-e2039423a49f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Cartesia",
+    "chunk_index": 562
+  },
+  "5a823c92-397a-4166-a0cd-c6b3247ad72c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Cartesia",
+    "chunk_index": 563
+  },
+  "ac2b72b3-9286-44fe-95bc-70f2ce9ec159": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example",
+    "chunk_index": 564
+  },
+  "c1e63196-12c6-4185-b241-c0414155d335": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example",
+    "chunk_index": 565
+  },
+  "84f4a97e-837f-4b95-ae37-3aa27100144c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Amazon (AWS) Polly",
+    "chunk_index": 566
+  },
+  "429e7b64-c682-47dc-9304-c1dcac9aa8f8": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Amazon (AWS) Polly",
+    "chunk_index": 567
+  },
+  "d7032fcc-8561-4ca6-9804-788d1c8edbcc": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "STS Example",
+    "chunk_index": 568
+  },
+  "bbd5248d-1f06-4a84-b921-f2f8c4ae9c32": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "STS Example",
+    "chunk_index": 569
+  },
+  "de32b87b-1f74-457e-948a-af8c48647446": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "IAM Example",
+    "chunk_index": 570
+  },
+  "10b46099-cff8-43ff-b7e6-2b4238f05f8f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "IAM Example",
+    "chunk_index": 571
+  },
+  "246037a1-daa3-4373-b0be-fcf1957bac24": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Using Multiple TTS Providers",
+    "chunk_index": 572
+  },
+  "a24f7142-38c1-43bc-9365-e0b371289a17": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Using Multiple TTS Providers",
+    "chunk_index": 573
+  },
+  "7e67333e-f325-4095-bfdf-6ea1f45c3b90": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example",
+    "chunk_index": 574
+  },
+  "ee412c85-a1ff-4de7-ba74-4b220342a962": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Example",
+    "chunk_index": 575
+  },
+  "d55f32a4-d3b1-4c62-b8ad-1b5c1e929c51": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Text to Speech: Media Output Settings",
+    "chunk_index": 576
+  },
+  "1c59c2c6-bda7-4ba0-8f29-2bff9c7dd374": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Learn More",
+    "chunk_index": 577
+  },
+  "dc04ec95-8186-48b2-bb7a-54d51bfae5f4": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Learn More",
+    "chunk_index": 578
+  },
+  "26a1751f-0d65-4b01-95ad-ed4164bb291a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Select a multilingual speech-to-text (STT) model.",
+    "chunk_index": 579
+  },
+  "e5fdd525-f0a3-4bc3-83c7-d85b90a07c9f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Select a multilingual speech-to-text (STT) model.",
+    "chunk_index": 580
+  },
+  "66685cd1-3dd7-428b-97a1-428aff3039f3": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Select a multilingual text-to-speech (TTS) provider.",
+    "chunk_index": 581
+  },
+  "b2ce1c80-9f66-4c81-8b5e-3469afba8f90": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Select a multilingual text-to-speech (TTS) provider.",
+    "chunk_index": 582
+  },
+  "1bc0562f-05a5-4b9d-92cd-0e95769e8bf4": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Prompt Recommendations",
+    "chunk_index": 583
+  },
+  "222b1147-f728-488c-806b-12050ec5678c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Prompt Recommendations",
+    "chunk_index": 584
+  },
+  "9c3ab8f3-461b-4cc9-bc2f-6548fbfbddfb": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "The Audio Output Sounds Like Static",
+    "chunk_index": 585
+  },
+  "43fcc6c4-f9f6-458d-8f2f-05c31557a4e1": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "The Audio Output Sounds Like Static",
+    "chunk_index": 586
+  },
+  "94a98312-2359-4d60-ad8a-3af88407cca9": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "The Audio Output Sounds Like Static",
+    "chunk_index": 587
+  },
+  "7d451660-86c0-463e-b758-e4b52c288863": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Attempting to Play Audio in a Web Browser",
+    "chunk_index": 588
+  },
+  "a9efc5ed-c610-4d60-a9da-ee70ff8fef41": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Attempting to Play Audio in a Web Browser",
+    "chunk_index": 589
+  },
+  "69607252-8829-4e56-bc09-326b77d4ea37": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Attempting to Play Audio in a Web Browser",
+    "chunk_index": 590
+  },
+  "8ac139c6-a050-4677-8ac5-359e2021a7f9": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Attempting to Play Audio in a Web Browser",
+    "chunk_index": 591
+  },
+  "d4ebcd51-a436-4050-975f-ab2cc572c58f": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Attempting to Play Audio in a Web Browser",
+    "chunk_index": 592
+  },
+  "76a6dad6-d8ba-4f3c-b048-01d8509b6bc7": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Attempting to Play Audio in a Web Browser",
+    "chunk_index": 593
+  },
+  "9725b8db-a7f2-4f29-911f-e88002c358a7": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Attempting to Play Audio in a Web Browser",
+    "chunk_index": 594
+  },
+  "7f647b6b-2698-41d4-a898-31ce549ad001": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Attempting to Play Audio in a Web Browser",
+    "chunk_index": 595
+  },
+  "d9cd202c-344b-4972-b197-4f310f525586": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "The Agent Voice Is Triggering Itself",
+    "chunk_index": 596
+  },
+  "af479d13-76fa-48e4-93b5-366b166c04a7": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "The Agent Voice Is Triggering Itself",
+    "chunk_index": 597
+  },
+  "a0c56d76-5877-415f-abba-9f07a633e387": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Using Echo Cancellation",
+    "chunk_index": 598
+  },
+  "535d3a1c-6b54-4225-9faf-3c57bb26348c": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Using Echo Cancellation",
+    "chunk_index": 599
+  },
+  "d14f6f2f-e365-4a19-946e-fa52e27e99f1": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "What Echo Cancellation Addresses",
+    "chunk_index": 600
+  },
+  "6958e3de-5ebf-497b-9270-ca4356eca59a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Establish the Connection and Receive Welcome",
+    "chunk_index": 601
+  },
+  "471bc9fb-ac4b-4673-9dba-36f2a45e2d5d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Establish the Connection and Receive Welcome",
+    "chunk_index": 602
+  },
+  "342c44c1-d2ec-4047-8852-d5507c63693a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Establish the Connection and Receive Welcome",
+    "chunk_index": 603
+  },
+  "ac0e6858-071e-4593-a90d-4f00086d73cc": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Establish the Connection and Receive Welcome",
+    "chunk_index": 604
+  },
+  "76595e25-169d-48c4-a9df-b8f47af2f384": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Configure Settings and Wait for Confirmation",
+    "chunk_index": 605
+  },
+  "2b355c87-5c0d-40d3-824f-b73c048e896a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Configure Settings and Wait for Confirmation",
+    "chunk_index": 606
+  },
+  "0c27434d-4fd8-4091-9abe-404f47c18dd0": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Configure Settings and Wait for Confirmation",
+    "chunk_index": 607
+  },
+  "ecd104a3-5e74-4947-8a2d-65cbd48944bf": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Configure Settings and Wait for Confirmation",
+    "chunk_index": 608
+  },
+  "e2dfa20c-2c02-454f-8faa-9471b90a07a5": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Configure Settings and Wait for Confirmation",
+    "chunk_index": 609
+  },
+  "1bbfbce3-8467-47fd-bf04-e44e79bd8425": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Configure Settings and Wait for Confirmation",
+    "chunk_index": 610
+  },
+  "6e63e5e7-5642-4a31-b091-19d15ed02b2d": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Stream Audio and Inject Text",
+    "chunk_index": 611
+  },
+  "154084c5-9720-43fe-94ca-42c7e4b22253": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Stream Audio and Inject Text",
+    "chunk_index": 612
+  },
+  "e395e42c-ff9b-4169-a736-d9433ab98228": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Stream Audio and Inject Text",
+    "chunk_index": 613
+  },
+  "34f994f0-b69f-4dd5-9476-e4b76cda4af9": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Stream Audio and Inject Text",
+    "chunk_index": 614
+  },
+  "60fd0760-fd4f-4b94-b2ec-7dcf7cc76893": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Handle Server Events",
+    "chunk_index": 615
+  },
+  "bf2b8e4a-3a9e-4cfa-b37d-ec236dee9065": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Handle Server Events",
+    "chunk_index": 616
+  },
+  "81366922-7247-439d-a2d2-4279dbe6257a": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Verify the Implementation",
+    "chunk_index": 617
+  },
+  "a294e22c-a7d6-4d0c-85ef-04407ba579ca": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Verify the Implementation",
+    "chunk_index": 618
+  },
+  "dc70dcc2-e8a4-44f9-85d2-c3c87b2bb720": {
+    "source_file": "pages.txt",
+    "page_number": null,
+    "section_title": "Next Steps",
+    "chunk_index": 619
+  }
+}

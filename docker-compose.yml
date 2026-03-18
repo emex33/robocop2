@@ -1,0 +1,49 @@
+services:
+  drachtio:
+    image: drachtio/drachtio-server:latest
+    restart: unless-stopped
+    network_mode: host
+    command: >
+      drachtio
+      --contact "sip:*:5060;transport=udp"
+      --external-ip 45.87.212.182
+      --loglevel info
+      --secret cymru
+
+  rtpengine:
+    image: drachtio/rtpengine:latest
+    restart: unless-stopped
+    privileged: true
+    environment:
+      - CLOUD=1
+    ports:
+      - "60000-60200:60000-60200/udp"
+    networks:
+      - robocop
+
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - drachtio
+      - rtpengine
+    ports:
+      - "3000:3000"
+      - "20000-20100:20000-20100/udp"
+    environment:
+      - EXTERNAL_RTP_IP=45.87.212.182
+      - RTP_PORT_MIN=20000
+      - RTP_PORT_MAX=20100
+      - DRACHTIO_HOST=172.18.0.1
+    volumes:
+      - ./src:/app/src
+      - ./config:/app/config
+      - ./data:/app/data
+      - ./logs:/app/logs
+    networks:
+      - robocop
+
+networks:
+  robocop:
+    driver: bridge

@@ -1,0 +1,4015 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"><key id="d6" for="edge" attr.name="context" attr.type="string"/>
+<key id="d5" for="edge" attr.name="confidence" attr.type="double"/>
+<key id="d4" for="edge" attr.name="type" attr.type="string"/>
+<key id="d3" for="node" attr.name="normalized_name" attr.type="string"/>
+<key id="d2" for="node" attr.name="frequency" attr.type="long"/>
+<key id="d1" for="node" attr.name="type" attr.type="string"/>
+<key id="d0" for="node" attr.name="name" attr.type="string"/>
+<graph edgedefault="directed"><node id="b820b8e5-1b4f-4b5a-95cb-07b3bbd534c5">
+  <data key="d0">Deepgram's Voice</data>
+  <data key="d1">ORG</data>
+  <data key="d2">4</data>
+  <data key="d3">deepgrams voice</data>
+</node>
+<node id="b89ad0dd-62c7-4dec-9d7c-d4828f614ac2">
+  <data key="d0">Deepgram</data>
+  <data key="d1">ORG</data>
+  <data key="d2">28</data>
+  <data key="d3">deepgram</data>
+</node>
+<node id="3ecf78b9-55fa-4ecc-986d-491c0c506267">
+  <data key="d0">##</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">124</data>
+  <data key="d3"></data>
+</node>
+<node id="a6271872-4030-4615-9c3c-9d9822f089c2">
+  <data key="d0">Basic Voice</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">basic voice</data>
+</node>
+<node id="0e1ad354-4803-493c-bb48-9ab9c496f93f">
+  <data key="d0">First</data>
+  <data key="d1">ORDINAL</data>
+  <data key="d2">13</data>
+  <data key="d3">first</data>
+</node>
+<node id="e26f14c8-dec8-4205-b383-5e222f5daf60">
+  <data key="d0">Deepgram API</data>
+  <data key="d1">LOC</data>
+  <data key="d2">2</data>
+  <data key="d3">deepgram api</data>
+</node>
+<node id="dd097421-703a-49bf-858c-8132877c5425">
+  <data key="d0">a Deepgram SDK.</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">1</data>
+  <data key="d3">a deepgram sdk</data>
+</node>
+<node id="fbe53ef2-64d8-4051-9fd1-32ae062fd29c">
+  <data key="d0">### 1</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">3</data>
+  <data key="d3"> 1</data>
+</node>
+<node id="54a10c43-2c93-4ade-bc67-c69d01e71b61">
+  <data key="d0">Terminal</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">terminal</data>
+</node>
+<node id="c31b2390-60e7-48bb-9821-6744fb652752">
+  <data key="d0">1</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">55</data>
+  <data key="d3">1</data>
+</node>
+<node id="5c93de5f-00d2-432a-bc9c-56cba38ab126">
+  <data key="d0">2</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">42</data>
+  <data key="d3">2</data>
+</node>
+<node id="9b2df873-8cdb-45a9-9bef-fcac6b322021">
+  <data key="d0">3</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">19</data>
+  <data key="d3">3</data>
+</node>
+<node id="c135b0d3-b8c6-43e7-b2b6-dabc8a032ef8">
+  <data key="d0">4</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">20</data>
+  <data key="d3">4</data>
+</node>
+<node id="28e6e829-ebed-4aae-827e-9c37e56b195f">
+  <data key="d0">DEEPGRAM_API_KEY="your_Deepgram_API_key_here</data>
+  <data key="d1">ORG</data>
+  <data key="d2">3</data>
+  <data key="d3">deepgram_api_keyyour_deepgram_api_key_here</data>
+</node>
+<node id="a1996a03-76c7-460b-a41a-b0e2de48a032">
+  <data key="d0">JavaScript</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">13</data>
+  <data key="d3">javascript</data>
+</node>
+<node id="5f92d328-9773-4502-84a0-e4ac0f7e1bca">
+  <data key="d0">mkdir deepgram</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">2</data>
+  <data key="d3">mkdir deepgram</data>
+</node>
+<node id="0144d6c4-ed8a-4cd4-96d4-2b07ac2cead0">
+  <data key="d0">#
+  #</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3">
+  </data>
+</node>
+<node id="531123e0-12ac-4a4a-b233-703de37717e0">
+  <data key="d0">Windows Powershell</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">windows powershell</data>
+</node>
+<node id="50adef03-bbdf-4df9-8e9e-41c463c65c54">
+  <data key="d0">### 2</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">3</data>
+  <data key="d3"> 2</data>
+</node>
+<node id="6e80b8ba-94c9-4fff-b464-4c6d36d9e0c2">
+  <data key="d0">the Deepgram SDK
+
+Deepgram</data>
+  <data key="d1">LOC</data>
+  <data key="d2">1</data>
+  <data key="d3">the deepgram sdk
+
+deepgram</data>
+</node>
+<node id="8ca48e97-610a-4596-bb23-bdc8024d32df">
+  <data key="d0">Voice</data>
+  <data key="d1">ORG</data>
+  <data key="d2">47</data>
+  <data key="d3">voice</data>
+</node>
+<node id="f84eee21-8ddb-4889-b0a9-5bce5b1825dc">
+  <data key="d0">one</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">7</data>
+  <data key="d3">one</data>
+</node>
+<node id="4675f4b7-478a-496d-83ee-56ef1ea480c2">
+  <data key="d0">Deepgram Voice</data>
+  <data key="d1">ORG</data>
+  <data key="d2">4</data>
+  <data key="d3">deepgram voice</data>
+</node>
+<node id="8d0aa222-9da8-4d96-85cc-e8e15237dd70">
+  <data key="d0">the Deepgram SDK</data>
+  <data key="d1">LOC</data>
+  <data key="d2">1</data>
+  <data key="d3">the deepgram sdk</data>
+</node>
+<node id="de3eb833-6d11-4995-89cc-b3228ae32342">
+  <data key="d0">JavaScript
+  npm install</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">1</data>
+  <data key="d3">javascript
+  npm install</data>
+</node>
+<node id="ea481b80-639a-4093-9fe1-9ece46f33f1b">
+  <data key="d0">Deepgram
+  ```</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">deepgram
+  </data>
+</node>
+<node id="f145bece-8154-4fa8-b4da-9b4b02a0af22">
+  <data key="d0">### 3</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">3</data>
+  <data key="d3"> 3</data>
+</node>
+<node id="bc731166-e5f5-4365-8854-f32988e60089">
+  <data key="d0">Next</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">next</data>
+</node>
+<node id="9b4195b2-6f45-46b1-81e6-3d1b69a75b79">
+  <data key="d0">SDK</data>
+  <data key="d1">ORG</data>
+  <data key="d2">3</data>
+  <data key="d3">sdk</data>
+</node>
+<node id="1b8f99d2-973a-4d88-a863-26e20034c717">
+  <data key="d0">https://github.com/deepgram/deepgram-python-sdk/tree/main/docs</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">3</data>
+  <data key="d3">httpsgithubcomdeepgramdeepgrampythonsdktreemaindocs</data>
+</node>
+<node id="9040ef8f-feb9-4d02-9249-f6fc6c261da5">
+  <data key="d0">EventType</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">eventtype</data>
+</node>
+<node id="e6301b93-4e60-4211-adeb-9f1225174133">
+  <data key="d0">AgentV1SettingsAudio</data>
+  <data key="d1">ORG</data>
+  <data key="d2">4</data>
+  <data key="d3">agentv1settingsaudio</data>
+</node>
+<node id="b97fa1be-e224-4384-b53c-b23f791eabb6">
+  <data key="d0">deepgram.types.think_settings_v1</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">deepgramtypesthink_settings_v1</data>
+</node>
+<node id="76045bb9-a9a6-4768-b817-49a1f50b7be9">
+  <data key="d0">ThinkSettingsV1Provider_OpenAi</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">4</data>
+  <data key="d3">thinksettingsv1provider_openai</data>
+</node>
+<node id="72f8b758-0408-425b-ab0f-ccd928f1cd5e">
+  <data key="d0">deepgram.types.speak_settings_v1</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">deepgramtypesspeak_settings_v1</data>
+</node>
+<node id="014770ea-5d44-485b-863c-6920e69f687c">
+  <data key="d0">AgentEvents</data>
+  <data key="d1">ORG</data>
+  <data key="d2">3</data>
+  <data key="d3">agentevents</data>
+</node>
+<node id="5405662f-d13a-4305-84a1-497ad43483d9">
+  <data key="d0">System</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">4</data>
+  <data key="d3">system</data>
+</node>
+<node id="c2ad9fc7-e597-4c8b-b85f-2e9d438f1863">
+  <data key="d0">SampleApp</data>
+  <data key="d1">ORG</data>
+  <data key="d2">3</data>
+  <data key="d3">sampleapp</data>
+</node>
+<node id="36418fed-4f5d-48c1-8691-bee8bb85d4d9">
+  <data key="d0">Task Main(string</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">4</data>
+  <data key="d3">task mainstring</data>
+</node>
+<node id="7803ceec-3fd7-4e4e-81bf-c2043a51fda0">
+  <data key="d0">2024</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">4</data>
+  <data key="d3">2024</data>
+</node>
+<node id="6010a78e-c16e-402c-817f-0fda1dc65c48">
+  <data key="d0">All Rights Reserved</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">5</data>
+  <data key="d3">all rights reserved</data>
+</node>
+<node id="1c9ba72a-3977-4ca1-9813-2b631f6ffff1">
+  <data key="d0">MIT</data>
+  <data key="d1">ORG</data>
+  <data key="d2">12</data>
+  <data key="d3">mit</data>
+</node>
+<node id="92ef604f-62e7-4361-a753-9f5de10dfbda">
+  <data key="d0">LICENSE</data>
+  <data key="d1">ORG</data>
+  <data key="d2">6</data>
+  <data key="d3">license</data>
+</node>
+<node id="4408b2f9-c74c-4cc6-a061-03258f1c3b04">
+  <data key="d0">SPDX-License-Identifier</data>
+  <data key="d1">ORG</data>
+  <data key="d2">6</data>
+  <data key="d3">spdxlicenseidentifier</data>
+</node>
+<node id="0af9288c-a0e9-422a-8b35-6197034f658e">
+  <data key="d0">### 4</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">2</data>
+  <data key="d3"> 4</data>
+</node>
+<node id="b5668e21-1656-4276-a5ed-f3bc1ca7fad7">
+  <data key="d0">Initialize Deepgram</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">4</data>
+  <data key="d3">initialize deepgram</data>
+</node>
+<node id="0fc393ff-d873-4533-8cd1-e16683838e47">
+  <data key="d0">WebSocket</data>
+  <data key="d1">ORG</data>
+  <data key="d2">12</data>
+  <data key="d3">websocket</data>
+</node>
+<node id="bc0bf705-0708-48d5-ac2d-190bcc76a667">
+  <data key="d0">0</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">16</data>
+  <data key="d3">0</data>
+</node>
+<node id="f376942b-7dc2-4f56-bbed-efbda265ebe2">
+  <data key="d0">Initialize Library</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">3</data>
+  <data key="d3">initialize library</data>
+</node>
+<node id="f079d1be-d3c7-4f00-b9d1-f39fcb508fe0">
+  <data key="d0">Info</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">3</data>
+  <data key="d3">info</data>
+</node>
+<node id="c3f5dcf8-cdb6-47ac-9409-fa7c00f490ed">
+  <data key="d0">Debug</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">7</data>
+  <data key="d3">debug</data>
+</node>
+<node id="2ed7215b-7d74-4136-8506-2b83ff793cda">
+  <data key="d0">LogLevel</data>
+  <data key="d1">ORG</data>
+  <data key="d2">12</data>
+  <data key="d3">loglevel</data>
+</node>
+<node id="e7f82dee-6329-4f83-86b1-ad6729c53b77">
+  <data key="d0">Deepgram API Key</data>
+  <data key="d1">LOC</data>
+  <data key="d2">3</data>
+  <data key="d3">deepgram api key</data>
+</node>
+<node id="4900184e-56f6-42e0-b436-2dd5def3cf5e">
+  <data key="d0">DeepgramWsClientOptions(null</data>
+  <data key="d1">ORG</data>
+  <data key="d2">3</data>
+  <data key="d3">deepgramwsclientoptionsnull</data>
+</node>
+<node id="3baa78fe-a2f9-4df4-94f6-1e57375360d6">
+  <data key="d0">ClientFactory</data>
+  <data key="d1">ORG</data>
+  <data key="d2">3</data>
+  <data key="d3">clientfactory</data>
+</node>
+<node id="b8a3b833-06e8-4a32-ada3-67786828fa2c">
+  <data key="d0">MyHandler</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">46</data>
+  <data key="d3">myhandler</data>
+</node>
+<node id="3a48756d-8ea9-49a4-914e-8f3419725891">
+  <data key="d0">OpenResponse</data>
+  <data key="d1">ORG</data>
+  <data key="d2">11</data>
+  <data key="d3">openresponse</data>
+</node>
+<node id="13969ef6-5aca-4f8f-af1f-b184b1cd503a">
+  <data key="d0">WelcomeResponse</data>
+  <data key="d1">ORG</data>
+  <data key="d2">10</data>
+  <data key="d3">welcomeresponse</data>
+</node>
+<node id="a68a0c9e-6dbc-4aa7-bf34-21db6d953e8d">
+  <data key="d0">InjectionRefusedResponse
+    keepAliveResponse</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">injectionrefusedresponse
+    keepaliveresponse</data>
+</node>
+<node id="7e5eea7d-c0b7-4fb4-83e6-bb996228d218">
+  <data key="d0">KeepAlive</data>
+  <data key="d1">ORG</data>
+  <data key="d2">14</data>
+  <data key="d3">keepalive</data>
+</node>
+<node id="e55da381-e49a-468f-8a9d-08e4a1c58155">
+  <data key="d0">GetError</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">4</data>
+  <data key="d3">geterror</data>
+</node>
+<node id="dc1a69a3-4f05-46ef-b83d-878f2ffc8c40">
+  <data key="d0">NewMyHandler</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">6</data>
+  <data key="d3">newmyhandler</data>
+</node>
+<node id="aad7d352-d0d7-4599-abdc-83da52b2d47e">
+  <data key="d0">make(chan</data>
+  <data key="d1">GPE</data>
+  <data key="d2">6</data>
+  <data key="d3">makechan</data>
+</node>
+<node id="a236819b-51ee-4c42-af36-5a0143f3d299">
+  <data key="d0">ErrorResponse</data>
+  <data key="d1">ORG</data>
+  <data key="d2">4</data>
+  <data key="d3">errorresponse</data>
+</node>
+<node id="3a72641b-a8a2-48e6-a134-672adb7cd6cc">
+  <data key="d0">### 5</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">2</data>
+  <data key="d3"> 5</data>
+</node>
+<node id="a7791052-a8c1-4d1b-b877-2602582affa6">
+  <data key="d0">Settings](/docs</data>
+  <data key="d1">ORG</data>
+  <data key="d2">9</data>
+  <data key="d3">settingsdocs</data>
+</node>
+<node id="c50e20a3-1375-493d-af9e-b74de68efc50">
+  <data key="d0">AI</data>
+  <data key="d1">ORG</data>
+  <data key="d2">14</data>
+  <data key="d3">ai</data>
+</node>
+<node id="7f0e5592-1ca1-4d8d-b404-3a750c05b8cb">
+  <data key="d0">today</data>
+  <data key="d1">DATE</data>
+  <data key="d2">21</data>
+  <data key="d3">today</data>
+</node>
+<node id="3453e6e1-d1cd-4730-9477-098d5e0aa108">
+  <data key="d0">24000</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">22</data>
+  <data key="d3">24000</data>
+</node>
+<node id="f3945840-db58-43e1-a441-68200006fc82">
+  <data key="d0">16000</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">9</data>
+  <data key="d3">16000</data>
+</node>
+<node id="2f52c02f-f5f2-44f7-9ace-6959bb618942">
+  <data key="d0">console.log("Deepgram</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">consolelogdeepgram</data>
+</node>
+<node id="f5cfd118-13b6-44f3-8405-dbb042e7ad89">
+  <data key="d0">SettingsSchema</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">2</data>
+  <data key="d3">settingsschema</data>
+</node>
+<node id="0a91cb34-ca35-4989-83e8-240e545eeb62">
+  <data key="d0">Voice and Endpoint</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">voice and endpoint</data>
+</node>
+<node id="377df9a0-768f-4c08-ab5c-22cce36e72a2">
+  <data key="d0">CartesiaVoice</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">cartesiavoice</data>
+</node>
+<node id="c8fd0c52-7479-4b8f-b23e-ce855d8aa41f">
+  <data key="d0">US</data>
+  <data key="d1">GPE</data>
+  <data key="d2">9</data>
+  <data key="d3">us</data>
+</node>
+<node id="a247267f-f2e9-48db-9c08-c2ab224ce42a">
+  <data key="d0">Endpoint</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">4</data>
+  <data key="d3">endpoint</data>
+</node>
+<node id="4cf8c560-5389-40a0-9572-0971a2a764c4">
+  <data key="d0">bConnected</data>
+  <data key="d1">ORG</data>
+  <data key="d2">4</data>
+  <data key="d3">bconnected</data>
+</node>
+<node id="4ecb3067-8aed-4d93-b80d-725e8c8769b9">
+  <data key="d0">Connect(settingsConfiguration</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">connectsettingsconfiguration</data>
+</node>
+<node id="312c139e-12f3-47ba-a061-eb7baf98744a">
+  <data key="d0">Console</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">93</data>
+  <data key="d3">console</data>
+</node>
+<node id="ead1bc71-85dd-4780-a2f9-c3e715f8a5d5">
+  <data key="d0">Deepgram WebSocket</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">8</data>
+  <data key="d3">deepgram websocket</data>
+</node>
+<node id="21e6ced7-81b9-4a85-975a-2ec8639893fd">
+  <data key="d0">InitLib</data>
+  <data key="d1">ORG</data>
+  <data key="d2">3</data>
+  <data key="d3">initlib</data>
+</node>
+<node id="7344b280-0528-4b39-ab54-91f0c143c72d">
+  <data key="d0">### 6</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">2</data>
+  <data key="d3"> 6</data>
+</node>
+<node id="b7271254-fbe2-420e-bed4-d95733788a60">
+  <data key="d0">every 5 seconds</data>
+  <data key="d1">TIME</data>
+  <data key="d2">2</data>
+  <data key="d3">every 5 seconds</data>
+</node>
+<node id="f75e7236-da22-49db-9614-d0169dce65dd">
+  <data key="d0">5000</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">2</data>
+  <data key="d3">5000</data>
+</node>
+<node id="f5978469-48a6-4890-9d61-3ef6ff338cb7">
+  <data key="d0">#
+  N/A</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3">
+  na</data>
+</node>
+<node id="e6c9d6d2-df1e-4ffd-be48-1a7ab61dad0c">
+  <data key="d0">### 7</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">2</data>
+  <data key="d3"> 7</data>
+</node>
+<node id="1217fe79-f076-4e94-824f-b2e7c9acb20f">
+  <data key="d0">Setup Event Handlers and Other Functions</data>
+  <data key="d1">EVENT</data>
+  <data key="d2">1</data>
+  <data key="d3">setup event handlers and other functions</data>
+</node>
+<node id="9661aa0d-82e3-473c-912d-d097901ab18c">
+  <data key="d0">WAV</data>
+  <data key="d1">ORG</data>
+  <data key="d2">16</data>
+  <data key="d3">wav</data>
+</node>
+<node id="b341fa53-7e24-457b-93a5-a112977b3da4">
+  <data key="d0">isinstance(message</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">isinstancemessage</data>
+</node>
+<node id="ad16d148-82ba-4873-80b7-6725f58b4f33">
+  <data key="d0">Welcome</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">8</data>
+  <data key="d3">welcome</data>
+</node>
+<node id="76a6b4bc-59db-4322-b8e1-27d1921603e2">
+  <data key="d0">chatlog.write(f"Welcome</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">chatlogwritefwelcome</data>
+</node>
+<node id="0ef8c079-acd0-4974-8e03-47f5b2afea49">
+  <data key="d0">chatlog.write(f"Settings</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">3</data>
+  <data key="d3">chatlogwritefsettings</data>
+</node>
+<node id="4c9172ff-e176-431c-af92-7354355ade63">
+  <data key="d0">ConversationText</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">8</data>
+  <data key="d3">conversationtext</data>
+</node>
+<node id="85771359-1904-43c9-9c73-b7d9df69060e">
+  <data key="d0">bytearray</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">6</data>
+  <data key="d3">bytearray</data>
+</node>
+<node id="1912ba7b-5979-47dd-8513-5a632ba0f1ab">
+  <data key="d0">Reset</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">2</data>
+  <data key="d3">reset</data>
+</node>
+<node id="9fe43a46-84bf-4465-bca0-9357b4319c57">
+  <data key="d0">chatlog.write(f"Error</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">4</data>
+  <data key="d3">chatlogwriteferror</data>
+</node>
+<node id="42d7e5de-25f7-483f-9573-faa25430c817">
+  <data key="d0">CLOSE</data>
+  <data key="d1">GPE</data>
+  <data key="d2">2</data>
+  <data key="d3">close</data>
+</node>
+<node id="4d84b0a5-982d-4f5d-86a0-4294c23a5092">
+  <data key="d0"># Send</data>
+  <data key="d1">PERCENT</data>
+  <data key="d2">2</data>
+  <data key="d3"> send</data>
+</node>
+<node id="797cf8d2-c65b-4e19-b1fe-25a998b7ff20">
+  <data key="d0">response.raw.read(44</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">4</data>
+  <data key="d3">responserawread44</data>
+</node>
+<node id="b2cbe5f2-efbd-45ab-b0b8-8a233efe4858">
+  <data key="d0">header[0:4</data>
+  <data key="d1">ORG</data>
+  <data key="d2">6</data>
+  <data key="d3">header04</data>
+</node>
+<node id="24780a1f-f989-4638-9df9-b7236174ae86">
+  <data key="d0">print("Invalid WAV</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">4</data>
+  <data key="d3">printinvalid wav</data>
+</node>
+<node id="95261419-04d7-4415-97e9-6b84db5fa51d">
+  <data key="d0">8192</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">2</data>
+  <data key="d3">8192</data>
+</node>
+<node id="bd9a9d36-c662-4c1e-82be-deb2cb16ef0c">
+  <data key="d0">total_bytes_sent</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">2</data>
+  <data key="d3">total_bytes_sent</data>
+</node>
+<node id="9326bc69-7085-4964-b407-d63cc102d12f">
+  <data key="d0">30</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">3</data>
+  <data key="d3">30</data>
+</node>
+<node id="ee91c2e4-1619-4e13-9a10-c4da826f18f0">
+  <data key="d0">second</data>
+  <data key="d1">ORDINAL</data>
+  <data key="d2">9</data>
+  <data key="d3">second</data>
+</node>
+<node id="d9afc206-c153-4b33-96de-62bfc4c74e16">
+  <data key="d0">30 seconds</data>
+  <data key="d1">TIME</data>
+  <data key="d2">4</data>
+  <data key="d3">30 seconds</data>
+</node>
+<node id="713a8289-c50b-402f-9342-0e683a749373">
+  <data key="d0">Exception</data>
+  <data key="d1">ORG</data>
+  <data key="d2">5</data>
+  <data key="d3">exception</data>
+</node>
+<node id="e69dce06-6970-42fd-b8b8-bead5e747790">
+  <data key="d0">8)</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">8</data>
+  <data key="d3">8</data>
+</node>
+<node id="f890beee-5420-48a4-9d93-b03b3c19cb81">
+  <data key="d0">RIFF</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">riff</data>
+</node>
+<node id="707426d5-564d-4917-86dc-19b184b56514">
+  <data key="d0">b'RIFF</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">2</data>
+  <data key="d3">briff</data>
+</node>
+<node id="a6c4ee62-6db9-4ad9-92e3-f59bcb334fac">
+  <data key="d0"># File</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">2</data>
+  <data key="d3"> file</data>
+</node>
+<node id="de996e74-a5cb-4fa4-a1a7-6382cda0af10">
+  <data key="d0">16</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">29</data>
+  <data key="d3">16</data>
+</node>
+<node id="320f01cd-9695-4b72-9395-b5158f7ccba4">
+  <data key="d0">PCM</data>
+  <data key="d1">ORG</data>
+  <data key="d2">4</data>
+  <data key="d3">pcm</data>
+</node>
+<node id="f859acc2-2d42-4470-8438-c0d5ee682ca0">
+  <data key="d0">b'\x01\x00</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">2</data>
+  <data key="d3">bx01x00</data>
+</node>
+<node id="1bbcab70-d828-4bd9-9414-80daa641ee66">
+  <data key="d0">AudioFormat</data>
+  <data key="d1">ORG</data>
+  <data key="d2">22</data>
+  <data key="d3">audioformat</data>
+</node>
+<node id="7f030876-645d-405f-b48c-01f4361ff9cc">
+  <data key="d0">NumChannels</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">22</data>
+  <data key="d3">numchannels</data>
+</node>
+<node id="c04cf78e-4d4a-41a3-9a75-5ba9ce51154a">
+  <data key="d0">header[28:32</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">header2832</data>
+</node>
+<node id="6bae6ceb-6dc6-4cea-84de-dd15c51606fa">
+  <data key="d0">header[32:34</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">2</data>
+  <data key="d3">header3234</data>
+</node>
+<node id="5cbc768d-da14-4f94-852d-a2859f221118">
+  <data key="d0">BlockAlign</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">2</data>
+  <data key="d3">blockalign</data>
+</node>
+<node id="674025ff-d4eb-4b5d-9558-9f7f696134d0">
+  <data key="d0">header[36:40</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">header3640</data>
+</node>
+<node id="c376207b-39ab-43bb-978c-f67b44b60324">
+  <data key="d0">Metadata</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">2</data>
+  <data key="d3">metadata</data>
+</node>
+<node id="2dfbe195-fd53-4d57-972e-9a59786ade32">
+  <data key="d0">Audio</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">12</data>
+  <data key="d3">audio</data>
+</node>
+<node id="afbec362-0044-43f9-8a3b-ce0d09916178">
+  <data key="d0">EventHandler</data>
+  <data key="d1">ORG</data>
+  <data key="d2">36</data>
+  <data key="d3">eventhandler</data>
+</node>
+<node id="f36907fe-780d-4f7e-99ed-a4cbbe8be2f9">
+  <data key="d0">WriteLine($"----</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">41</data>
+  <data key="d3">writeline</data>
+</node>
+<node id="25d99fb8-6e3e-493c-a855-190804c6608f">
+  <data key="d0">{e.Type</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">7</data>
+  <data key="d3">etype</data>
+</node>
+<node id="feb0f78d-3c84-40db-9284-bf17366ceebe">
+  <data key="d0">more than 5 seconds ago</data>
+  <data key="d1">TIME</data>
+  <data key="d2">3</data>
+  <data key="d3">more than 5 seconds ago</data>
+</node>
+<node id="cf1fc237-d90f-431f-a099-50663c849165">
+  <data key="d0">FileMode</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">4</data>
+  <data key="d3">filemode</data>
+</node>
+<node id="9facfe1d-211d-4c7e-8e16-66759f803b95">
+  <data key="d0">48000</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">13</data>
+  <data key="d3">48000</data>
+</node>
+<node id="2d0f75db-5001-49dd-a3af-10e44fc6f6c8">
+  <data key="d0">0x52</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">13</data>
+  <data key="d3">0x52</data>
+</node>
+<node id="e8fff3c5-ebcd-437b-b031-5d3449f1acbf">
+  <data key="d0">0x46</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">31</data>
+  <data key="d3">0x46</data>
+</node>
+<node id="29a14536-a335-4b42-aec2-82ea4d840673">
+  <data key="d0">F
+                            wavHeader[3</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">12</data>
+  <data key="d3">f
+                            wavheader3</data>
+</node>
+<node id="259e44df-5222-4ddf-a03b-aa63149cc6bc">
+  <data key="d0">// Placeholder</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">60</data>
+  <data key="d3"> placeholder</data>
+</node>
+<node id="dad57cec-ec4b-46bf-b330-595a12fb933b">
+  <data key="d0">wavHeader[6</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">12</data>
+  <data key="d3">wavheader6</data>
+</node>
+<node id="b9ea665a-3a7c-4f1c-b10e-46f54a76932c">
+  <data key="d0">0x6D</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">11</data>
+  <data key="d3">0x6d</data>
+</node>
+<node id="08f1a7d7-6082-4e02-91a3-c976663325d6">
+  <data key="d0">byte)(sampleRate &amp; 0xFF</data>
+  <data key="d1">ORG</data>
+  <data key="d2">10</data>
+  <data key="d3">bytesamplerate  0xff</data>
+</node>
+<node id="b45fe3c8-ce09-4828-98ed-d2432b88cc18">
+  <data key="d0">8) &amp; 0xFF</data>
+  <data key="d1">ORG</data>
+  <data key="d2">20</data>
+  <data key="d3">8  0xff</data>
+</node>
+<node id="1c3ac21b-976b-4d07-965f-880c93eac302">
+  <data key="d0">16) &amp; 0xFF</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">20</data>
+  <data key="d3">16  0xff</data>
+</node>
+<node id="f968a8ff-72a7-4f77-8aad-094d75dabb29">
+  <data key="d0">24</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">20</data>
+  <data key="d3">24</data>
+</node>
+<node id="5bcbc83e-4a87-4968-948a-38cd1db16b44">
+  <data key="d0">byte)(byteRate &amp; 0xFF</data>
+  <data key="d1">ORG</data>
+  <data key="d2">10</data>
+  <data key="d3">bytebyterate  0xff</data>
+</node>
+<node id="667da0b0-cb94-4834-93c8-080d914c7561">
+  <data key="d0">0x61</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">36</data>
+  <data key="d3">0x61</data>
+</node>
+<node id="caa5240b-c984-4b14-87ba-8bb710d3a2a9">
+  <data key="d0">wavHeader[41</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">8</data>
+  <data key="d3">wavheader41</data>
+</node>
+<node id="551a4cee-00ed-48d1-98d6-192289fc5847">
+  <data key="d0">ToArray</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">2</data>
+  <data key="d3">toarray</data>
+</node>
+<node id="060a2297-5ec9-48c2-ad58-9a44378ac14d">
+  <data key="d0">AudioResponse</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">audioresponse</data>
+</node>
+<node id="8158d80a-3358-4dbb-be94-bd6f6983df8b">
+  <data key="d0">EventHandler&lt;AgentThinkingResponse&gt;((sender</data>
+  <data key="d1">ORG</data>
+  <data key="d2">4</data>
+  <data key="d3">eventhandleragentthinkingresponsesender</data>
+</node>
+<node id="2ac16e0d-977d-4394-9e65-ee42fab0c060">
+  <data key="d0">CloseResponse</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">closeresponse</data>
+</node>
+<node id="4c40c4e7-f3d0-47ba-85fd-e9d5f4fd21f9">
+  <data key="d0">UnhandledResponse</data>
+  <data key="d1">ORG</data>
+  <data key="d2">4</data>
+  <data key="d3">unhandledresponse</data>
+</node>
+<node id="364b834e-3b66-4910-b1a6-9fd5288c6645">
+  <data key="d0">{e.Message</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">2</data>
+  <data key="d3">emessage</data>
+</node>
+<node id="82a0eee0-68fe-4033-9904-5566593153cf">
+  <data key="d0">HttpClient</data>
+  <data key="d1">ORG</data>
+  <data key="d2">3</data>
+  <data key="d3">httpclient</data>
+</node>
+<node id="5fc49d8f-a105-46ac-89bd-e9746b5a1f32">
+  <data key="d0">ReadAsync(buffer</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">2</data>
+  <data key="d3">readasyncbuffer</data>
+</node>
+<node id="b2368100-a834-4a8f-9e37-ba936f618a3c">
+  <data key="d0">ReadKey</data>
+  <data key="d1">ORG</data>
+  <data key="d2">4</data>
+  <data key="d3">readkey</data>
+</node>
+<node id="90732ffa-6c42-4e19-8407-fefdecc85ab3">
+  <data key="d0">WaitGroup</data>
+  <data key="d1">ORG</data>
+  <data key="d2">4</data>
+  <data key="d3">waitgroup</data>
+</node>
+<node id="cf9ba707-4c86-4541-a16f-e1856effa76e">
+  <data key="d0">Add(1</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">40</data>
+  <data key="d3">add1</data>
+</node>
+<node id="dcd9452a-9a09-4845-b345-1d06f1f77529">
+  <data key="d0">dch.binaryChan</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">4</data>
+  <data key="d3">dchbinarychan</data>
+</node>
+<node id="ca500ad5-38fa-4908-aaa3-ba4797c1ad6a">
+  <data key="d0">Sprintf("output_%d.wav</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">4</data>
+  <data key="d3">sprintfoutput_dwav</data>
+</node>
+<node id="ea09fb25-4362-4b7b-913d-1f9991a3f4c6">
+  <data key="d0">Err</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">12</data>
+  <data key="d3">err</data>
+</node>
+<node id="ecc98f18-61ca-4dbd-b075-f537bd907190">
+  <data key="d0">0x80</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">6</data>
+  <data key="d3">0x80</data>
+</node>
+<node id="3961a808-13d4-448c-bb25-54f3b1f40f91">
+  <data key="d0">// Sample</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">5</data>
+  <data key="d3"> sample</data>
+</node>
+<node id="7a9f17db-0e9d-4ed0-938a-b30e42d00f16">
+  <data key="d0">Byte</data>
+  <data key="d1">ORG</data>
+  <data key="d2">9</data>
+  <data key="d3">byte</data>
+</node>
+<node id="fea2b501-69de-4f5e-8dc3-d16dd02034ca">
+  <data key="d0">more than 2 seconds</data>
+  <data key="d1">TIME</data>
+  <data key="d2">2</data>
+  <data key="d3">more than 2 seconds</data>
+</node>
+<node id="80e914c0-3aff-451f-8c9c-a0fdba0abc06">
+  <data key="d0">Role</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">4</data>
+  <data key="d3">role</data>
+</node>
+<node id="dcca3a48-de9c-4ebf-bb8a-4cdbeb82b94a">
+  <data key="d0">2*time</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">2</data>
+  <data key="d3">2time</data>
+</node>
+<node id="992bdd02-b04f-4ef7-af83-07d011e2a707">
+  <data key="d0">Len</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">8</data>
+  <data key="d3">len</data>
+</node>
+<node id="5521c49c-96e6-42ed-8f6f-930e9b73fa96">
+  <data key="d0">dch.writeToChatLog(currentSpeaker</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">8</data>
+  <data key="d3">dchwritetochatlogcurrentspeaker</data>
+</node>
+<node id="fb33b78c-53be-473b-8639-b8c5cbfa61e8">
+  <data key="d0">\n</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">5</data>
+  <data key="d3">n</data>
+</node>
+<node id="44fb56bd-a3c5-44bc-93b5-dadbba5e1313">
+  <data key="d0">Printf("User</data>
+  <data key="d1">ORG</data>
+  <data key="d2">4</data>
+  <data key="d3">printfuser</data>
+</node>
+<node id="e8f21b5f-f5f6-405a-aa74-03a09633d520">
+  <data key="d0">// Write</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">2</data>
+  <data key="d3"> write</data>
+</node>
+<node id="7b6de443-55c3-46e8-8578-306c6d1d6624">
+  <data key="d0">dch.openChan</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">4</data>
+  <data key="d3">dchopenchan</data>
+</node>
+<node id="6c79fd63-74d5-4d1a-ac99-6b544e3ed861">
+  <data key="d0">dch.closeChan</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">2</data>
+  <data key="d3">dchclosechan</data>
+</node>
+<node id="48f72009-c253-4834-97ce-b7fe3d58ed86">
+  <data key="d0">Printf</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">47</data>
+  <data key="d3">printf</data>
+</node>
+<node id="abde404b-06fb-4f40-ba48-0b03980eed7e">
+  <data key="d0">ErrMsg</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">errmsg</data>
+</node>
+<node id="0b6b3009-5f08-4a1e-a01c-dff4be8ecb11">
+  <data key="d0">Printf("\n[UnhandledEvent]\n</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">4</data>
+  <data key="d3">printfnunhandledeventn</data>
+</node>
+<node id="50f27e59-89ca-49ee-98b0-8d3b7873a7fb">
+  <data key="d0">Hello!</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">4</data>
+  <data key="d3">hello</data>
+</node>
+<node id="ecc049db-9758-44d8-a811-379a58b16946">
+  <data key="d0">set\n</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">2</data>
+  <data key="d3">setn</data>
+</node>
+<node id="37ed7d47-569f-4050-87b1-931485bb7ac5">
+  <data key="d0">Handler</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">2</data>
+  <data key="d3">handler</data>
+</node>
+<node id="1aaefaad-7973-44da-87e9-b4d923372d5e">
+  <data key="d0">LiveTranscription</data>
+  <data key="d1">ORG</data>
+  <data key="d2">4</data>
+  <data key="d3">livetranscription</data>
+</node>
+<node id="56624487-7d9b-4218-9de4-317d857f5625">
+  <data key="d0">API</data>
+  <data key="d1">ORG</data>
+  <data key="d2">14</data>
+  <data key="d3">api</data>
+</node>
+<node id="54f624e9-adf3-4f47-b940-c26c5ac007c9">
+  <data key="d0">Err: %</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">2</data>
+  <data key="d3">err </data>
+</node>
+<node id="ce63ad61-4cf9-40a9-9d51-85a64cf42b2b">
+  <data key="d0">ContentLength</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">contentlength</data>
+</node>
+<node id="f73dac12-edf1-452a-adf2-b42c3857fe2d">
+  <data key="d0">960</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">2</data>
+  <data key="d3">960</data>
+</node>
+<node id="b172484b-94d2-4505-b4f2-f7d62d918e2e">
+  <data key="d0">200</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">4</data>
+  <data key="d3">200</data>
+</node>
+<node id="c7626e4c-19a0-429d-8bc9-4c0c56252dc2">
+  <data key="d0">nil &amp;&amp; err</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">nil  err</data>
+</node>
+<node id="52738ca5-7f32-4215-8181-9ca7f7f51ceb">
+  <data key="d0">bufio</data>
+  <data key="d1">GPE</data>
+  <data key="d2">3</data>
+  <data key="d3">bufio</data>
+</node>
+<node id="f30a5563-3448-4f1a-a8ed-c442a41f1011">
+  <data key="d0">NewScanner(os</data>
+  <data key="d1">ORG</data>
+  <data key="d2">3</data>
+  <data key="d3">newscanneros</data>
+</node>
+<node id="6000d0e7-8a43-41df-8e0a-014a0346a58b">
+  <data key="d0">Stdin</data>
+  <data key="d1">ORG</data>
+  <data key="d2">3</data>
+  <data key="d3">stdin</data>
+</node>
+<node id="45c0d8d2-009e-456e-b92f-30a34fbfb52d">
+  <data key="d0">python Python
+  python</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">python python
+  python</data>
+</node>
+<node id="57f487b8-11a9-4eb7-b18d-aba0be68d9f2">
+  <data key="d0">### 8</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> 8</data>
+</node>
+<node id="380a7f86-9cbe-49eb-bc1f-95d07b8a5186">
+  <data key="d0">2025</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">2025</data>
+</node>
+<node id="6485ca95-ed03-4521-ae4f-cdd81364c4bb">
+  <data key="d0">Setup Event Handlers</data>
+  <data key="d1">EVENT</data>
+  <data key="d2">1</data>
+  <data key="d3">setup event handlers</data>
+</node>
+<node id="a07ed6be-7f85-4e10-8c42-c89165042446">
+  <data key="d0">setInterval</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">setinterval</data>
+</node>
+<node id="f86f88d5-f93a-4d18-baf3-08aa085037cf">
+  <data key="d0">## Implementation</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">2</data>
+  <data key="d3"> implementation</data>
+</node>
+<node id="39838ea7-700c-49f0-9592-f0b2cd59c662">
+  <data key="d0">Use Case</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">2</data>
+  <data key="d3">use case</data>
+</node>
+<node id="4ef10775-174a-4a25-897c-cc18af9dcf1a">
+  <data key="d0">Runtime / Language</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">runtime  language</data>
+</node>
+<node id="152a6b98-ecea-48d2-99ac-717fd55f44ec">
+  <data key="d0">Repo</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">repo</data>
+</node>
+<node id="3fd169cf-6fa8-4f13-9192-2602d533aafa">
+  <data key="d0">Node</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">3</data>
+  <data key="d3">node</data>
+</node>
+<node id="f57918f4-1db1-4544-819f-6609d90a4e18">
+  <data key="d0">TypeScript</data>
+  <data key="d1">ORG</data>
+  <data key="d2">3</data>
+  <data key="d3">typescript</data>
+</node>
+<node id="773f944a-f4c3-4b50-a64b-9e2e34c3defd">
+  <data key="d0">Deepgram Voice Agent Medical</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">deepgram voice agent medical</data>
+</node>
+<node id="6c9e7880-ed2e-4ea4-9573-289b55e0aab2">
+  <data key="d0">Twilio</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">2</data>
+  <data key="d3">twilio</data>
+</node>
+<node id="23111d68-e4cc-484d-8629-cbd9f41b3c7c">
+  <data key="d0">Python Twilio &gt;</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">python twilio </data>
+</node>
+<node id="c98598f6-a97b-417a-b5dc-31d64982e46a">
+  <data key="d0">Deepgram Conversational AI Demo](https://github.com</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">deepgram conversational ai demohttpsgithubcom</data>
+</node>
+<node id="7c17113e-fae1-439f-988b-d7890a1d67d2">
+  <data key="d0">Azure Open AI Services</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">azure open ai services</data>
+</node>
+<node id="bcb54374-cd82-4e86-a794-b01a859ff575">
+  <data key="d0">OpenAI</data>
+  <data key="d1">GPE</data>
+  <data key="d2">14</data>
+  <data key="d3">openai</data>
+</node>
+<node id="ba246c03-e4b7-42aa-9b65-f4995170cdc0">
+  <data key="d0">Function Calling</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">function calling</data>
+</node>
+<node id="da2e216f-a44b-433c-8299-7a660fc0dd18">
+  <data key="d0">Python Flask</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">2</data>
+  <data key="d3">python flask</data>
+</node>
+<node id="09191f8a-b26c-4988-885f-d796cb3eb064">
+  <data key="d0">Python / Flask</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">python  flask</data>
+</node>
+<node id="2d4481fa-4a96-4430-9f9d-79ce732a4314">
+  <data key="d0">Python Flask Agent Function Calling</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">python flask agent function calling</data>
+</node>
+<node id="77aab6ed-82ec-412c-95de-a6b9d0e1d535">
+  <data key="d0">## Rate</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">3</data>
+  <data key="d3"> rate</data>
+</node>
+<node id="022ea292-51ce-4145-8c18-8637b5865c4e">
+  <data key="d0">Deepgram's Concurrency Rate Limits</data>
+  <data key="d1">FAC</data>
+  <data key="d2">3</data>
+  <data key="d3">deepgrams concurrency rate limits</data>
+</node>
+<node id="69212a74-71bb-403f-a673-d2ec8c4e9c75">
+  <data key="d0">## Usage Tracking</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> usage tracking</data>
+</node>
+<node id="0ebc110d-e0c2-4fef-b007-0b61e7add2e3">
+  <data key="d0">1 hour</data>
+  <data key="d1">TIME</data>
+  <data key="d2">2</data>
+  <data key="d3">1 hour</data>
+</node>
+<node id="6d23e0a0-3c35-4259-9ce8-2564ecbafd53">
+  <data key="d0">V1</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">10</data>
+  <data key="d3">v1</data>
+</node>
+<node id="e98da133-0339-40ec-bfdd-515d1dfcff43">
+  <data key="d0">## Endpoint</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> endpoint</data>
+</node>
+<node id="af0f6fb4-fc02-4111-abac-b7f30aed4f75">
+  <data key="d0">|
+| `</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">
+ </data>
+</node>
+<node id="54275ce1-0979-40b0-ab51-663ccc9339a1">
+  <data key="d0">wss://agent.deepgram.com/agent</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">1</data>
+  <data key="d3">wssagentdeepgramcomagent</data>
+</node>
+<node id="7cae0e7c-a5e3-4210-98cf-7417d91c4774">
+  <data key="d0">Message Type</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">message type</data>
+</node>
+<node id="e0cdf803-d346-44ec-81a6-6f95593579e8">
+  <data key="d0">Description</data>
+  <data key="d1">ORG</data>
+  <data key="d2">20</data>
+  <data key="d3">description</data>
+</node>
+<node id="cabb68f9-9936-4631-84b6-29e8ce623b6f">
+  <data key="d0">UpdateInstructions</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">1</data>
+  <data key="d3">updateinstructions</data>
+</node>
+<node id="69438ef1-c8d1-4973-b6b4-cfa319bee69c">
+  <data key="d0">Function</data>
+  <data key="d1">ORG</data>
+  <data key="d2">3</data>
+  <data key="d3">function</data>
+</node>
+<node id="de1473fd-6b25-4f92-a622-161d57aa9fef">
+  <data key="d0">PromptUpdated</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">4</data>
+  <data key="d3">promptupdated</data>
+</node>
+<node id="3681e75b-67ce-47bf-9ec6-71af4470d857">
+  <data key="d0">Confirmation</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">confirmation</data>
+</node>
+<node id="483fbf94-25ea-40a4-8cd7-ded4e82ee282">
+  <data key="d0">SpeakUpdated</data>
+  <data key="d1">ORG</data>
+  <data key="d2">5</data>
+  <data key="d3">speakupdated</data>
+</node>
+<node id="5d48366e-3717-4e03-abca-8bd12ed354b9">
+  <data key="d0">Warning</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">4</data>
+  <data key="d3">warning</data>
+</node>
+<node id="68f9ef83-2af9-4869-a40c-d18dc57f3c3e">
+  <data key="d0">AgentThinking</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">4</data>
+  <data key="d3">agentthinking</data>
+</node>
+<node id="f67f8bf2-dba8-4417-b603-3217c8829573">
+  <data key="d0">Welcome` Message Changes</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">welcome message changes</data>
+</node>
+<node id="bc09e430-432a-40c8-94fe-8e08211c240c">
+  <data key="d0">#### Early Access</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">7</data>
+  <data key="d3"> early access</data>
+</node>
+<node id="7a7e6b0f-6ac1-4814-a916-e85cf3cf4869">
+  <data key="d0">#### V1</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">7</data>
+  <data key="d3"> v1</data>
+</node>
+<node id="3764b786-86f7-4853-9022-4249cfac3d0b">
+  <data key="d0">nova</data>
+  <data key="d1">LOC</data>
+  <data key="d2">2</data>
+  <data key="d3">nova</data>
+</node>
+<node id="86a268f0-6798-407d-a112-735bee40d2ae">
+  <data key="d0">gpt-4</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">3</data>
+  <data key="d3">gpt4</data>
+</node>
+<node id="40cf921b-681f-450f-b725-7c999a8ab5cf">
+  <data key="d0">SettingsConfiguration</data>
+  <data key="d1">LAW</data>
+  <data key="d2">1</data>
+  <data key="d3">settingsconfiguration</data>
+</node>
+<node id="8dc6df5c-ca0e-4a0a-ac41-7f5903119d02">
+  <data key="d0">mip_opt_out` and `experimental`</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">mip_opt_out and experimental</data>
+</node>
+<node id="7820464f-9ed4-4d73-aa17-0069a6660817">
+  <data key="d0">5</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">11</data>
+  <data key="d3">5</data>
+</node>
+<node id="fb751a94-fea1-47e0-9bfd-85f1f3ecc211">
+  <data key="d0">6</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">3</data>
+  <data key="d3">6</data>
+</node>
+<node id="af9ed80e-104b-4b53-b176-dac108cbe582">
+  <data key="d0">7</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">2</data>
+  <data key="d3">7</data>
+</node>
+<node id="fd15970f-63e3-491c-8525-ec281ed0b309">
+  <data key="d0">UpdateSpeak</data>
+  <data key="d1">ORG</data>
+  <data key="d2">11</data>
+  <data key="d3">updatespeak</data>
+</node>
+<node id="f9c0f140-cec5-45d9-a01a-8b97fae17e54">
+  <data key="d0">InjectAgentMessage</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">4</data>
+  <data key="d3">injectagentmessage</data>
+</node>
+<node id="e5257675-6eac-4a43-9136-e7ba7eb10c75">
+  <data key="d0">### Function Calling Changes</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> function calling changes</data>
+</node>
+<node id="42093d7b-9d43-49f4-a18a-e82c2880a91f">
+  <data key="d0">90ab-cdef-1234-567890abcdef</data>
+  <data key="d1">DATE</data>
+  <data key="d2">9</data>
+  <data key="d3">90abcdef1234567890abcdef</data>
+</node>
+<node id="46cf2674-aed7-48c4-8446-ec96d658b20e">
+  <data key="d0">Fremont</data>
+  <data key="d1">GPE</data>
+  <data key="d2">1</data>
+  <data key="d3">fremont</data>
+</node>
+<node id="942fd861-290c-41a8-81f6-fab1697811b7">
+  <data key="d0">CA 94539\</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">7</data>
+  <data key="d3">ca 94539</data>
+</node>
+<node id="8562d338-b68a-4fd9-9538-9385a80b3e24">
+  <data key="d0">21</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">4</data>
+  <data key="d3">21</data>
+</node>
+<node id="75473c34-da94-4316-96e2-f00fc4840c3d">
+  <data key="d0">40</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">4</data>
+  <data key="d3">40</data>
+</node>
+<node id="13248c97-aae6-4d55-b649-ea59ed9aba15">
+  <data key="d0">14</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">4</data>
+  <data key="d3">14</data>
+</node>
+<node id="df97b5d1-ce10-4ca1-99a4-2d07a012963e">
+  <data key="d0">Invalid</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">invalid</data>
+</node>
+<node id="78f3e43a-c371-414f-a6b7-87e0e4b2b574">
+  <data key="d0">## Function</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">6</data>
+  <data key="d3"> function</data>
+</node>
+<node id="43150bf6-b5d4-4325-a441-593c14e09680">
+  <data key="d0">JSON</data>
+  <data key="d1">GPE</data>
+  <data key="d2">14</data>
+  <data key="d3">json</data>
+</node>
+<node id="5412c8df-779b-4044-a7e6-9ef37e6b6197">
+  <data key="d0">### Implementation Tips</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> implementation tips</data>
+</node>
+<node id="61596470-5698-45ad-b3a5-ba8a0662e307">
+  <data key="d0">## Migration</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> migration</data>
+</node>
+<node id="6db3a33d-ab57-4d6d-bc15-9558e0e23cf6">
+  <data key="d0">Update WebSocket</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">update websocket</data>
+</node>
+<node id="7b9e404f-826b-4fca-a49c-6d4c2138122a">
+  <data key="d0">Update</data>
+  <data key="d1">ORG</data>
+  <data key="d2">4</data>
+  <data key="d3">update</data>
+</node>
+<node id="a88085ff-960f-4e7f-b8b0-db763a56f867">
+  <data key="d0">Process `Warning</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">1</data>
+  <data key="d3">process warning</data>
+</node>
+<node id="33fc817c-0d6e-48df-8edc-e7eb7b39c865">
+  <data key="d0">## New Capabilities</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> new capabilities</data>
+</node>
+<node id="c4c3c23b-af59-46ad-a8a3-6c2fedb09a93">
+  <data key="d0">Feature Overview</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">feature overview</data>
+</node>
+<node id="4b3ad273-91cd-4ae8-bd90-b77aa99f82e9">
+  <data key="d0">## Voice Selection</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> voice selection</data>
+</node>
+<node id="5bf90568-1f37-461c-9b83-8ff7da902765">
+  <data key="d0">Voice Selection</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">voice selection</data>
+</node>
+<node id="ba3fe1f3-e09a-42e0-8c3f-7189a79c602d">
+  <data key="d0">Deepgram TTS Voice Models](/docs</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">deepgram tts voice modelsdocs</data>
+</node>
+<node id="64179c82-006e-4865-a0df-84256aedafce">
+  <data key="d0">Third Party</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">third party</data>
+</node>
+<node id="cecb8c94-c39c-4bf6-91a9-260f14c10c72">
+  <data key="d0">## Supported</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">3</data>
+  <data key="d3"> supported</data>
+</node>
+<node id="1a9071d6-ab8c-464e-97a2-1046cdef3aa9">
+  <data key="d0">Models</data>
+  <data key="d1">LOC</data>
+  <data key="d2">1</data>
+  <data key="d3">models</data>
+</node>
+<node id="a270b8eb-e960-4e2c-8df8-e5d53034a132">
+  <data key="d0">## Conversation</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> conversation</data>
+</node>
+<node id="275dee6c-d86e-4e7d-b819-40afd80b3e70">
+  <data key="d0">Feature</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">7</data>
+  <data key="d3">feature</data>
+</node>
+<node id="36eb4ad3-92e7-4942-8ecb-114eda21b53b">
+  <data key="d0">Keep Alive](/docs</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">3</data>
+  <data key="d3">keep alivedocs</data>
+</node>
+<node id="c42ff391-07d5-4356-b47d-9084ac54e56e">
+  <data key="d0">## Outputs</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">2</data>
+  <data key="d3"> outputs</data>
+</node>
+<node id="1d451ed0-85fa-48ee-a5ea-aacc939c0fd4">
+  <data key="d0">Conversation Text](/docs</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">conversation textdocs</data>
+</node>
+<node id="ec0d884f-6d85-4135-b2c4-2abbf79338e1">
+  <data key="d0">Thinking](/docs</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">thinkingdocs</data>
+</node>
+<node id="c422852f-183b-4696-9ea9-0297d3c9d88c">
+  <data key="d0">Errors](/docs</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">errorsdocs</data>
+</node>
+<node id="c7243dbd-88ab-4204-9271-456676d59d70">
+  <data key="d0">Warnings](/docs</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">warningsdocs</data>
+</node>
+<node id="42288dee-944b-4b35-8ad7-a579ac0bbc9a">
+  <data key="d0">## Input / Output Events</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">2</data>
+  <data key="d3"> input  output events</data>
+</node>
+<node id="04476917-ab91-4d98-932e-286111e1e1e7">
+  <data key="d0">## Deepgram</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">3</data>
+  <data key="d3"> deepgram</data>
+</node>
+<node id="4f947a05-1bde-47ea-a0dc-2810f4418e20">
+  <data key="d0">Self-Hosted Solution](/docs</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">selfhosted solutiondocs</data>
+</node>
+<node id="82b66020-093f-41db-b9a6-f8dbfdd55e8c">
+  <data key="d0">Template Apps</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">template apps</data>
+</node>
+<node id="de7a1a73-16da-4b1b-9c71-28bb10363930">
+  <data key="d0">alt="</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">2</data>
+  <data key="d3">alt</data>
+</node>
+<node id="98a6a85f-3cf0-47a4-8b76-45f9637f6d3b">
+  <data key="d0">Java</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">2</data>
+  <data key="d3">java</data>
+</node>
+<node id="68a7d975-e803-4322-87e6-f8dba9de2062">
+  <data key="d0">Ruby
+  &lt;</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">ruby
+  </data>
+</node>
+<node id="936e5024-d1c0-403d-a107-405ac116489e">
+  <data key="d0">PHP
+  &lt;</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">php
+  </data>
+</node>
+<node id="5e5cb24b-c4c0-407c-ae9e-9280391f2f9d">
+  <data key="d0">Learn</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">6</data>
+  <data key="d3">learn</data>
+</node>
+<node id="28c9a15f-3988-4efe-b27c-ab7c20abf7e0">
+  <data key="d0">## Settings Overview</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> settings overview</data>
+</node>
+<node id="8c3480d7-cfcc-4ad0-a13b-a20d707efa9d">
+  <data key="d0">### Settings</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> settings</data>
+</node>
+<node id="41d0e5a2-02af-43e8-929c-c994b7164d04">
+  <data key="d0">Parameter</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">10</data>
+  <data key="d3">parameter</data>
+</node>
+<node id="87355d5c-beb4-4162-91bb-d9b5c4e805ba">
+  <data key="d0">String</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">50</data>
+  <data key="d3">string</data>
+</node>
+<node id="db98053c-9cd8-4daa-ae26-4654279638d3">
+  <data key="d0">Settings</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">2</data>
+  <data key="d3">settings</data>
+</node>
+<node id="23adf1f8-7153-4caf-8f0b-5e2708a4421e">
+  <data key="d0">Opts</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">opts</data>
+</node>
+<node id="6b73b84d-265e-412a-91b0-6e9ad99e3e64">
+  <data key="d0">MIP</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">mip</data>
+</node>
+<node id="26ea05de-f07a-4c72-ade6-8108366dbb29">
+  <data key="d0">Model Improvement Partnership Program</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">model improvement partnership program</data>
+</node>
+<node id="a47b7bfd-06a7-4c6b-a467-6d111e96904d">
+  <data key="d0">linear16</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">2</data>
+  <data key="d3">linear16</data>
+</node>
+<node id="bd9427bf-d265-4983-a708-73fec49d968b">
+  <data key="d0">audio.input.sample_rate</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">audioinputsample_rate</data>
+</node>
+<node id="ceacf103-2f89-43f0-848d-4aad3fb33eb8">
+  <data key="d0">Integer</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">3</data>
+  <data key="d3">integer</data>
+</node>
+<node id="25935254-30ea-4455-9970-b68087642651">
+  <data key="d0">String            |</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">5</data>
+  <data key="d3">string            </data>
+</node>
+<node id="9e686210-3e67-4911-abf7-3788b036f94b">
+  <data key="d0">Optional</data>
+  <data key="d1">ORG</data>
+  <data key="d2">10</data>
+  <data key="d3">optional</data>
+</node>
+<node id="49c0dcec-6ed1-4694-9e4e-d125b69f8add">
+  <data key="d0">Array</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">9</data>
+  <data key="d3">array</data>
+</node>
+<node id="3f3f776a-88b2-429a-81db-08008c3d3d7c">
+  <data key="d0">v2</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">1</data>
+  <data key="d3">v2</data>
+</node>
+<node id="faa1978a-023d-43de-b9fd-852c248240ec">
+  <data key="d0">language](docs</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">languagedocs</data>
+</node>
+<node id="dd7e78bb-7d39-4df5-98e4-e17683ebf8ca">
+  <data key="d0">Boolean</data>
+  <data key="d1">ORG</data>
+  <data key="d2">3</data>
+  <data key="d3">boolean</data>
+</node>
+<node id="984345d5-63ac-4a4c-ba7e-3d8e75956461">
+  <data key="d0">LLM Model](/docs</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">llm modeldocs</data>
+</node>
+<node id="139ebf0d-6db1-4466-b938-2d3254609c85">
+  <data key="d0">LLM</data>
+  <data key="d1">ORG</data>
+  <data key="d2">31</data>
+  <data key="d3">llm</data>
+</node>
+<node id="4974431c-e2f4-4afa-8d77-dc62db81f368">
+  <data key="d0">Number            | Controls the</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">number             controls the</data>
+</node>
+<node id="e6ac0ce7-ec13-494e-9383-f2390b52e7ad">
+  <data key="d0">0-2</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">02</data>
+</node>
+<node id="3cd62652-6580-44ce-bca2-dbb883f3e34b">
+  <data key="d0">Google</data>
+  <data key="d1">ORG</data>
+  <data key="d2">14</data>
+  <data key="d3">google</data>
+</node>
+<node id="6b50071a-fd1d-4b16-a932-bb5b6ed4ad85">
+  <data key="d0">Groq</data>
+  <data key="d1">ORG</data>
+  <data key="d2">6</data>
+  <data key="d3">groq</data>
+</node>
+<node id="4f3185ed-66e8-43b7-86d6-fa3834208a80">
+  <data key="d0">0-1</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">01</data>
+</node>
+<node id="f767e02c-d430-48f5-9418-320a2de34a03">
+  <data key="d0">AWS Bedrock</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">aws bedrock</data>
+</node>
+<node id="eeaf6ced-340d-41df-a41f-8bdb8e36fe0f">
+  <data key="d0">3rd</data>
+  <data key="d1">ORDINAL</data>
+  <data key="d2">3</data>
+  <data key="d3">3rd</data>
+</node>
+<node id="d11f239e-ffcc-49ad-aa75-f6034d40b563">
+  <data key="d0">25,000</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">3</data>
+  <data key="d3">25000</data>
+</node>
+<node id="106674de-7843-4d17-8590-fec3196f6611">
+  <data key="d0">BYO</data>
+  <data key="d1">ORG</data>
+  <data key="d2">6</data>
+  <data key="d3">byo</data>
+</node>
+<node id="4f895a81-b744-474a-ad69-2726b4dd7fed">
+  <data key="d0">max</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">3</data>
+  <data key="d3">max</data>
+</node>
+<node id="5d2aa225-bf00-4026-9e78-a52d51d1d74c">
+  <data key="d0">Eleven Labs</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">7</data>
+  <data key="d3">eleven labs</data>
+</node>
+<node id="6a1e953f-32b7-467e-8f07-e3a52f9f13a5">
+  <data key="d0">Cartesia</data>
+  <data key="d1">GPE</data>
+  <data key="d2">14</data>
+  <data key="d3">cartesia</data>
+</node>
+<node id="8be851d9-d449-40be-9b62-403a691fe646">
+  <data key="d0">Deepgram Aura-2</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">deepgram aura2</data>
+</node>
+<node id="e94f606f-9be8-4bcd-95ef-864e3ed9ac72">
+  <data key="d0">Amazon</data>
+  <data key="d1">ORG</data>
+  <data key="d2">8</data>
+  <data key="d3">amazon</data>
+</node>
+<node id="d9b5f52f-ec29-4fe8-853a-c7afa0aaaf3e">
+  <data key="d0">STS</data>
+  <data key="d1">ORG</data>
+  <data key="d2">3</data>
+  <data key="d3">sts</data>
+</node>
+<node id="ca86af6f-2204-459e-a7d9-04cd5a9e2266">
+  <data key="d0">TTS</data>
+  <data key="d1">ORG</data>
+  <data key="d2">12</data>
+  <data key="d3">tts</data>
+</node>
+<node id="8a002a2e-c1fb-4e05-8601-c7de65968c2c">
+  <data key="d0">Eleven Labs TTS](/docs</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">eleven labs ttsdocs</data>
+</node>
+<node id="3080070f-82fb-4c49-91ab-0584ddc0bed2">
+  <data key="d0">Cartesia TTS](/docs</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">cartesia ttsdocs</data>
+</node>
+<node id="b2cdc71c-5152-490a-88ca-525cf43c1250">
+  <data key="d0">Nova-3</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">nova3</data>
+</node>
+<node id="cd4532b4-c6fa-4db0-8b88-1bc70cf24e5c">
+  <data key="d0">Nova-2</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">nova2</data>
+</node>
+<node id="49dd333c-b2df-4f26-bf5f-68a9383ca629">
+  <data key="d0">Flux</data>
+  <data key="d1">GPE</data>
+  <data key="d2">6</data>
+  <data key="d3">flux</data>
+</node>
+<node id="6fe104df-5dfc-4454-8254-acaeb10805ae">
+  <data key="d0">UI</data>
+  <data key="d1">GPE</data>
+  <data key="d2">1</data>
+  <data key="d3">ui</data>
+</node>
+<node id="eb67b98a-fb3e-47a8-84e4-2447328f87ef">
+  <data key="d0">## Full</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> full</data>
+</node>
+<node id="b785c8ab-6849-4358-9216-868cee3e3201">
+  <data key="d0">Order #123456</data>
+  <data key="d1">LAW</data>
+  <data key="d2">1</data>
+  <data key="d3">order 123456</data>
+</node>
+<node id="d8f9a6c2-8ef1-4692-93cf-19095df45990">
+  <data key="d0">Shipped - Expected</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">shipped  expected</data>
+</node>
+<node id="ecb14428-81a0-4685-b82e-5c3023870336">
+  <data key="d0">2024-03-15</data>
+  <data key="d1">DATE</data>
+  <data key="d2">1</data>
+  <data key="d3">20240315</data>
+</node>
+<node id="a35163a2-0006-4fb7-a007-4805b5e7d1c3">
+  <data key="d0">March 15th, 2024</data>
+  <data key="d1">DATE</data>
+  <data key="d2">1</data>
+  <data key="d3">march 15th 2024</data>
+</node>
+<node id="3fcdc7c5-dcc3-42e4-8276-015b41565236">
+  <data key="d0">0.7</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">7</data>
+  <data key="d3">07</data>
+</node>
+<node id="98f2a280-9bcd-4fcd-a390-a42e99fdfe81">
+  <data key="d0">Bearer</data>
+  <data key="d1">ORG</data>
+  <data key="d2">9</data>
+  <data key="d3">bearer</data>
+</node>
+<node id="a4d6d54d-d04d-4f01-a143-3109df235187">
+  <data key="d0">15000</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">15000</data>
+</node>
+<node id="81c64408-4905-473f-b1ef-35863c7359fe">
+  <data key="d0">model_id</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">model_id</data>
+</node>
+<node id="0a8fa51d-ab48-48d7-9efa-52fb39bfa2ba">
+  <data key="d0">1234567890</data>
+  <data key="d1">DATE</data>
+  <data key="d2">1</data>
+  <data key="d3">1234567890</data>
+</node>
+<node id="e6e7f44d-76df-4ecd-8f60-5cd96c4b3b6b">
+  <data key="d0">IAM</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">iam</data>
+</node>
+<node id="a8329859-7b26-465b-9e5d-a5703ab2e98c">
+  <data key="d0">Multi</data>
+  <data key="d1">GPE</data>
+  <data key="d2">1</data>
+  <data key="d3">multi</data>
+</node>
+<node id="30c073ab-17b8-4443-a511-642e6af82000">
+  <data key="d0">Deepgram's Voice Agent API</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">deepgrams voice agent api</data>
+</node>
+<node id="52880d77-94a6-4c22-9f1b-01ea2d717648">
+  <data key="d0">docs</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">2</data>
+  <data key="d3">docs</data>
+</node>
+<node id="20e63216-24a1-4aa5-ab16-7d270a271072">
+  <data key="d0">Deepgram Multi-Agent</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">1</data>
+  <data key="d3">deepgram multiagent</data>
+</node>
+<node id="2cb8ec45-5423-4602-9076-692e331ed0e0">
+  <data key="d0">## Architecture Overview</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> architecture overview</data>
+</node>
+<node id="a96af4b5-bd56-4bf2-95c9-bf963a93f77d">
+  <data key="d0">Audio Stream</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">audio stream</data>
+</node>
+<node id="479e8cdf-992a-4e57-9d11-e54c6235f271">
+  <data key="d0">CallOrchestrator</data>
+  <data key="d1">ORG</data>
+  <data key="d2">3</data>
+  <data key="d3">callorchestrator</data>
+</node>
+<node id="344d5801-1d9d-454b-aa4e-c82eb71338b2">
+  <data key="d0">← Central</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3"> central</data>
+</node>
+<node id="79abb8d3-3b8e-4270-a40c-a00ac4db8087">
+  <data key="d0">┐ │</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3"> </data>
+</node>
+<node id="4fd5e10f-4116-46c2-9b5f-a6dccfb3a072">
+  <data key="d0">Audio Forward</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">audio forward</data>
+</node>
+<node id="2ee44b3d-7053-47ae-8891-b78c10347333">
+  <data key="d0">← Persistent</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3"> persistent</data>
+</node>
+<node id="0dcc20f0-527c-4ae2-a805-805658f5f821">
+  <data key="d0">Qualifier│─</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">6</data>
+  <data key="d3">qualifier</data>
+</node>
+<node id="d2c46379-900f-4a5d-ac4a-158826951ea9">
+  <data key="d0">← Ephemeral Voice</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3"> ephemeral voice</data>
+</node>
+<node id="62618fb7-4fab-4fea-af5e-0e15fa6a2da8">
+  <data key="d0">Llama 3.3</data>
+  <data key="d1">DATE</data>
+  <data key="d2">2</data>
+  <data key="d3">llama 33</data>
+</node>
+<node id="8564a904-a85d-466a-805c-c9dd8cbe4210">
+  <data key="d0">Twilio WebSocket</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">twilio websocket</data>
+</node>
+<node id="b3a12534-d827-41d5-9b84-f29ddbbd9a0e">
+  <data key="d0">Groq API</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">groq api</data>
+</node>
+<node id="e928043f-f5f1-47f6-afc3-be4bb090f440">
+  <data key="d0">## Key Technical Concepts</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> key technical concepts</data>
+</node>
+<node id="6bdaacdd-c4b6-44a3-bdb4-f98c5d647d99">
+  <data key="d0">### Session</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> session</data>
+</node>
+<node id="c4408f1f-ff3f-498f-a326-9a25435fcc02">
+  <data key="d0">the Twilio WebSocket</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">the twilio websocket</data>
+</node>
+<node id="bf6cabba-39e4-4949-8b59-6cc28be54339">
+  <data key="d0">ONCE</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">once</data>
+</node>
+<node id="e8790ebf-3807-4eed-9cfb-8c46270ba9c6">
+  <data key="d0">self.audio_task</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">selfaudio_task</data>
+</node>
+<node id="992ef2b4-2d72-46c0-89be-a3fe2b5ba823">
+  <data key="d0">Three</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">3</data>
+  <data key="d3">three</data>
+</node>
+<node id="51f8207c-a51b-4fd4-a572-df9b62cc1231">
+  <data key="d0">## Implementation Details</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> implementation details</data>
+</node>
+<node id="fddb3c80-1170-4265-855d-5242bfcc0f84">
+  <data key="d0">handoff_to_next_agent</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">1</data>
+  <data key="d3">handoff_to_next_agent</data>
+</node>
+<node id="696ee24d-8c41-440a-9ce1-3344c5866759">
+  <data key="d0">Groq AI</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">groq ai</data>
+</node>
+<node id="139aacfc-27e4-4ae9-9841-effcee1e1373">
+  <data key="d0">Alex</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">2</data>
+  <data key="d3">alex</data>
+</node>
+<node id="d3ba93c0-30f1-420d-b834-e1fc9dea2c7a">
+  <data key="d0">python
+HANDOFF_FUNCTION = AgentV1Function(
+    name="handoff_to_next_agent</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">python
+handoff_function  agentv1function
+    namehandoff_to_next_agent</data>
+</node>
+<node id="00145233-3ea1-4571-a2de-de2d00291525">
+  <data key="d0">WAIT</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">wait</data>
+</node>
+<node id="0d057d42-be49-46b6-aa57-4e8eca5214d1">
+  <data key="d0">IMMEDIATELY</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">immediately</data>
+</node>
+<node id="f95f5152-19da-4cd9-a5d2-babd840f4d73">
+  <data key="d0">## Quick</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> quick</data>
+</node>
+<node id="98e2adad-5a3c-4518-be0f-25b8900e8edd">
+  <data key="d0">### Prerequisites</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">2</data>
+  <data key="d3"> prerequisites</data>
+</node>
+<node id="d51f4b07-1a34-4f81-915c-963a5415259f">
+  <data key="d0">3.8+</data>
+  <data key="d1">DATE</data>
+  <data key="d2">1</data>
+  <data key="d3">38</data>
+</node>
+<node id="782d42ff-cb84-4009-ad78-a670dcb5dc6d">
+  <data key="d0">the Deepgram Python SDK:</data>
+  <data key="d1">FAC</data>
+  <data key="d2">1</data>
+  <data key="d3">the deepgram python sdk</data>
+</node>
+<node id="af98fb65-384a-42ce-9641-9f63f9459927">
+  <data key="d0">LEAD_PHONE_NUMBER` - Phone</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">lead_phone_number  phone</data>
+</node>
+<node id="d8fccae9-8953-472a-ba7d-f06fc7903166">
+  <data key="d0"># Using zrok</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> using zrok</data>
+</node>
+<node id="d4821564-0c32-4574-90b1-8be3de29a864">
+  <data key="d0">ngrok
+ngrok</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">ngrok
+ngrok</data>
+</node>
+<node id="604d436b-57a9-46e4-9970-4e45bf50aeec">
+  <data key="d0">8000</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">2</data>
+  <data key="d3">8000</data>
+</node>
+<node id="a28f8364-62b2-49b6-a83c-607dd17595c6">
+  <data key="d0">LEAD_PHONE_NUMBER`</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">1</data>
+  <data key="d3">lead_phone_number</data>
+</node>
+<node id="33f4c272-12bd-46c0-9be2-90357461e4f3">
+  <data key="d0">### Phase</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">3</data>
+  <data key="d3"> phase</data>
+</node>
+<node id="45db1d28-5841-4f4d-ba43-481f8eba1144">
+  <data key="d0">a few minutes</data>
+  <data key="d1">TIME</data>
+  <data key="d2">1</data>
+  <data key="d3">a few minutes</data>
+</node>
+<node id="49033f74-aece-4475-af36-5734a4f5f142">
+  <data key="d0">John Smith</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">3</data>
+  <data key="d3">john smith</data>
+</node>
+<node id="6fbbc402-4c67-4754-8aae-9f40c95bc519">
+  <data key="d0">Seattle</data>
+  <data key="d1">GPE</data>
+  <data key="d2">3</data>
+  <data key="d3">seattle</data>
+</node>
+<node id="809b6e0c-194e-4179-880d-699aff98be87">
+  <data key="d0">### Transition</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">2</data>
+  <data key="d3"> transition</data>
+</node>
+<node id="e5894c2d-d443-4bfd-8eb8-a4eba86314df">
+  <data key="d0">45</data>
+  <data key="d1">DATE</data>
+  <data key="d2">1</data>
+  <data key="d3">45</data>
+</node>
+<node id="28b4e124-5f39-4732-9eca-be01f29162e5">
+  <data key="d0">60</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">60</data>
+</node>
+<node id="54fc5a3d-b8a9-43b7-bfcd-120af59095e3">
+  <data key="d0">Next Wednesday</data>
+  <data key="d1">DATE</data>
+  <data key="d2">1</data>
+  <data key="d3">next wednesday</data>
+</node>
+<node id="bec33033-5780-4745-ac0e-2006b8420825">
+  <data key="d0">afternoon</data>
+  <data key="d1">TIME</data>
+  <data key="d2">1</data>
+  <data key="d3">afternoon</data>
+</node>
+<node id="da0687b2-e71e-4e39-b60a-e99098d39c9a">
+  <data key="d0">## Project</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> project</data>
+</node>
+<node id="55ad139b-d316-4bfe-9fd5-86a174c4c17e">
+  <data key="d0">twilio_client.py        # Twilio API</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">twilio_clientpy         twilio api</data>
+</node>
+<node id="ef108a8c-c50e-4fc8-9560-8d8aee967b4d">
+  <data key="d0">FUNCTION_GUIDE.md        # Function</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">function_guidemd         function</data>
+</node>
+<node id="806b46e0-8fd0-4971-9e66-9c78432d6c6d">
+  <data key="d0">## Customization</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> customization</data>
+</node>
+<node id="a5a7bda8-de25-4e86-97ec-8f2b0257d2e1">
+  <data key="d0">### Add New Agents</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> add new agents</data>
+</node>
+<node id="5be55cbf-00ca-451a-8664-53afbdbd4121">
+  <data key="d0">### Change</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> change</data>
+</node>
+<node id="0ae1dba8-bb9b-4dea-8208-473accabe0a1">
+  <data key="d0">Groq models](https://console.groq.com/docs</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">groq modelshttpsconsolegroqcomdocs</data>
+</node>
+<node id="34b7ef62-bb6d-415b-b343-f12fe7834134">
+  <data key="d0">## Additional Resources</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> additional resources</data>
+</node>
+<node id="5b145711-b49b-4c81-a41d-f4ffe5a61ca6">
+  <data key="d0">Voice Agents</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">voice agents</data>
+</node>
+<node id="8a7898fb-50a0-4ca6-85d9-11eea6da8a00">
+  <data key="d0">## How Function</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">2</data>
+  <data key="d3"> how function</data>
+</node>
+<node id="cb1c9185-fc75-4e51-a8a2-b28e147a04d1">
+  <data key="d0">New York</data>
+  <data key="d1">GPE</data>
+  <data key="d2">8</data>
+  <data key="d3">new york</data>
+</node>
+<node id="50d9017c-1ab0-49be-8bf1-a6d389e7a987">
+  <data key="d0">ad58-1299330b9ad5</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">1</data>
+  <data key="d3">ad581299330b9ad5</data>
+</node>
+<node id="b1ea9e22-83df-4c13-879b-f11fe30bf094">
+  <data key="d0">## Configuring Function</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> configuring function</data>
+</node>
+<node id="bcc83625-fc25-4419-b418-2d3b5fe1cc7d">
+  <data key="d0">## Client</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> client</data>
+</node>
+<node id="0c5b3a83-0b52-4c99-acdb-4006a01cb5bb">
+  <data key="d0">VITE_OPENWEATHER_API_KEY</data>
+  <data key="d1">GPE</data>
+  <data key="d2">1</data>
+  <data key="d3">vite_openweather_api_key</data>
+</node>
+<node id="0009663a-a83c-42fa-b08f-2fbec417e38b">
+  <data key="d0">response.json</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">2</data>
+  <data key="d3">responsejson</data>
+</node>
+<node id="70923b17-860a-41de-a040-ab754f7d7228">
+  <data key="d0">data.main.temp}</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">1</data>
+  <data key="d3">datamaintemp</data>
+</node>
+<node id="4693a807-435a-4fc0-b8a6-ecb17a8a60cb">
+  <data key="d0">console.error(err</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">consoleerrorerr</data>
+</node>
+<node id="7f2cfd04-b6e5-4522-99eb-c9a8cf4aff1a">
+  <data key="d0">os.getenv("OPENWEATHER_API_KEY</data>
+  <data key="d1">GPE</data>
+  <data key="d2">1</data>
+  <data key="d3">osgetenvopenweather_api_key</data>
+</node>
+<node id="2477892d-5b76-4384-a63b-d0b34868c8bc">
+  <data key="d0">WeatherService</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">weatherservice</data>
+</node>
+<node id="b68f1294-21b9-4319-b435-dcdc648e106c">
+  <data key="d0">GetAsync</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">getasync</data>
+</node>
+<node id="d02872ba-65d2-4a73-a6de-25fe0161f780">
+  <data key="d0">JsonSerializer</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">jsonserializer</data>
+</node>
+<node id="d43c9bb1-325a-453a-82ff-b9d3b49fcb66">
+  <data key="d0">Main Main</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">main main</data>
+</node>
+<node id="e0da0d22-5b8f-45cb-bd93-93b6266f5216">
+  <data key="d0">Main</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">main</data>
+</node>
+<node id="9af16d64-bd4b-4d33-9d28-fe4aecd81dfb">
+  <data key="d0">WeatherResponse</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">weatherresponse</data>
+</node>
+<node id="040d2b80-a6f6-47c2-b318-abac23424b39">
+  <data key="d0">float64</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">float64</data>
+</node>
+<node id="bf6075b1-5fd6-47eb-8030-7f1696dc4439">
+  <data key="d0">StatusCode</data>
+  <data key="d1">ORG</data>
+  <data key="d2">4</data>
+  <data key="d3">statuscode</data>
+</node>
+<node id="8ea75625-20c8-4577-a3c9-8919a1637673">
+  <data key="d0">Body).Decode(&amp;data</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">bodydecodedata</data>
+</node>
+<node id="570cb4a4-b062-45a1-8c01-ebe294f5fda5">
+  <data key="d0">%s</data>
+  <data key="d1">GPE</data>
+  <data key="d2">1</data>
+  <data key="d3">s</data>
+</node>
+<node id="6e912dc6-f18e-4b72-bbd0-9b967d1931bf">
+  <data key="d0">FunctionCallRequest`](/docs</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">functioncallrequestdocs</data>
+</node>
+<node id="a134e899-c0ac-4901-8728-ecad0f58a9e3">
+  <data key="d0">Server</data>
+  <data key="d1">ORG</data>
+  <data key="d2">4</data>
+  <data key="d3">server</data>
+</node>
+<node id="9a6ff239-5c5a-4c3e-9753-9ed83167bad9">
+  <data key="d0">Build A Function Call</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">build a function call</data>
+</node>
+<node id="d7a5bf69-00e4-46c9-a2a8-21db29ebffe8">
+  <data key="d0">## Getting</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> getting</data>
+</node>
+<node id="586e83d5-8d18-4fa2-b6b4-d51c2fd977dc">
+  <data key="d0">two</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">12</data>
+  <data key="d3">two</data>
+</node>
+<node id="778a4d77-77fd-4b93-b52f-d625aa7a9d0b">
+  <data key="d0">AgentTemplates</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">3</data>
+  <data key="d3">agenttemplates</data>
+</node>
+<node id="e391af1d-39e1-4f5d-a8cb-e7e8503d6fd3">
+  <data key="d0">3.7</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">37</data>
+</node>
+<node id="e4c0e196-0ddc-47bd-87d9-97ad77dad4b8">
+  <data key="d0">Virtual</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">virtual</data>
+</node>
+<node id="21ff38aa-f0a5-4dc4-bdb6-2a6194c8e7d1">
+  <data key="d0">asyncio</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">asyncio</data>
+</node>
+<node id="65a72ed4-6d3a-4a9d-996d-34562d8bc378">
+  <data key="d0">### Implement</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> implement</data>
+</node>
+<node id="016ee8e5-be11-4c10-9498-8ee683b72723">
+  <data key="d0">Purpose</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">purpose</data>
+</node>
+<node id="d7445b38-8efa-43b9-9e85-e0e36ccd1d61">
+  <data key="d0">Lookup</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">lookup</data>
+</node>
+<node id="b0b43884-bf5f-4c8f-a459-66af457608e7">
+  <data key="d0">Schedule</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">schedule</data>
+</node>
+<node id="41eb571d-8985-4ee8-8f58-189bb6535975">
+  <data key="d0">python Python</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">4</data>
+  <data key="d3">python python</data>
+</node>
+<node id="dbe3c844-7d6d-42f5-bc64-161c96983f97">
+  <data key="d0">customer_id</data>
+  <data key="d1">GPE</data>
+  <data key="d2">14</data>
+  <data key="d3">customer_id</data>
+</node>
+<node id="772cdc65-9405-45c9-9be5-47e0d7fa2fbc">
+  <data key="d0">### Get Appointments</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> get appointments</data>
+</node>
+<node id="00614f73-7a05-4574-b3bb-e4a354285f21">
+  <data key="d0">get_customer_appointments(customer_id</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">get_customer_appointmentscustomer_id</data>
+</node>
+<node id="0251d83f-c296-4068-9795-2f08e06a9cfd">
+  <data key="d0">get_customer_orders(customer_id</data>
+  <data key="d1">GPE</data>
+  <data key="d2">1</data>
+  <data key="d3">get_customer_orderscustomer_id</data>
+</node>
+<node id="e2ceca39-1cf8-4ef3-9f65-fc26ec13edf7">
+  <data key="d0">### Check Availability</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> check availability</data>
+</node>
+<node id="69e3f44a-0e3f-4fb9-841a-934b3d208582">
+  <data key="d0">python Python
+  async def</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">2</data>
+  <data key="d3">python python
+  async def</data>
+</node>
+<node id="42c45624-aabf-4cac-a628-40a6b8d898b9">
+  <data key="d0">JSON Schema</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">json schema</data>
+</node>
+<node id="3580caf5-cbc2-478c-8e53-dca7cc382d9b">
+  <data key="d0">ALWAYS</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">always</data>
+</node>
+<node id="adc40b48-ee33-46aa-b27a-109e52118e87">
+  <data key="d0">message_type='lookup</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">message_typelookup</data>
+</node>
+<node id="79495d7d-6545-4a43-a5e6-5fd274c18015">
+  <data key="d0">169</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">169</data>
+</node>
+<node id="5d4d2d36-e78b-4d7a-93f6-6648e02ef963">
+  <data key="d0">Format</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">8</data>
+  <data key="d3">format</data>
+</node>
+<node id="f8175310-357c-426f-bca1-d6fdc34382f8">
+  <data key="d0">555-123-4567</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">2</data>
+  <data key="d3">5551234567</data>
+</node>
+<node id="627b7ce8-942e-4cca-874f-7fc7138f5f9a">
+  <data key="d0">555</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">555</data>
+</node>
+<node id="beba7e47-5050-4607-bf7a-122edc4bdef4">
+  <data key="d0">123-4567</data>
+  <data key="d1">DATE</data>
+  <data key="d2">1</data>
+  <data key="d3">1234567</data>
+</node>
+<node id="f2146ed8-3522-4b4d-8b4f-a32b97130653">
+  <data key="d0">five five five</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">five five five</data>
+</node>
+<node id="3d47791d-c82d-404f-ab69-5c0f55369b68">
+  <data key="d0">five</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">five</data>
+</node>
+<node id="be715f1e-7c5b-473c-a656-e64efbf2ec73">
+  <data key="d0">john dot</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">john dot</data>
+</node>
+<node id="8b567141-9f02-4f55-82cf-5e7f0dfbc0da">
+  <data key="d0">XXXX</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">xxxx</data>
+</node>
+<node id="4640a1af-ef2b-4997-a09d-dc7ebc536a5f">
+  <data key="d0">zeros</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">zeros</data>
+</node>
+<node id="f6f7e41c-caa1-4c4b-b553-59b161efac76">
+  <data key="d0">42</data>
+  <data key="d1">DATE</data>
+  <data key="d2">1</data>
+  <data key="d3">42</data>
+</node>
+<node id="ab660844-a582-4ee4-823a-6f358cafb1d6">
+  <data key="d0">Convert</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">2</data>
+  <data key="d3">convert</data>
+</node>
+<node id="a187fe40-11f2-4b92-9127-13c85d182aeb">
+  <data key="d0">five five</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">five five</data>
+</node>
+<node id="8796187f-4f44-4320-9304-2c0425b2b552">
+  <data key="d0">Confirm</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">confirm</data>
+</node>
+<node id="b9819ebb-de15-4df6-88fc-0278080665c1">
+  <data key="d0">ISO</data>
+  <data key="d1">ORG</data>
+  <data key="d2">3</data>
+  <data key="d3">iso</data>
+</node>
+<node id="00c7256b-3f1d-4d13-a6e0-5bf4f88e9b65">
+  <data key="d0">SS</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">ss</data>
+</node>
+<node id="9f73164b-bc0a-4606-934e-1a67651d10ed">
+  <data key="d0">7 days</data>
+  <data key="d1">DATE</data>
+  <data key="d2">1</data>
+  <data key="d3">7 days</data>
+</node>
+<node id="af3c4b62-29a0-4c5e-a2e4-89cd2f9012bc">
+  <data key="d0">FUNCTION_MAP</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">function_map</data>
+</node>
+<node id="80a16870-356b-4ea5-8f66-95ce73f5aa09">
+  <data key="d0">Map</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">map</data>
+</node>
+<node id="1b53ee2c-50c8-4b7d-89cf-38852dc7cc88">
+  <data key="d0">end_call</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">end_call</data>
+</node>
+<node id="b168ac65-c4bd-4511-97ea-e37f86668f4e">
+  <data key="d0">python Python
+  from common.agent_functions</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">python python
+  from commonagent_functions</data>
+</node>
+<node id="f78d2347-9ea0-4db7-a664-f0780a13001b">
+  <data key="d0">Template</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">template</data>
+</node>
+<node id="de2ae659-e614-4fb7-bb1e-722ae86173a1">
+  <data key="d0">tomorrow</data>
+  <data key="d1">DATE</data>
+  <data key="d2">1</data>
+  <data key="d3">tomorrow</data>
+</node>
+<node id="2408c7ca-5146-463f-b03c-26c512fd0ba4">
+  <data key="d0">next Tuesday</data>
+  <data key="d1">DATE</data>
+  <data key="d2">1</data>
+  <data key="d3">next tuesday</data>
+</node>
+<node id="5525a494-f713-497d-bc36-63aaf49dfae9">
+  <data key="d0">last week</data>
+  <data key="d1">DATE</data>
+  <data key="d2">1</data>
+  <data key="d3">last week</data>
+</node>
+<node id="6c117fd7-c758-48c0-8b72-e9fe44687a1b">
+  <data key="d0">7 days of today</data>
+  <data key="d1">DATE</data>
+  <data key="d2">1</data>
+  <data key="d3">7 days of today</data>
+</node>
+<node id="156d01db-e245-43b7-acab-12a49855d5d7">
+  <data key="d0">PERSONALITY &amp; TONE</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">personality  tone</data>
+</node>
+<node id="e0a9ff29-e8e8-4295-acab-0762dd18ef4c">
+  <data key="d0">222</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">222</data>
+</node>
+<node id="5d59d557-bfe1-44d3-9663-57c2696bed85">
+  <data key="d0">89</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">89</data>
+</node>
+<node id="11404ffd-218e-490c-bae2-5daa867382f1">
+  <data key="d0">ORD0089</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">2</data>
+  <data key="d3">ord0089</data>
+</node>
+<node id="4a4db4ee-894e-4cad-848a-1b999839a191">
+  <data key="d0">123</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">123</data>
+</node>
+<node id="f54a020b-3e5c-466c-995d-967766454d3d">
+  <data key="d0">ORD</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">ord</data>
+</node>
+<node id="65250f26-9e43-4e5b-ab9e-e2489775484a">
+  <data key="d0">zero</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">2</data>
+  <data key="d3">zero</data>
+</node>
+<node id="dbfd7fa8-d4f3-4e3f-9ba5-c22cb8eff163">
+  <data key="d0">eight nine</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">eight nine</data>
+</node>
+<node id="9e968eab-223c-4c4d-a89d-fd7093180784">
+  <data key="d0">next week</data>
+  <data key="d1">DATE</data>
+  <data key="d2">1</data>
+  <data key="d3">next week</data>
+</node>
+<node id="50d3bd76-b7d6-493b-8bd4-7c27663973c2">
+  <data key="d0">Tuesday</data>
+  <data key="d1">DATE</data>
+  <data key="d2">1</data>
+  <data key="d3">tuesday</data>
+</node>
+<node id="22ed1ff5-d03c-4055-a202-4e149968a0e1">
+  <data key="d0">2 PM</data>
+  <data key="d1">TIME</data>
+  <data key="d2">1</data>
+  <data key="d3">2 pm</data>
+</node>
+<node id="ce095e96-2cf3-4efc-92df-e2d1acfcb987">
+  <data key="d0">Wednesday</data>
+  <data key="d1">DATE</data>
+  <data key="d2">1</data>
+  <data key="d3">wednesday</data>
+</node>
+<node id="1254757f-4cf1-4079-9e0c-06a8ac8741ca">
+  <data key="d0">3 PM</data>
+  <data key="d1">TIME</data>
+  <data key="d2">1</data>
+  <data key="d3">3 pm</data>
+</node>
+<node id="6c2a23c9-a8a4-4e07-8ca4-203297e07a2a">
+  <data key="d0">0.05</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">005</data>
+</node>
+<node id="acf38940-471c-45df-9d89-7baf68e6b212">
+  <data key="d0">SPEAK_SETTINGS</data>
+  <data key="d1">EVENT</data>
+  <data key="d2">1</data>
+  <data key="d3">speak_settings</data>
+</node>
+<node id="e957cbcb-4d5c-48ac-85df-dfefd9cde8c1">
+  <data key="d0">voiceModel="aura-2</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">voicemodelaura2</data>
+</node>
+<node id="b65e22c8-def6-4b8f-98c7-cbae5c448942">
+  <data key="d0">AGENT_AUDIO_BYTES_PER_SEC</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">agent_audio_bytes_per_sec</data>
+</node>
+<node id="30ea81a4-64ba-4497-b62c-4e9dfdec7244">
+  <data key="d0">self.tech_support</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">selftech_support</data>
+</node>
+<node id="f29f8041-ba8c-4cdb-b74d-80aeffed097b">
+  <data key="d0">company="SecureBank</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">companysecurebank</data>
+</node>
+<node id="3280c11f-bdee-48e9-83b7-900d000d3ffe">
+  <data key="d0">## Call</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> call</data>
+</node>
+<node id="4b27b24a-475a-41fa-ba48-3f69214f2b39">
+  <data key="d0">## Example</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">4</data>
+  <data key="d3"> example</data>
+</node>
+<node id="efd8208b-a000-44c9-a72b-2b42566a5083">
+  <data key="d0">## Related</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">2</data>
+  <data key="d3"> related</data>
+</node>
+<node id="fe2d573c-ce7c-4044-b2e7-473ed7bc70ba">
+  <data key="d0">Indicates</data>
+  <data key="d1">GPE</data>
+  <data key="d2">5</data>
+  <data key="d3">indicates</data>
+</node>
+<node id="b543d5b9-956d-4634-b45e-781c5284009b">
+  <data key="d0">295.15</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">4</data>
+  <data key="d3">29515</data>
+</node>
+<node id="df049c52-c2e1-4856-81b1-3d40984662b1">
+  <data key="d0">about 72</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">2</data>
+  <data key="d3">about 72</data>
+</node>
+<node id="fd89a506-0cdd-4711-af0e-68f7a406c390">
+  <data key="d0">F</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">2</data>
+  <data key="d3">f</data>
+</node>
+<node id="f0343fba-f763-49f4-8a13-8ee4ceaf8c26">
+  <data key="d0">## List</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">2</data>
+  <data key="d3"> list</data>
+</node>
+<node id="3b31fce3-2651-47b0-b3d6-8997e2d2dd3f">
+  <data key="d0">Speak</data>
+  <data key="d1">LOC</data>
+  <data key="d2">5</data>
+  <data key="d3">speak</data>
+</node>
+<node id="f8259366-3b55-4ff8-8942-04bfad424647">
+  <data key="d0">## Example Payloads</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">6</data>
+  <data key="d3"> example payloads</data>
+</node>
+<node id="7a91aed8-8b0f-4096-84e7-315bc48c0a58">
+  <data key="d0">0.7
+        //</data>
+  <data key="d1">PERCENT</data>
+  <data key="d2">1</data>
+  <data key="d3">07
+        </data>
+</node>
+<node id="6a32e145-dfeb-4d81-a147-e07e31c484ea">
+  <data key="d0">Matthew"</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">2</data>
+  <data key="d3">matthew</data>
+</node>
+<node id="7c55c364-c45d-4d88-8af7-9448f89a0dc7">
+  <data key="d0">Update Speak</data>
+  <data key="d1">FAC</data>
+  <data key="d2">1</data>
+  <data key="d3">update speak</data>
+</node>
+<node id="1f66977b-3885-4773-8378-4de7ec448b3b">
+  <data key="d0">UpdateThink</data>
+  <data key="d1">ORG</data>
+  <data key="d2">5</data>
+  <data key="d3">updatethink</data>
+</node>
+<node id="ad48facf-39af-44f8-be2f-28c6db041cb5">
+  <data key="d0">UpdatePrompt`](/docs</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">updatepromptdocs</data>
+</node>
+<node id="7e734e79-1ca6-43eb-9bf5-835abad128d4">
+  <data key="d0">UpdatePrompt</data>
+  <data key="d1">ORG</data>
+  <data key="d2">6</data>
+  <data key="d3">updateprompt</data>
+</node>
+<node id="9bb39dc6-1e25-45e4-a4a0-9ebd7705dbe7">
+  <data key="d0">InjectionRefused</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">injectionrefused</data>
+</node>
+<node id="f9b5e0e0-39fd-4cb1-9b49-87c18794ef12">
+  <data key="d0">AgentAudioDone`](/docs</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">2</data>
+  <data key="d3">agentaudiodonedocs</data>
+</node>
+<node id="70ea113f-8c58-4651-90ff-f6675813c814">
+  <data key="d0">## Use</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">2</data>
+  <data key="d3"> use</data>
+</node>
+<node id="3229032b-41d9-4adc-b252-09357926e52d">
+  <data key="d0">Settings Applied`](/docs/voice-agent-setting-applied-message):</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">settings applieddocsvoiceagentsettingappliedmessage</data>
+</node>
+<node id="0792facb-5984-4111-a9b9-9dabe71faee0">
+  <data key="d0">Conversation</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">1</data>
+  <data key="d3">conversation</data>
+</node>
+<node id="97d45a40-64f9-4333-b607-79cada55f68e">
+  <data key="d0">User Started Speaking`](/docs</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">user started speakingdocs</data>
+</node>
+<node id="dc50b32b-043a-4b65-9fc6-3973f251efcd">
+  <data key="d0">Notifies</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">notifies</data>
+</node>
+<node id="40df87cc-5fa6-4035-b774-68e36d0e7fc7">
+  <data key="d0">Speak Updated`](/docs/voice-agent-speak-updated): Confirms that a Speak Configuration</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">speak updateddocsvoiceagentspeakupdated confirms that a speak configuration</data>
+</node>
+<node id="fbeee779-5dff-49e2-8685-78f1949b9bba">
+  <data key="d0">Settings Applied</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">settings applied</data>
+</node>
+<node id="a264b0c1-a69f-4abd-b8cd-3c683139586b">
+  <data key="d0">SettingsApplied</data>
+  <data key="d1">ORG</data>
+  <data key="d2">7</data>
+  <data key="d3">settingsapplied</data>
+</node>
+<node id="d5fd293d-adf6-427b-acf1-39f94c9d9822">
+  <data key="d0">Conversation Text</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">conversation text</data>
+</node>
+<node id="d80fbc03-fc8e-4c9f-8573-c7b22cf45b1e">
+  <data key="d0">the Prompt Configuration</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">the prompt configuration</data>
+</node>
+<node id="032e3a4f-ab68-462d-a928-f75c1b1032b6">
+  <data key="d0">ThinkUpdated</data>
+  <data key="d1">ORG</data>
+  <data key="d2">3</data>
+  <data key="d3">thinkupdated</data>
+</node>
+<node id="e15840ce-dc85-4623-ba74-666c83d16319">
+  <data key="d0">the Think Configuration</data>
+  <data key="d1">EVENT</data>
+  <data key="d2">2</data>
+  <data key="d3">the think configuration</data>
+</node>
+<node id="07edef01-065b-40cd-b9ae-9f0ff6e3298a">
+  <data key="d0">Think Configuration</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">think configuration</data>
+</node>
+<node id="616f2601-9a0e-4491-930a-c1cf6f722920">
+  <data key="d0">Speak Updated</data>
+  <data key="d1">FAC</data>
+  <data key="d2">1</data>
+  <data key="d3">speak updated</data>
+</node>
+<node id="4d32df54-b80b-4d61-b09f-75d1bb68f764">
+  <data key="d0">Speak Configuration</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">speak configuration</data>
+</node>
+<node id="ee625c16-1261-4324-9640-80587d08a7b2">
+  <data key="d0">the Speak Configuration</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">the speak configuration</data>
+</node>
+<node id="be0945de-f165-4b1a-a224-69633734852b">
+  <data key="d0">Audio Done</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">audio done</data>
+</node>
+<node id="1dba9743-19ef-4349-abdf-02d647d56821">
+  <data key="d0">Warnings</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">warnings</data>
+</node>
+<node id="f5046473-e433-42f2-9683-7577571195e6">
+  <data key="d0">## Types</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> types</data>
+</node>
+<node id="a32bc63d-a28d-43e0-9750-4d95900fc5f2">
+  <data key="d0">Resolution</data>
+  <data key="d1">FAC</data>
+  <data key="d2">1</data>
+  <data key="d3">resolution</data>
+</node>
+<node id="5fde3b94-fe16-48c3-9326-a77748c4a62a">
+  <data key="d0">Reduce</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">reduce</data>
+</node>
+<node id="78e210f4-fc11-4526-a9b7-f03b2de5f055">
+  <data key="d0">|
+| `THINK_REQUEST_FAILED`</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">
+ think_request_failed</data>
+</node>
+<node id="f75faa5d-0eb7-426a-9de6-0156417a048f">
+  <data key="d0">| Review</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3"> review</data>
+</node>
+<node id="2ce5850a-1ad2-496a-b5f5-f797bd73ceb9">
+  <data key="d0">GPT_4O_STREAM_END_ERROR`</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">1</data>
+  <data key="d3">gpt_4o_stream_end_error</data>
+</node>
+<node id="45b60cda-1e06-46bd-b11d-3f4e8d4fc2be">
+  <data key="d0">LLM Models</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">llm models</data>
+</node>
+<node id="571d265d-3e23-4ede-9471-8d331c32c999">
+  <data key="d0">Chat Completions</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">chat completions</data>
+</node>
+<node id="3c234545-0910-4f47-a033-e50d0f9404d0">
+  <data key="d0">Amazon Bedrock</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">amazon bedrock</data>
+</node>
+<node id="b4b67550-8def-4952-8c30-68cef4741a26">
+  <data key="d0">https://agent.deepgram.com/v1/agent/settings/think/models</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">httpsagentdeepgramcomv1agentsettingsthinkmodels</data>
+</node>
+<node id="ffa853a0-9dc9-46fa-b15b-029a33b6af03">
+  <data key="d0">GPT-5.2 Instant</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">gpt52 instant</data>
+</node>
+<node id="9f4c59c8-c2a8-47ea-8f31-b7c854d87a02">
+  <data key="d0">GPT-5.2 Thinking</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">gpt52 thinking</data>
+</node>
+<node id="c3e5064f-ec17-4fec-88b7-90b5b09cb803">
+  <data key="d0">GPT-5.1 Instant"</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">gpt51 instant</data>
+</node>
+<node id="facd8d73-8f6f-46d5-82a6-210dfbd0c860">
+  <data key="d0">GPT-5.1 Thinking</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">gpt51 thinking</data>
+</node>
+<node id="24afa775-64bf-4e70-bbcb-2ad495fad211">
+  <data key="d0">GPT-4.1</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">3</data>
+  <data key="d3">gpt41</data>
+</node>
+<node id="aeda57c7-d143-46c3-98e7-8b3f2cdd21f9">
+  <data key="d0">Claude Haiku 4.5"</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">claude haiku 45</data>
+</node>
+<node id="5cc6865f-eda7-4ac7-ace7-c4a8de93e62c">
+  <data key="d0">Claude Sonnet 4.5"</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">claude sonnet 45</data>
+</node>
+<node id="fafd68ec-8aa6-47ac-92e0-087adf387625">
+  <data key="d0">Claude Haiku</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">claude haiku</data>
+</node>
+<node id="46ba5f0a-a3cb-4d90-9083-f23481096910">
+  <data key="d0">3.5</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">35</data>
+</node>
+<node id="ce159c5e-b931-4a01-b58a-58a694aad7fb">
+  <data key="d0">20250514</data>
+  <data key="d1">DATE</data>
+  <data key="d2">2</data>
+  <data key="d3">20250514</data>
+</node>
+<node id="cff28b6b-8709-4bb1-a56c-b9285767fb8e">
+  <data key="d0">Claude Sonnet</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">claude sonnet</data>
+</node>
+<node id="ba85cb40-5c37-45b5-ae8e-97737d60e987">
+  <data key="d0">Flash Lite</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">flash lite</data>
+</node>
+<node id="d682c48f-df22-48c9-bdaa-4ace3a38d51d">
+  <data key="d0">2.5</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">25</data>
+</node>
+<node id="ea37bd53-b42f-4525-91d5-6833eafbf257">
+  <data key="d0">2.0</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">20</data>
+</node>
+<node id="4de47d0d-ae73-41c9-8bd6-8d3a1bb560c4">
+  <data key="d0">GPT</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">gpt</data>
+</node>
+<node id="9437e990-9e89-404f-8e3f-e3f50c742047">
+  <data key="d0">Provider</data>
+  <data key="d1">ORG</data>
+  <data key="d2">4</data>
+  <data key="d3">provider</data>
+</node>
+<node id="42e87693-e1b3-49a9-a74c-7252c4b496ba">
+  <data key="d0">Model</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">4</data>
+  <data key="d3">model</data>
+</node>
+<node id="4b95006c-fb09-4130-93c2-90077dbf9612">
+  <data key="d0">Standard</data>
+  <data key="d1">ORG</data>
+  <data key="d2">15</data>
+  <data key="d3">standard</data>
+</node>
+<node id="bd7b22d1-d478-4aaa-b0ab-275f7aecd26e">
+  <data key="d0">Advanced</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">9</data>
+  <data key="d3">advanced</data>
+</node>
+<node id="7883f5cb-0f57-4a4a-821f-547de5b217d2">
+  <data key="d0">### Anthropic</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> anthropic</data>
+</node>
+<node id="e4efa13d-8a14-47a6-904e-d067d018f93d">
+  <data key="d0">Pricing Tier</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">pricing tier</data>
+</node>
+<node id="e8b7d075-e933-40da-bd76-124144ba995a">
+  <data key="d0">Google LLM</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">google llm</data>
+</node>
+<node id="eb2d216f-f9f3-4569-ac95-d4c659a844c9">
+  <data key="d0">0.5</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">2</data>
+  <data key="d3">05</data>
+</node>
+<node id="5fbf6daa-7c2a-4792-bd26-d69b814e0fcd">
+  <data key="d0">API keys](https://ai.google.dev</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">api keyshttpsaigoogledev</data>
+</node>
+<node id="44df11ab-8c9a-422f-8372-270ed0e6a039">
+  <data key="d0">Google AI</data>
+  <data key="d1">FAC</data>
+  <data key="d2">1</data>
+  <data key="d3">google ai</data>
+</node>
+<node id="270d1be3-d58d-43e3-8fd5-a0178104f7f2">
+  <data key="d0">Gemini</data>
+  <data key="d1">GPE</data>
+  <data key="d2">1</data>
+  <data key="d3">gemini</data>
+</node>
+<node id="da7a9012-a85b-4918-becf-d2f79dfb2f19">
+  <data key="d0">Keys</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">keys</data>
+</node>
+<node id="221e8304-3762-4197-b0d9-838d6172d68f">
+  <data key="d0">Vertex</data>
+  <data key="d1">GPE</data>
+  <data key="d2">1</data>
+  <data key="d3">vertex</data>
+</node>
+<node id="a551df17-19af-4d71-be9d-6b4a3cc053a5">
+  <data key="d0">Gemini Enterprise</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">gemini enterprise</data>
+</node>
+<node id="5c260bc4-8c01-4f0b-b661-7b4f2f11418a">
+  <data key="d0">// Required</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3"> required</data>
+</node>
+<node id="b2404b43-288c-4ab1-ba7a-51daf32edab3">
+  <data key="d0">## Passing</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> passing</data>
+</node>
+<node id="a6010c1f-7066-4eca-8498-754543f01009">
+  <data key="d0">Anthropic</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">2</data>
+  <data key="d3">anthropic</data>
+</node>
+<node id="72878db2-a8da-4e0f-9e92-164be4f9ecc5">
+  <data key="d0">the OpenAI Chat Completions API</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">the openai chat completions api</data>
+</node>
+<node id="08786f09-ff24-4550-984d-0855a7e9bbf6">
+  <data key="d0">third</data>
+  <data key="d1">ORDINAL</data>
+  <data key="d2">2</data>
+  <data key="d3">third</data>
+</node>
+<node id="4383445e-03e7-479e-b67c-8d821555aa1e">
+  <data key="d0">## Using Multiple LLM Providers</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> using multiple llm providers</data>
+</node>
+<node id="b67cad4f-a44d-428f-b759-789a463827c7">
+  <data key="d0">TTS Models</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">tts models</data>
+</node>
+<node id="a0f884e2-381a-4c70-a3df-f218d88697ef">
+  <data key="d0">Deepgram Text-to-Speech](/docs</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">deepgram texttospeechdocs</data>
+</node>
+<node id="e64e9aac-ba9d-4e7f-8b55-e225524e5d08">
+  <data key="d0">Deepgram TTS</data>
+  <data key="d1">LOC</data>
+  <data key="d2">1</data>
+  <data key="d3">deepgram tts</data>
+</node>
+<node id="6ec8c2a5-c8b6-40a0-a1c8-f2805d6bd161">
+  <data key="d0">TTS Voice Selection](/docs/tts-models</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">tts voice selectiondocsttsmodels</data>
+</node>
+<node id="d8ee9850-1e24-4932-8155-891035cb4311">
+  <data key="d0">Cartesia TTS</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">cartesia tts</data>
+</node>
+<node id="a0b7c4df-8c87-415e-8800-0338e2db8322">
+  <data key="d0">## BYO Third Party</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> byo third party</data>
+</node>
+<node id="f553ae2b-ce3d-4f1e-879e-d67198e23df8">
+  <data key="d0">open_ai`                         |
+| `agent.speak.provider.model`</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">open_ai                         
+ agentspeakprovidermodel</data>
+</node>
+<node id="0c920aa3-cbdc-4605-9bfd-b0a0f77ef776">
+  <data key="d0">### Eleven Labs</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> eleven labs</data>
+</node>
+<node id="dd0a3918-85e8-4b86-b404-803bdd598604">
+  <data key="d0">ElevenLabs</data>
+  <data key="d1">ORG</data>
+  <data key="d2">2</data>
+  <data key="d3">elevenlabs</data>
+</node>
+<node id="3c52b09c-2758-4a3a-ac94-58ca3a2af40c">
+  <data key="d0">Turbo</data>
+  <data key="d1">WORK_OF_ART</data>
+  <data key="d2">1</data>
+  <data key="d3">turbo</data>
+</node>
+<node id="5423c459-b23e-4020-9f84-170510b420bc">
+  <data key="d0">Optional Language</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">optional language</data>
+</node>
+<node id="4f9a18c7-fd78-4953-b4c5-6c28a36297d0">
+  <data key="d0">Headers</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">2</data>
+  <data key="d3">headers</data>
+</node>
+<node id="aadbd5c0-0b42-45d6-a841-ecb8364209ea">
+  <data key="d0">API](https://docs.cartesia.ai</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">1</data>
+  <data key="d3">apihttpsdocscartesiaai</data>
+</node>
+<node id="c0bca845-eb26-49da-95f8-9bcb82070bb5">
+  <data key="d0">Cartesia Voice</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">cartesia voice</data>
+</node>
+<node id="c2098296-11b9-4386-aa47-ed5b5dbc652c">
+  <data key="d0">Cartesia API</data>
+  <data key="d1">LOC</data>
+  <data key="d2">1</data>
+  <data key="d3">cartesia api</data>
+</node>
+<node id="0bbd1ae2-9f07-4f44-84a5-4bb4b1104e20">
+  <data key="d0">#### STS Example</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> sts example</data>
+</node>
+<node id="d09a4976-3198-4af5-9b4f-8ebe21487cd2">
+  <data key="d0">{{AWS_SESSION_TOKEN</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">aws_session_token</data>
+</node>
+<node id="56bf5289-6348-4b46-83e2-c51028890c8b">
+  <data key="d0">#### IAM</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> iam</data>
+</node>
+<node id="1c811ccd-3015-4d67-ad7d-f9e60b70d0f9">
+  <data key="d0">Joanna</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">joanna</data>
+</node>
+<node id="50b2f4da-2a7d-4051-b669-382ea73e1a64">
+  <data key="d0">## Using</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> using</data>
+</node>
+<node id="674d376b-49bc-4ad5-b20e-4cad2ea57035">
+  <data key="d0">Media Inputs &amp; Outputs</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">media inputs  outputs</data>
+</node>
+<node id="9747646f-41f9-48eb-a4e4-589eca0afd89">
+  <data key="d0">Encoding](/docs</data>
+  <data key="d1">LAW</data>
+  <data key="d2">2</data>
+  <data key="d3">encodingdocs</data>
+</node>
+<node id="ba4b87f5-f988-4238-a4d4-2ede10986846">
+  <data key="d0">Allows</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">2</data>
+  <data key="d3">allows</data>
+</node>
+<node id="6e259afe-6f4d-45a0-8a2e-ead444018d59">
+  <data key="d0">[Sample Rate](/docs</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">2</data>
+  <data key="d3">sample ratedocs</data>
+</node>
+<node id="4d2269cb-18c9-4f0e-ad3a-51fafb76c954">
+  <data key="d0">API            |</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">api            </data>
+</node>
+<node id="e908a310-5f67-4972-a4d3-7953dee18667">
+  <data key="d0">Supported Inputs &amp; Outputs</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">supported inputs  outputs</data>
+</node>
+<node id="195c14b9-e3bb-4b23-a49b-68bd15c14e7a">
+  <data key="d0">Speech</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">speech</data>
+</node>
+<node id="b553bd41-33e9-410b-b38d-6b1eba62662e">
+  <data key="d0">Audio Formats](/docs/tts</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">audio formatsdocstts</data>
+</node>
+<node id="15ab374d-85fc-4261-8406-6709375da254">
+  <data key="d0">Multilingual Voice Agents</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">multilingual voice agents</data>
+</node>
+<node id="326437f6-7027-4342-a8b9-1c403e071eb4">
+  <data key="d0"># Prompt Recommendations</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3"> prompt recommendations</data>
+</node>
+<node id="56bacb69-94c7-4a27-832f-d04ee96d20bd">
+  <data key="d0">English</data>
+  <data key="d1">LANGUAGE</data>
+  <data key="d2">9</data>
+  <data key="d3">english</data>
+</node>
+<node id="fc4d8c5f-5231-4595-a0e3-e007752777c1">
+  <data key="d0">Enforce</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">enforce</data>
+</node>
+<node id="e5e68e58-24e4-4d6a-9101-cbf1cd0ba85f">
+  <data key="d0">Spanish</data>
+  <data key="d1">LANGUAGE</data>
+  <data key="d2">4</data>
+  <data key="d3">spanish</data>
+</node>
+<node id="8404d990-f1d9-45cd-9912-caee73fb0312">
+  <data key="d0">Voice Agent Audio &amp; Playback</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">voice agent audio  playback</data>
+</node>
+<node id="97a7b8be-07c3-45f5-9b3d-dd1b126e59d0">
+  <data key="d0">## Attempting</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> attempting</data>
+</node>
+<node id="7714bf6b-eb93-43e5-b538-679a48c85826">
+  <data key="d0">Chrome</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">5</data>
+  <data key="d3">chrome</data>
+</node>
+<node id="c294ad55-7603-4071-8854-30766a7f0843">
+  <data key="d0">wave.open(AUDIO_FILE</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">waveopenaudio_file</data>
+</node>
+<node id="7639e017-a5f6-4ed8-a592-9f21c85e16a7">
+  <data key="d0">header.setsampwidth(2</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">headersetsampwidth2</data>
+</node>
+<node id="40211add-b69f-45ee-a494-d773bf8a69a7">
+  <data key="d0">AudioContext</data>
+  <data key="d1">ORG</data>
+  <data key="d2">4</data>
+  <data key="d3">audiocontext</data>
+</node>
+<node id="45d933f6-b362-47fb-b7ae-314fe896684f">
+  <data key="d0">VLC</data>
+  <data key="d1">ORG</data>
+  <data key="d2">4</data>
+  <data key="d3">vlc</data>
+</node>
+<node id="a014854e-aaf0-4871-9b93-6d54d9bcf029">
+  <data key="d0">Media Player</data>
+  <data key="d1">ORG</data>
+  <data key="d2">4</data>
+  <data key="d3">media player</data>
+</node>
+<node id="f5343edc-c9e0-45db-83fb-9a17154267fc">
+  <data key="d0">Apple Music
+  // Without</data>
+  <data key="d1">ORG</data>
+  <data key="d2">4</data>
+  <data key="d3">apple music
+   without</data>
+</node>
+<node id="35823abd-5293-4f0a-a59b-c53b31273e32">
+  <data key="d0">Buffer.from</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">bufferfrom</data>
+</node>
+<node id="2c372abf-ddb9-42e6-bb2e-762a56ff420d">
+  <data key="d0">0xEE</data>
+  <data key="d1">DATE</data>
+  <data key="d2">4</data>
+  <data key="d3">0xee</data>
+</node>
+<node id="e8a54ef8-6ab0-4243-af72-490dc3cf5e56">
+  <data key="d0">0xBB</data>
+  <data key="d1">CARDINAL</data>
+  <data key="d2">1</data>
+  <data key="d3">0xbb</data>
+</node>
+<node id="5b3d474d-763c-4f13-89da-83c78a547326">
+  <data key="d0">The Agent Voice Is Triggering Itself
+
+Depending</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">the agent voice is triggering itself
+
+depending</data>
+</node>
+<node id="24d53946-d005-4085-ae72-df6ce10470dc">
+  <data key="d0">getUserMedia</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">1</data>
+  <data key="d3">getusermedia</data>
+</node>
+<node id="7a7ba3bf-1caf-4fac-b3d8-5c67a2ad3887">
+  <data key="d0">### Using Echo Cancellation</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> using echo cancellation</data>
+</node>
+<node id="dfac0404-0445-4407-88fa-1472d44c284d">
+  <data key="d0">JavaScript
+  navigator.mediaDevices</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">1</data>
+  <data key="d3">javascript
+  navigatormediadevices</data>
+</node>
+<node id="952db9d1-9b36-41fc-82da-a3232a9da50f">
+  <data key="d0">// Optional</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3"> optional</data>
+</node>
+<node id="a01b6d3e-a2c2-47e0-9775-dc95c8947c64">
+  <data key="d0">Voice Agent</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">voice agent</data>
+</node>
+<node id="3920eb43-06da-45a8-9b89-0570963d7179">
+  <data key="d0">Adaptive Echo Cancellation</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">adaptive echo cancellation</data>
+</node>
+<node id="03266f3e-5d18-4aaa-928c-1c63a72076cb">
+  <data key="d0">Adaptive</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">adaptive</data>
+</node>
+<node id="222950c5-2e51-4e39-9d59-027475fea3bb">
+  <data key="d0">## Purpose</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> purpose</data>
+</node>
+<node id="2db4d44d-2ffd-4476-a22b-239df8f2225b">
+  <data key="d0">## Browser Implementation</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> browser implementation</data>
+</node>
+<node id="fc18d045-5642-4898-8ea4-3ccd5c7f6aff">
+  <data key="d0">WebRTC</data>
+  <data key="d1">LOC</data>
+  <data key="d2">1</data>
+  <data key="d3">webrtc</data>
+</node>
+<node id="6910b0aa-1aa1-4f34-b055-04ae79777dff">
+  <data key="d0">## Telephony Systems</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> telephony systems</data>
+</node>
+<node id="de6d1adc-4ec5-4480-840e-c0a4a3c77559">
+  <data key="d0">VoIP</data>
+  <data key="d1">LOC</data>
+  <data key="d2">2</data>
+  <data key="d3">voip</data>
+</node>
+<node id="3f4cd525-7e0c-4af3-a043-e61ff5e89a27">
+  <data key="d0">Acoustic Echo</data>
+  <data key="d1">LOC</data>
+  <data key="d2">1</data>
+  <data key="d3">acoustic echo</data>
+</node>
+<node id="d24f6f50-b962-456d-b401-0d622ea2f431">
+  <data key="d0">## When Echo Cancellation</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> when echo cancellation</data>
+</node>
+<node id="6d567fd4-9fc1-487c-8131-61c3e0302273">
+  <data key="d0">## Establish</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> establish</data>
+</node>
+<node id="3a089352-e454-492f-a91f-7fb94b9e41a3">
+  <data key="d0">the `Welcome`</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">1</data>
+  <data key="d3">the welcome</data>
+</node>
+<node id="cb9fe0eb-7c6a-4b74-b667-711fe48ba73a">
+  <data key="d0">## Configure Settings</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> configure settings</data>
+</node>
+<node id="9d1c230d-829d-49fd-8fd9-44d740465bb0">
+  <data key="d0">## Stream Audio</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> stream audio</data>
+</node>
+<node id="070f756f-17f7-4f59-be9d-e7aa295bd200">
+  <data key="d0">Inject Text</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">inject text</data>
+</node>
+<node id="5b3815a3-ca24-4a6f-abd4-24e01c61c069">
+  <data key="d0">## Handle</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> handle</data>
+</node>
+<node id="08abfd4c-22df-4377-aa50-1f2882954ec2">
+  <data key="d0">Event                                                                        |</data>
+  <data key="d1">PRODUCT</data>
+  <data key="d2">1</data>
+  <data key="d3">event                                                                        </data>
+</node>
+<node id="d921a0d7-d63a-4bda-a3d0-ea3e238856bd">
+  <data key="d0">ConversationText`](/docs</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">2</data>
+  <data key="d3">conversationtextdocs</data>
+</node>
+<node id="87dee4d9-cc81-45e2-8dc6-a357a54fe221">
+  <data key="d0">CLIENT</data>
+  <data key="d1">GPE</data>
+  <data key="d2">2</data>
+  <data key="d3">client</data>
+</node>
+<node id="74e9da97-1d0a-4712-bfb8-46bff658209c">
+  <data key="d0">## Verify</data>
+  <data key="d1">MONEY</data>
+  <data key="d2">1</data>
+  <data key="d3"> verify</data>
+</node>
+<node id="fdaece2c-3cd6-40b4-8346-471059a80d50">
+  <data key="d0">the Implementation
+
+Confirm</data>
+  <data key="d1">ORG</data>
+  <data key="d2">1</data>
+  <data key="d3">the implementation
+
+confirm</data>
+</node>
+<node id="3c5676cb-0dc4-454e-8870-98f54db508fa">
+  <data key="d0">Server Events](/docs</data>
+  <data key="d1">PERSON</data>
+  <data key="d2">1</data>
+  <data key="d3">server eventsdocs</data>
+</node>
+<edge source="3ecf78b9-55fa-4ecc-986d-491c0c506267" target="db98053c-9cd8-4daa-ae26-4654279638d3">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.6</data>
+  <data key="d6">&lt;CodeGroup&gt;
+  ```python Python
+      # Send settings to configure the agent
+            print("Sending settings configuration...")
+            connection.send_settings(settings)
+            </data>
+</edge>
+<edge source="3ecf78b9-55fa-4ecc-986d-491c0c506267" target="dcd9452a-9a09-4845-b345-1d06f1f77529">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.8999999999999999</data>
+  <data key="d6">Second)
+
+for br := range dch.binaryChan {
+            fmt.</data>
+</edge>
+<edge source="3ecf78b9-55fa-4ecc-986d-491c0c506267" target="6c79fd63-74d5-4d1a-ac99-6b544e3ed861">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.7</data>
+  <data key="d6">Done()
+        for closeResp := range dch.closeChan {
+            fmt.</data>
+</edge>
+<edge source="3ecf78b9-55fa-4ecc-986d-491c0c506267" target="40cf921b-681f-450f-b725-7c999a8ab5cf">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.6</data>
+  <data key="d6">= 0;
+
+// Start the connection
+                var settingsConfiguration = new SettingsSchema();
+                settingsConfiguration.</data>
+</edge>
+<edge source="3ecf78b9-55fa-4ecc-986d-491c0c506267" target="1a9071d6-ab8c-464e-97a2-1046cdef3aa9">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.6</data>
+  <data key="d6">[Third Party TTS Voice Models](/docs/voice-agent-tts-models) |
+
+## Supported LLM Models
+
+| Models                                     |
+| ------------------------------------------</data>
+</edge>
+<edge source="3ecf78b9-55fa-4ecc-986d-491c0c506267" target="5c93de5f-00d2-432a-bc9c-56cba38ab126">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.6</data>
+  <data key="d6">Install Dependencies
+
+This implementation uses the Deepgram Python SDK:
+
+```bash
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Insta</data>
+</edge>
+<edge source="3ecf78b9-55fa-4ecc-986d-491c0c506267" target="69438ef1-c8d1-4973-b6b4-cfa319bee69c">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.6</data>
+  <data key="d6">* **Call the Function:**</data>
+</edge>
+<edge source="3ecf78b9-55fa-4ecc-986d-491c0c506267" target="d02872ba-65d2-4a73-a6de-25fe0161f780">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.7</data>
+  <data key="d6">EnsureSuccessStatusCode();
+
+var data = await JsonSerializer.</data>
+</edge>
+<edge source="3ecf78b9-55fa-4ecc-986d-491c0c506267" target="a247267f-f2e9-48db-9c08-c2ab224ce42a">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.6</data>
+  <data key="d6">* **Use a custom endpoint from one of the supported major LLM providers.</data>
+</edge>
+<edge source="3ecf78b9-55fa-4ecc-986d-491c0c506267" target="5d4d2d36-e78b-4d7a-93f6-6648e02ef963">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.7999999999999999</data>
+  <data key="d6">|
+| [Encoding](/docs/encoding)         | Defines the audio encoding format.                       </data>
+</edge>
+<edge source="3ecf78b9-55fa-4ecc-986d-491c0c506267" target="42e87693-e1b3-49a9-a74c-7252c4b496ba">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.6</data>
+  <data key="d6"># Select a multilingual speech-to-text (STT) model.
+
+</data>
+</edge>
+<edge source="3ecf78b9-55fa-4ecc-986d-491c0c506267" target="c31b2390-60e7-48bb-9821-6744fb652752">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.6</data>
+  <data key="d6">## Establish the Connection and Receive Welcome
+
+1.</data>
+</edge>
+<edge source="8ca48e97-610a-4596-bb23-bdc8024d32df" target="3ecf78b9-55fa-4ecc-986d-491c0c506267">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.6</data>
+  <data key="d6">&lt;CodeGroup&gt;
+  ```python Python
+  VOICE = "aura-2-thalia-en"
+
+# this gets updated by the agent template
+  FIRST_MESSAGE = ""
+
+# audio settings
+  USER_AUDIO_SAMPLE_RATE = 48000
+  USER_AUDIO_SECS_PER_CHU</data>
+</edge>
+<edge source="1c9ba72a-3977-4ca1-9813-2b631f6ffff1" target="b89ad0dd-62c7-4dec-9d7c-d4828f614ac2">
+  <data key="d4">USES</data>
+  <data key="d5">0.8</data>
+  <data key="d6">MIT
+
+using Deepgram</data>
+</edge>
+<edge source="f079d1be-d3c7-4f00-b9d1-f39fcb508fe0" target="3ecf78b9-55fa-4ecc-986d-491c0c506267">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.6</data>
+  <data key="d6">&lt;Info&gt;
+  For more information on the `Settings` message, see the [Voice Agent API Reference](/reference/voice-agent/voice-agent)
+&lt;/Info&gt;</data>
+</edge>
+<edge source="f079d1be-d3c7-4f00-b9d1-f39fcb508fe0" target="42e87693-e1b3-49a9-a74c-7252c4b496ba">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.6</data>
+  <data key="d6">&lt;Info&gt;
+  You can set your Text-to-Speech model in the [Settings Message](/docs/configure-voice-agent) for your Voice Agent.</data>
+</edge>
+<edge source="85771359-1904-43c9-9c73-b7d9df69060e" target="c31b2390-60e7-48bb-9821-6744fb652752">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.7</data>
+  <data key="d6">print(f"User started speaking")
+                    with open("chatlog.txt", 'a') as chatlog:
+                        chatlog.write(f"User started speaking\n")
+
+elif msg_type == "AgentThinking":
+     </data>
+</edge>
+<edge source="bcb54374-cd82-4e86-a794-b01a859ff575" target="1a9071d6-ab8c-464e-97a2-1046cdef3aa9">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.6</data>
+  <data key="d6">OpenAI, Eleven Labs, and Cartesia have multi-lingual language models.</data>
+</edge>
+<edge source="5d48366e-3717-4e03-abca-8bd12ed354b9" target="2dfbe195-fd53-4d57-972e-9a59786ade32">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.6</data>
+  <data key="d6">&lt;Warning&gt;
+  Do not send audio or inject messages until you receive `SettingsApplied`.
+&lt;/Warning&gt;</data>
+</edge>
+<edge source="1a9071d6-ab8c-464e-97a2-1046cdef3aa9" target="3f3f776a-88b2-429a-81db-08008c3d3d7c">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.6</data>
+  <data key="d6">Flux models use `v2` and all other models use `v1`.                                                                                                                                     </data>
+</edge>
+<edge source="139ebf0d-6db1-4466-b938-2d3254609c85" target="0792facb-5984-4111-a9b9-9dabe71faee0">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.6</data>
+  <data key="d6">**Context Transfer**: A small and fast LLM (via Groq API) summarizes conversation between agents
+
+## Key Technical Concepts
+
+### Session-Based Agent Switching</data>
+</edge>
+<edge source="139ebf0d-6db1-4466-b938-2d3254609c85" target="69438ef1-c8d1-4973-b6b4-cfa319bee69c">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.7999999999999999</data>
+  <data key="d6">For example, if a user asks for the current weather in a specific location, the LLM can use function calling to call a weather API, fetch real-time data, and present it in a structured response.
+
+</data>
+</edge>
+<edge source="a134e899-c0ac-4901-8728-ecad0f58a9e3" target="69438ef1-c8d1-4973-b6b4-cfa319bee69c">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.6</data>
+  <data key="d6">* When `client_side` is `false`, the server will handle the function using built-in logic.
+</data>
+</edge>
+<edge source="016ee8e5-be11-4c10-9498-8ee683b72723" target="3ecf78b9-55fa-4ecc-986d-491c0c506267">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.7</data>
+  <data key="d6">* **Purpose**: Provide consultation and recommendations
+* **Functions**: `handoff_to_next_agent`, `end_conversation`
+* **Context**: Receives summary from qualifier</data>
+</edge>
+<edge source="016ee8e5-be11-4c10-9498-8ee683b72723" target="fddb3c80-1170-4265-855d-5242bfcc0f84">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.6</data>
+  <data key="d6">* **Purpose**: Provide consultation and recommendations
+* **Functions**: `handoff_to_next_agent`, `end_conversation`
+* **Context**: Receives summary from qualifier</data>
+</edge>
+<edge source="0792facb-5984-4111-a9b9-9dabe71faee0" target="6b50071a-fd1d-4b16-a932-bb5b6ed4ad85">
+  <data key="d4">USES</data>
+  <data key="d5">0.8</data>
+  <data key="d6">conversation using Groq</data>
+</edge>
+<edge source="da7a9012-a85b-4918-becf-d2f79dfb2f19" target="3ecf78b9-55fa-4ecc-986d-491c0c506267">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.6</data>
+  <data key="d6">Keys from Vertex AI, Workspace Gemini, or Gemini Enterprise will not work with the Agent API.
+&lt;/Info&gt;</data>
+</edge>
+<edge source="7714bf6b-eb93-43e5-b538-679a48c85826" target="3920eb43-06da-45a8-9b89-0570963d7179">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.6</data>
+  <data key="d6">## Browser Implementation
+
+Chrome implements adaptive echo cancellation effectively through its built-in WebRTC capabilities for real-time communication.</data>
+</edge>
+<edge source="87dee4d9-cc81-45e2-8dc6-a357a54fe221" target="69438ef1-c8d1-4973-b6b4-cfa319bee69c">
+  <data key="d4">RELATED_TO</data>
+  <data key="d5">0.7</data>
+  <data key="d6">Client executes the function and sends a `FunctionCallResponse` → Returns the function result.
+</data>
+</edge>
+</graph></graphml>

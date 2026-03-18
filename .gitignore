@@ -1,0 +1,65 @@
+node_modules/
+logs/
+*.log
+
+# Environment files (contains secrets)
+.env
+.env.*
+
+# Data directories (recordings, database, per-instance)
+data/
+data-*/
+logs-*/
+
+# Temp/debug scripts
+src/backfill-recordings.js
+src/bench-dashboard.js
+src/campaign-stats.js
+src/check-appt.js
+src/check-call.js
+src/check-calls.js
+src/check-campaign-trunk.js
+src/check-campaigns.js
+src/check-lead.js
+src/check-sip.js
+src/check-timeouts.js
+src/copy-script.js
+src/count-leads.js
+src/error-analysis.js
+src/export-agent.js
+src/export-good-leads.js
+src/export-leads.js
+src/export-report.js
+src/fix-dubai.js
+src/fix-dubai2.js
+src/fix-greeting.js
+src/fix-indexes.js
+src/fix-sheet-push.js
+src/fix-sip.js
+src/fix-trunks.js
+src/force-stop.js
+src/get-sa-email.js
+src/monitor-now.js
+src/monitor.js
+src/optimize-db.js
+src/push-eduardo.js
+src/recent-convos.js
+src/sip-errors.js
+src/stats.js
+src/today-stats-0.js
+src/today-stats.js
+stats.js
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build artifacts
+dist/
+dashboard-ui/dist/

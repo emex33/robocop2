@@ -1,0 +1,167 @@
+/**
+ * Analytics API Routes
+ * Dashboard-level analytics across all campaigns for a user
+ * Optimized for large datasets (30k+ call records, 200k+ leads)
+ */
+
+import { Router } from "express";
+import { getDb } from "../db/schema.js";
+
+const router = Router();
+
+router.get("/dashboard", (req, res) => {
+  const db = getDb();
+  const userId = req.user.userId;
+
+  const stats = db.prepare(`
+    SELECT
+      (SELECT COUNT(*) FROM campaigns WHERE user_id = ?) as total_campaigns,
+      (SELECT COUNT(*) FROM campaigns WHERE user_id = ? AND status = 'running') as active_campaigns,
+      (SELECT COUNT(*) FROM agents WHERE user_id = ?) as total_agents
+  `).get(userId, userId, userId);
+
+  // Fast lead count: sum pre-computed totals from lists table instead of counting leads
+  const leadCount = db.prepare(`
+    SELECT COALESCE(SUM(total_leads), 0) as total_leads FROM lists WHERE user_id = ?
+  `).get(userId);
+  stats.total_leads = leadCount.total_leads;
+
+  const todayStats = db.prepare(`
+    SELECT
+      COUNT(*) as calls_today,
+      SUM(CASE WHEN outcome NOT IN ('error','no_answer') THEN 1 ELSE 0 END) as answered_today,
+      SUM(CASE WHEN outcome = 'transferred' THEN 1 ELSE 0 END) as transfers_today,
+      SUM(CASE WHEN outcome = 'appointment_set' THEN 1 ELSE 0 END) as appointments_today,
+      SUM(CASE WHEN outcome = 'callback' THEN 1 ELSE 0 END) as callbacks_today,
+      SUM(CASE WHEN outcome = 'voicemail' THEN 1 ELSE 0 END) as voicemail_today,
+      SUM(CASE WHEN outcome = 'error' THEN 1 ELSE 0 END) as errors_today,
+      AVG(duration_seconds) as avg_duration_today,
+      SUM(duration_seconds) as total_duration_today,
+      SUM(call_cost) as cost_today
+    FROM call_records
+    WHERE user_id = ? AND started_at >= date('now')
+  `).get(userId);
+
+  // All-time stats scoped to last 30 days for speed
+  const callStats = db.prepare(`
+    SELECT
+      COUNT(*) as total_calls,
+      SUM(CASE WHEN outcome NOT IN ('error','no_answer') THEN 1 ELSE 0 END) as answered_calls,
+      SUM(CASE WHEN outcome = 'transferred' THEN 1 ELSE 0 END) as total_transfers,
+      SUM(CASE WHEN outcome = 'appointment_set' THEN 1 ELSE 0 END) as total_appointments,
+      SUM(CASE WHEN outcome = 'interested' THEN 1 ELSE 0 END) as total_interested,
+      SUM(CASE WHEN outcome = 'not_interested' THEN 1 ELSE 0 END) as total_not_interested,
+      SUM(CASE WHEN outcome = 'callback' THEN 1 ELSE 0 END) as total_callbacks,
+      SUM(CASE WHEN outcome = 'lead_hangup' THEN 1 ELSE 0 END) as total_hangups,
+      SUM(CASE WHEN outcome = 'voicemail' THEN 1 ELSE 0 END) as total_voicemail,
+      SUM(CASE WHEN outcome = 'error' THEN 1 ELSE 0 END) as total_errors,
+      SUM(CASE WHEN outcome = 'no_answer' THEN 1 ELSE 0 END) as total_no_answer,
+      SUM(CASE WHEN outcome = 'timeout' THEN 1 ELSE 0 END) as total_timeouts,
+      SUM(CASE WHEN outcome = 'do_not_call' THEN 1 ELSE 0 END) as total_dnc,
+      AVG(duration_seconds) as avg_duration,
+      MAX(duration_seconds) as max_duration,
+      SUM(duration_seconds) as total_duration,
+      SUM(call_cost) as total_cost,
+      SUM(voip_cost) as total_voip_cost,
+      SUM(ai_cost) as total_ai_cost
+    FROM call_records WHERE user_id = ? AND started_at >= datetime('now', '-30 days')
+  `).get(userId);
+
+  // Compute rates from counts
+  const total = callStats.total_calls || 1;
+  callStats.transfer_rate = (callStats.total_transfers / total * 100);
+  callStats.appointment_rate = (callStats.total_appointments / total * 100);
+  callStats.answer_rate = (callStats.answered_calls / total * 100);
+
+  const callsByDay = db.prepare(`
+    SELECT date(started_at) as day, COUNT(*) as calls,
+      SUM(CASE WHEN outcome = 'transferred' THEN 1 ELSE 0 END) as transfers,
+      SUM(CASE WHEN outcome = 'appointment_set' THEN 1 ELSE 0 END) as appointments,
+      SUM(CASE WHEN outcome NOT IN ('error','no_answer') THEN 1 ELSE 0 END) as answered,
+      SUM(CASE WHEN outcome IN ('interested','transferred','appointment_set') THEN 1 ELSE 0 END) as successful,
+      SUM(call_cost) as cost
+    FROM call_records
+    WHERE user_id = ? AND started_at >= datetime('now', '-30 days')
+    GROUP BY day ORDER BY day
+  `).all(userId);
+
+  const callsByHour = db.prepare(`
+    SELECT strftime('%H', started_at) as hour, COUNT(*) as calls,
+      SUM(CASE WHEN outcome NOT IN ('error','no_answer') THEN 1 ELSE 0 END) as answered
+    FROM call_records
+    WHERE user_id = ? AND started_at >= date('now')
+    GROUP BY hour ORDER BY hour
+  `).all(userId);
+
+  const outcomes = db.prepare(`
+    SELECT outcome, COUNT(*) as count
+    FROM call_records WHERE user_id = ? AND started_at >= datetime('now', '-30 days')
+    GROUP BY outcome ORDER BY count DESC
+  `).all(userId);
+
+  const errorBreakdown = db.prepare(`
+    SELECT error_message, COUNT(*) as count
+    FROM call_records WHERE user_id = ? AND outcome = 'error' AND started_at >= datetime('now', '-7 days')
+    GROUP BY error_message ORDER BY count DESC LIMIT 10
+  `).all(userId);
+
+  const topCampaigns = db.prepare(`
+    SELECT c.name, c.id as campaign_id, COUNT(cr.id) as total_calls,
+      SUM(CASE WHEN cr.outcome NOT IN ('error','no_answer') THEN 1 ELSE 0 END) as answered,
+      SUM(CASE WHEN cr.outcome = 'transferred' THEN 1 ELSE 0 END) as transfers,
+      SUM(CASE WHEN cr.outcome = 'appointment_set' THEN 1 ELSE 0 END) as appointments,
+      SUM(cr.call_cost) as cost,
+      AVG(cr.duration_seconds) as avg_duration
+    FROM call_records cr
+    JOIN campaigns c ON cr.campaign_id = c.id
+    WHERE cr.user_id = ? AND cr.started_at >= datetime('now', '-30 days')
+    GROUP BY cr.campaign_id
+    ORDER BY total_calls DESC LIMIT 10
+  `).all(userId);
+
+  const recentCalls = db.prepare(`
+    SELECT cr.id, cr.call_id, cr.phone, cr.lead_name, cr.outcome, cr.duration_seconds,
+      cr.started_at, cr.call_cost, cr.error_message, c.name as campaign_name
+    FROM call_records cr
+    LEFT JOIN campaigns c ON cr.campaign_id = c.id
+    WHERE cr.user_id = ?
+    ORDER BY cr.started_at DESC LIMIT 10
+  `).all(userId);
+
+  const appointmentStats = db.prepare(`
+    SELECT
+      COUNT(*) as total,
+      SUM(CASE WHEN status = 'scheduled' THEN 1 ELSE 0 END) as scheduled,
+      SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed,
+      SUM(CASE WHEN status = 'no_show' THEN 1 ELSE 0 END) as no_show,
+      SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) as cancelled
+    FROM appointments WHERE user_id = ?
+  `).get(userId);
+
+  const durationBuckets = db.prepare(`
+    SELECT
+      SUM(CASE WHEN duration_seconds <= 10 THEN 1 ELSE 0 END) as "0-10s",
+      SUM(CASE WHEN duration_seconds > 10 AND duration_seconds <= 30 THEN 1 ELSE 0 END) as "11-30s",
+      SUM(CASE WHEN duration_seconds > 30 AND duration_seconds <= 60 THEN 1 ELSE 0 END) as "31-60s",
+      SUM(CASE WHEN duration_seconds > 60 AND duration_seconds <= 120 THEN 1 ELSE 0 END) as "1-2m",
+      SUM(CASE WHEN duration_seconds > 120 AND duration_seconds <= 300 THEN 1 ELSE 0 END) as "2-5m",
+      SUM(CASE WHEN duration_seconds > 300 THEN 1 ELSE 0 END) as "5m+"
+    FROM call_records WHERE user_id = ? AND started_at >= datetime('now', '-30 days')
+  `).get(userId);
+
+  res.json({
+    stats,
+    callStats,
+    callsByDay,
+    callsByHour,
+    outcomes,
+    errorBreakdown,
+    topCampaigns,
+    recentCalls,
+    todayStats,
+    appointmentStats,
+    durationBuckets,
+  });
+});
+
+export default router;

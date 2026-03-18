@@ -1,0 +1,40 @@
+{
+  "job_id": "9e77dba5-44e3-4682-9bda-7ae2b2e8d032",
+  "started_at": "2026-03-04T02:34:19.427049+00:00",
+  "completed_at": "2026-03-04T02:37:27.656552+00:00",
+  "status": "completed",
+  "total_files": 1,
+  "files_processed": 1,
+  "files_failed": 0,
+  "total_bytes_processed": 285196,
+  "total_chars_extracted": 277097,
+  "total_chunks_created": 0,
+  "total_processing_ms": 7,
+  "ai_calls_total": 0,
+  "ai_calls_success": 0,
+  "ai_calls_failed": 0,
+  "ai_input_chars_total": 0,
+  "ai_output_chars_total": 0,
+  "ai_latency_total_ms": 0,
+  "ai_calls_by_trigger": {},
+  "file_logs": [
+    {
+      "file_name": "pages.txt",
+      "file_type": "txt",
+      "file_size_bytes": 285196,
+      "extraction_method": "native",
+      "processing_start": "2026-03-04T02:34:19.432143+00:00",
+      "processing_end": "2026-03-04T02:34:19.440108+00:00",
+      "duration_ms": 7,
+      "pages_extracted": 1,
+      "tables_extracted": 0,
+      "ocr_applied": false,
+      "ocr_pages": [],
+      "ai_enhanced": false,
+      "ai_calls": [],
+      "chars_extracted": 277097,
+      "chunks_created": 0,
+      "error": null
+    }
+  ]
+}

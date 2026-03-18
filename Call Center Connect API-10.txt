@@ -1,0 +1,211 @@
+﻿Call Center Connect API (1.1)
+
+Download OpenAPI specification: Download
+
+URL: https://ccc.mmdsmart.com/
+
+API for initiating outbound calls.
+
+General description
+
+The Call Center Connect (CCC) API enables seamless call initiation directly from external applications
+such as CRMs and other business platforms. This short guide provides an overview of the key
+endpoints and core functionality, helping you quickly integrate and start making calls through the CCC
+system.
+
+Getting Started
+
+Once the feature is enabled for your organization, the Org Admin can generate an API key by navigating
+to the My Company section and opening the API KEYS tab.
+
+API Key Generation
+
+To begin using the CCC API, you'll need an integration API key. This key is generated once for your
+organization (Contact Support team for that) and can be shared with team members who require
+access. The API key must be included in the header of every request made to the CCC server to ensure
+proper authentication and access to the platform.
+
+Click to call
+
+AUTHORIZATIONS: bearerAuth
+
+REQUEST BODY SCHEMA: application/json
+
+required
+
+phone string
+required The phone number where to call
+
+agent_id string
+required The username of the agent assigned to handle the call
+
+caller_id string
+
+Phone number from which the call originates. If provided, the system verifies
+whether it matches a DID number assigned to the organization.
+
+
+
+Responses
+
+201 Call successfully created
+
+400 Invalid request
+
+500 Internal server error
+
+POST /api/ctc
+
+Request samples
+
+Payload HTTP cURL
+
+Content type
+
+application/json
+
+Copy
+
+{
+"phone": "972547645345",
+"agent_id": "agent_007"
+
+}
+
+Response samples
+
+201 400 500
+
+Content type
+
+application/json
+
+Copy
+
+"call_1234567890"
+
+Voice Message Call
+
+AUTHORIZATIONS: bearerAuth
+
+REQUEST BODY SCHEMA: application/json
+
+
+
+required
+
+phone string
+required The phone number to call.
+
+clip_url string
+required The URL of the audio/video file to play during the call. Supported formats:
+
+Audio: MP3, WAV, AAC
+Video: MP4, AVI, MOV (audio track extracted)
+
+webhook string
+
+The webhook URL for sending DTMF choices
+
+caller_id string
+
+Phone number from which the call originates. If provided, the system verifies
+whether it matches a DID number assigned to the organization.
+
+tag string
+
+Some additional information to use with a webhook.
+
+Responses
+
+201 Call successfully created
+
+400 Invalid request
+
+500 Internal server error
+
+Callbacks
+
+POST DTMF alert
+
+Notify the registered URL with details of DTMF.
+
+POST {$request.body#/webhook}
+
+REQUEST BODY SCHEMA: application/json
+
+required
+
+
+
+phone string
+required The lead phone number
+
+code string
+required
+
+The DTMF tone pressed by lead
+
+tag string
+
+Additional metadata from the organisation’s system.
+
+Callback responses
+
+— 200 Notification received by external service.
+
+POST /api/call
+
+Request samples
+
+Payload HTTP cURL
+
+Content type
+
+application/json
+
+Copy
+
+{
+"phone": "381643072303",
+"clip_url": "https://firebasestorage.googleapis.com/v0/b/geo-attendance-b
+"webhook": "https://webhook.site/3a0a9fde-d246-467b-95d1-8eaa9915bd2d",
+"tag": "Some additional information to use with a webhook"
+
+}
+
+Response samples
+
+201 400 500
+
+Content type
+
+application/json
+
+Copy
+
+
+
+{
+"message": "string"
+
+}
+
+Callback payload samples
+
+Callback
+
+POST: DTMF alert
+
+Content type
+
+application/json
+
+Copy
+
+{
+"phone": "972547645345",
+"agent_id": "agent_007",
+"tag": "Some additional information to use with a webhook"
+
+}

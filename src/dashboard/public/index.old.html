@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ROBOCOP - Enterprise AI Caller</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a28;--surface3:#22223a;
+      --border:#2a2a3e;--primary:#6366f1;--primary-hover:#818cf8;
+      --success:#22c55e;--danger:#ef4444;--warning:#f59e0b;
+      --text:#e2e8f0;--text-dim:#94a3b8;--text-muted:#64748b;
+    }
+    body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+    header{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between}
+    .logo{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:700;letter-spacing:2px}
+    .logo-icon{width:32px;height:32px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+    .header-right{display:flex;align-items:center;gap:16px}
+    .status-badge{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px}
+    .status-idle{background:var(--surface2);color:var(--text-dim)}
+    .status-running{background:rgba(34,197,94,.15);color:var(--success)}
+    .status-done{background:rgba(99,102,241,.15);color:var(--primary)}
+
+    /* Tabs */
+    .tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px}
+    .tab{padding:12px 24px;font-size:14px;font-weight:600;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+    .tab:hover{color:var(--text-dim)}
+    .tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+    .tab-content{display:none;padding:24px;max-width:1400px;margin:0 auto}
+    .tab-content.active{display:block}
+
+    /* Shared */
+    button{padding:9px 20px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+    button:hover{background:var(--surface2);border-color:var(--primary)}
+    .btn-primary{background:var(--primary);border-color:var(--primary);color:#fff}
+    .btn-primary:hover{background:var(--primary-hover)}
+    .btn-danger{background:var(--danger);border-color:var(--danger);color:#fff}
+    .btn-danger:hover{opacity:.85}
+    .btn-sm{padding:6px 14px;font-size:12px}
+    .btn-ghost{background:transparent;border-color:transparent}
+    .btn-ghost:hover{background:var(--surface2)}
+    input[type="text"],input[type="number"],select,textarea{
+      padding:9px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);
+      color:var(--text);font-size:13px;font-family:inherit;width:100%
+    }
+    input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary)}
+    textarea{resize:vertical;min-height:120px;font-family:'Consolas','SF Mono',monospace;font-size:12px;line-height:1.5}
+    label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+
+    .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px}
+    .panel-header{padding:12px 20px;font-size:13px;font-weight:600;color:var(--text-dim);background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .panel-body{padding:16px 20px}
+    .panel-body.no-pad{padding:0}
+    .panel-body.scroll{max-height:400px;overflow-y:auto}
+    .panel-body::-webkit-scrollbar{width:5px}
+    .panel-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+    .form-group{margin-bottom:16px}
+    .form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+
+    /* Stats */
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px}
+    .stat-label{font-size:12px;color:var(--text-muted);margin-bottom:6px}
+    .stat-value{font-size:28px;font-weight:700}
+    .stat-value.success{color:var(--success)}.stat-value.danger{color:var(--danger)}
+    .stat-value.primary{color:var(--primary)}.stat-value.warning{color:var(--warning)}
+
+    /* Table */
+    table{width:100%;border-collapse:collapse}
+    th{text-align:left;padding:9px 14px;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;background:var(--surface);position:sticky;top:0}
+    td{padding:9px 14px;font-size:12px;border-top:1px solid var(--border)}
+    tr:hover td{background:rgba(99,102,241,.04)}
+    .badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:10px;font-weight:600;text-transform:uppercase}
+    .badge-success{background:rgba(34,197,94,.15);color:var(--success)}
+    .badge-danger{background:rgba(239,68,68,.15);color:var(--danger)}
+    .badge-warning{background:rgba(245,158,11,.15);color:var(--warning)}
+    .badge-muted{background:var(--surface2);color:var(--text-muted)}
+    .badge-primary{background:rgba(99,102,241,.15);color:var(--primary)}
+
+    /* Logs */
+    .log-entry{padding:5px 14px;font-family:'Consolas','SF Mono',monospace;font-size:11px;border-bottom:1px solid rgba(42,42,62,.4);display:flex;gap:8px}
+    .log-time{color:var(--text-muted);white-space:nowrap}.log-level{font-weight:700;width:44px}
+    .log-level.INFO{color:var(--primary)}.log-level.ERROR{color:var(--danger)}.log-level.WARN{color:var(--warning)}
+    .log-msg{color:var(--text-dim);word-break:break-word}.log-callid{color:var(--primary);font-weight:600}
+
+    .transcript-entry{padding:10px 16px;border-bottom:1px solid var(--border)}
+    .transcript-role{font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:3px}
+    .transcript-role.agent{color:var(--primary)}.transcript-role.user{color:var(--success)}
+    .transcript-text{font-size:12px;color:var(--text-dim)}
+
+    .empty-state{padding:40px;text-align:center;color:var(--text-muted);font-size:13px}
+
+    /* Mapping */
+    .mapping-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin-bottom:10px}
+    .mapping-arrow{color:var(--text-muted);font-size:16px;text-align:center}
+
+    /* Upload area */
+    .upload-area{border:2px dashed var(--border);border-radius:12px;padding:40px;text-align:center;cursor:pointer;transition:all .2s}
+    .upload-area:hover{border-color:var(--primary);background:rgba(99,102,241,.03)}
+    .upload-area.dragover{border-color:var(--primary);background:rgba(99,102,241,.06)}
+    .upload-icon{font-size:36px;margin-bottom:12px}
+    .upload-text{color:var(--text-dim);font-size:14px}
+    .upload-sub{color:var(--text-muted);font-size:12px;margin-top:6px}
+
+    .controls-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+    .call-input{display:flex;gap:8px;align-items:center}
+    .call-input input{width:180px}
+
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+    @media(max-width:768px){
+      .stats-grid{grid-template-columns:repeat(2,1fr)}
+      .grid-2{grid-template-columns:1fr}
+      .form-row{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo"><div class="logo-icon">R</div>ROBOCOP</div>
+    <div class="header-right">
+      <div id="statusBadge" class="status-badge status-idle">IDLE</div>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('calls')">Calls</div>
+    <div class="tab" onclick="switchTab('leads')">Leads</div>
+    <div class="tab" onclick="switchTab('config')">Agent Config</div>
+  </div>
+
+  <!-- ===== CALLS TAB ===== -->
+  <div id="tab-calls" class="tab-content active">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Total Leads</div><div class="stat-value" id="totalLeads">0</div></div>
+      <div class="stat-card"><div class="stat-label">Calls Made</div><div class="stat-value primary" id="callsMade">0</div></div>
+      <div class="stat-card"><div class="stat-label">Transferred</div><div class="stat-value success" id="successCalls">0</div></div>
+      <div class="stat-card"><div class="stat-label">Failed</div><div class="stat-value danger" id="failedCalls">0</div></div>
+    </div>
+    <div class="controls-bar">
+      <button class="btn-primary" id="btnStart" onclick="startCampaign()">&#9654; Start Campaign</button>
+      <button class="btn-danger" id="btnStop" onclick="stopCampaign()" style="display:none">&#9632; Stop</button>
+      <div class="call-input">
+        <input type="text" id="phoneInput" placeholder="Phone number" />
+        <input type="text" id="nameInput" placeholder="First name (optional)" style="width:140px" />
+        <button onclick="callSingle()">Call</button>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header"><span>Call Results</span><span id="resultCount">0</span></div>
+        <div class="panel-body no-pad scroll">
+          <table><thead><tr><th>Lead</th><th>Phone</th><th>Outcome</th><th>Notes</th></tr></thead>
+            <tbody id="resultsTable"></tbody>
+          </table>
+          <div class="empty-state" id="resultsEmpty">No calls yet</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><span>Live Logs</span><span id="logCount">0</span></div>
+        <div class="panel-body no-pad scroll" id="logsBody">
+          <div id="logsContainer"></div>
+          <div class="empty-state" id="logsEmpty">Waiting for activity...</div>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><span>Live Transcript</span><span id="transcriptCallId"></span></div>
+      <div class="panel-body no-pad scroll" id="transcriptBody">
+        <div id="transcriptContainer"></div>
+        <div class="empty-state" id="transcriptEmpty">Transcript will appear during active calls</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== LEADS TAB ===== -->
+  <div id="tab-leads" class="tab-content">
+    <div class="grid-2">
+      <div>
+        <div class="panel">
+          <div class="panel-header"><span>Upload Leads</span></div>
+          <div class="panel-body">
+            <div class="upload-area" id="uploadArea" onclick="document.getElementById('csvFile').click()">
+              <div class="upload-icon">&#128196;</div>
+              <div class="upload-text">Click to upload CSV or drag &amp; drop</div>
+              <div class="upload-sub">Supports any CSV format — map fields after upload</div>
+            </div>
+            <input type="file" id="csvFile" accept=".csv,.txt" style="display:none" onchange="handleFileUpload(this)" />
+            <div id="uploadStatus" style="margin-top:12px;font-size:13px;color:var(--text-dim)"></div>
+          </div>
+        </div>
+        <div class="panel" id="mappingPanel" style="display:none">
+          <div class="panel-header"><span>Field Mapping</span><button class="btn-sm btn-primary" onclick="applyMapping()">Apply Mapping</button></div>
+          <div class="panel-body" id="mappingBody"></div>
+        </div>
+      </div>
+      <div>
+        <div class="panel">
+          <div class="panel-header">
+            <span>Add Lead Manually</span>
+          </div>
+          <div class="panel-body">
+            <div class="form-row">
+              <div><label>Phone *</label><input type="text" id="addPhone" placeholder="+34612345678" /></div>
+              <div><label>First Name</label><input type="text" id="addFirstName" placeholder="Juan" /></div>
+            </div>
+            <div class="form-row">
+              <div><label>Last Name</label><input type="text" id="addLastName" placeholder="Garcia" /></div>
+              <div><label>Email</label><input type="text" id="addEmail" placeholder="juan@email.com" /></div>
+            </div>
+            <div class="form-row">
+              <div><label>Company</label><input type="text" id="addCompany" placeholder="Company name" /></div>
+              <div><label>Country</label><input type="text" id="addCountry" placeholder="Spain" /></div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button class="btn-primary btn-sm" onclick="addLeadManual()">+ Add Lead</button>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <span>Leads (<span id="leadCount">0</span>)</span>
+            <div style="display:flex;gap:8px">
+              <button class="btn-sm btn-danger" onclick="clearLeads()">Clear All</button>
+            </div>
+          </div>
+          <div class="panel-body no-pad scroll">
+            <table><thead><tr><th>Phone</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Company</th></tr></thead>
+              <tbody id="leadsTable"></tbody>
+            </table>
+            <div class="empty-state" id="leadsEmpty">No leads loaded — upload a CSV or add manually</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel" id="previewPanel" style="display:none">
+      <div class="panel-header"><span>CSV Preview (first 5 rows)</span></div>
+      <div class="panel-body no-pad scroll" id="previewBody"></div>
+    </div>
+  </div>
+
+  <!-- ===== CONFIG TAB ===== -->
+  <div id="tab-config" class="tab-content">
+    <div class="grid-2">
+      <div>
+        <div class="panel">
+          <div class="panel-header"><span>Agent Settings</span></div>
+          <div class="panel-body">
+            <div class="form-row">
+              <div><label>Agent Name</label><input type="text" id="cfgAgentName" /></div>
+              <div><label>Language</label>
+                <select id="cfgLanguage">
+                  <option value="es">Spanish (es)</option>
+                  <option value="en">English (en)</option>
+                  <option value="pt">Portuguese (pt)</option>
+                  <option value="fr">French (fr)</option>
+                  <option value="de">German (de)</option>
+                  <option value="it">Italian (it)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Company Name</label><input type="text" id="cfgCompany" /></div>
+              <div class="form-group"><label>Transfer Extension</label><input type="text" id="cfgTransferExt" placeholder="e.g. 676" /></div>
+            </div>
+            <div class="form-row">
+              <div><label>LLM Provider</label>
+                <select id="cfgLLMProvider"><option value="open_ai">OpenAI</option><option value="anthropic">Anthropic</option></select>
+              </div>
+              <div><label>LLM Model</label><input type="text" id="cfgLLMModel" /></div>
+            </div>
+            <div class="form-row">
+              <div><label>STT Provider</label>
+                <select id="cfgSTTProvider"><option value="deepgram">Deepgram</option></select>
+              </div>
+              <div><label>STT Model</label><input type="text" id="cfgSTTModel" /></div>
+            </div>
+            <div class="form-row">
+              <div><label>TTS Provider</label>
+                <select id="cfgTTSProvider"><option value="deepgram">Deepgram</option></select>
+              </div>
+              <div><label>TTS Model / Voice</label><input type="text" id="cfgTTSModel" /></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><span>Greeting Message</span></div>
+          <div class="panel-body">
+            <p style="font-size:11px;color:var(--text-muted);margin-bottom:8px">First thing the AI says when lead answers. Use {{first_name}}, {{last_name}}, etc.</p>
+            <textarea id="cfgGreeting" rows="2" style="min-height:60px"></textarea>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="panel" style="height:100%">
+          <div class="panel-header"><span>AI Script / System Prompt</span></div>
+          <div class="panel-body">
+            <p style="font-size:11px;color:var(--text-muted);margin-bottom:8px">Full agent instructions. Use {{first_name}}, {{last_name}}, {{phone}}, or any lead field as variables.</p>
+            <textarea id="cfgScript" rows="20" style="min-height:500px"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-actions" style="margin-top:0">
+      <button onclick="resetConfig()">Reset to Default</button>
+      <button class="btn-primary" onclick="saveConfig()">Save Configuration</button>
+    </div>
+  </div>
+
+<script>
+let ws, logCount = 0, resultCount = 0;
+let csvColumns = [], csvMapping = {};
+
+// ===== TABS =====
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.tab-content#tab-${name}`).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => { if(t.textContent.toLowerCase().includes(name.slice(0,4))) t.classList.add('active'); });
+  if (name === 'config') loadConfig();
+  if (name === 'leads') loadLeads();
+}
+
+// ===== WEBSOCKET =====
+function connect() {
+  const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+  ws = new WebSocket(`${proto}://${location.host}`);
+  ws.onopen = () => console.log('Connected');
+  ws.onmessage = (e) => handleMessage(JSON.parse(e.data));
+  ws.onclose = () => setTimeout(connect, 2000);
+}
+
+function handleMessage(msg) {
+  switch (msg.type) {
+    case 'state':
+      updateStatus(msg.data.status);
+      document.getElementById('totalLeads').textContent = msg.data.totalLeads;
+      document.getElementById('callsMade').textContent = msg.data.completedCalls;
+      (msg.data.recentResults||[]).forEach(r => addResult(r));
+      (msg.data.recentLogs||[]).forEach(l => addLog(l));
+      break;
+    case 'log': addLog(msg.data); break;
+    case 'result': addResult(msg.data); break;
+    case 'call_update': handleCallUpdate(msg.data); break;
+    case 'transcript': addTranscript(msg.data); break;
+    case 'status_change': updateStatus(msg.data.status); break;
+    case 'leads_updated':
+      document.getElementById('totalLeads').textContent = msg.data.count;
+      document.getElementById('leadCount').textContent = msg.data.count;
+      break;
+  }
+}
+
+function updateStatus(s) {
+  const b = document.getElementById('statusBadge');
+  b.textContent = s.toUpperCase(); b.className = `status-badge status-${s}`;
+  document.getElementById('btnStart').style.display = s==='running'?'none':'';
+  document.getElementById('btnStop').style.display = s==='running'?'':'none';
+}
+
+// ===== CALLS =====
+function addLog(e) {
+  document.getElementById('logsEmpty').style.display='none';
+  const c = document.getElementById('logsContainer'), d = document.createElement('div');
+  d.className='log-entry';
+  const t = e.time?new Date(e.time).toLocaleTimeString():'', l=(e.level||'INFO').toUpperCase();
+  const cid = e.callId?`<span class="log-callid">[${e.callId}]</span> `:'';
+  d.innerHTML=`<span class="log-time">${t}</span><span class="log-level ${l}">${l}</span><span class="log-msg">${cid}${esc(e.message)}</span>`;
+  c.appendChild(d); logCount++;
+  document.getElementById('logCount').textContent=logCount;
+  document.getElementById('logsBody').scrollTop=99999;
+}
+
+function addResult(r) {
+  document.getElementById('resultsEmpty').style.display='none';
+  const tb=document.getElementById('resultsTable'), tr=document.createElement('tr');
+  const lead=r.lead||{}, o=r.result?.outcome||r.outcome||r.status||'unknown', n=r.result?.notes||r.notes||'';
+  const bc = ['interested','transferred','callback'].includes(o)?'badge-success':['error','failed'].includes(o)?'badge-danger':['not_interested','timeout','lead_hangup'].includes(o)?'badge-warning':'badge-muted';
+  tr.innerHTML=`<td>${esc(lead.first_name||lead.name||'-')}</td><td>${esc(lead.phone||'-')}</td><td><span class="badge ${bc}">${o}</span></td><td>${esc(n)}</td>`;
+  tb.insertBefore(tr,tb.firstChild); resultCount++;
+  document.getElementById('resultCount').textContent=resultCount;
+  document.getElementById('callsMade').textContent=resultCount;
+  let s=0,f=0;
+  tb.querySelectorAll('.badge').forEach(b=>{const t=b.textContent;if(['interested','transferred','callback'].includes(t))s++;if(['error','failed'].includes(t))f++});
+  document.getElementById('successCalls').textContent=s;
+  document.getElementById('failedCalls').textContent=f;
+}
+
+function handleCallUpdate(d) {
+  if(d.status==='dialing'||d.status==='connected') addLog({level:'info',message:`Call ${d.callId}: ${d.status}`,callId:d.callId,time:new Date().toISOString()});
+}
+
+function addTranscript(d) {
+  document.getElementById('transcriptEmpty').style.display='none';
+  document.getElementById('transcriptCallId').textContent=d.callId||'';
+  const c=document.getElementById('transcriptContainer'),div=document.createElement('div');
+  div.className='transcript-entry';
+  div.innerHTML=`<div class="transcript-role ${d.role}">${d.role}</div><div class="transcript-text">${esc(d.text)}</div>`;
+  c.appendChild(div);
+  document.getElementById('transcriptBody').scrollTop=99999;
+}
+
+async function startCampaign(){try{const r=await fetch('/api/campaign/start',{method:'POST'});const d=await r.json();if(!r.ok)alert(d.error)}catch(e){alert(e.message)}}
+async function stopCampaign(){try{const r=await fetch('/api/campaign/stop',{method:'POST'});const d=await r.json();if(!r.ok)alert(d.error)}catch(e){alert(e.message)}}
+async function callSingle(){
+  const phone=document.getElementById('phoneInput').value.trim();
+  const first_name=document.getElementById('nameInput').value.trim();
+  if(!phone)return alert('Enter a phone number');
+  try{
+    const r=await fetch('/api/call',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone,first_name})});
+    const d=await r.json();if(!r.ok)alert(d.error);else{document.getElementById('phoneInput').value='';document.getElementById('nameInput').value=''}
+  }catch(e){alert(e.message)}
+}
+document.getElementById('phoneInput').addEventListener('keydown',e=>{if(e.key==='Enter')callSingle()});
+
+// ===== LEADS =====
+async function loadLeads(){
+  try{
+    const r=await fetch('/api/leads');const leads=await r.json();
+    const tb=document.getElementById('leadsTable');tb.innerHTML='';
+    document.getElementById('leadCount').textContent=leads.length;
+    document.getElementById('leadsEmpty').style.display=leads.length?'none':'';
+    leads.forEach(l=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${esc(l.phone||'')}</td><td>${esc(l.first_name||'')}</td><td>${esc(l.last_name||'')}</td><td>${esc(l.email||'')}</td><td>${esc(l.company||'')}</td>`;
+      tb.appendChild(tr);
+    });
+  }catch(e){console.error(e)}
+}
+
+async function handleFileUpload(input){
+  const file=input.files[0]; if(!file)return;
+  const fd=new FormData(); fd.append('file',file);
+  document.getElementById('uploadStatus').textContent='Uploading...';
+  try{
+    const r=await fetch('/api/leads/upload',{method:'POST',body:fd});
+    const d=await r.json();
+    if(!r.ok){document.getElementById('uploadStatus').textContent='Error: '+d.error;return}
+    document.getElementById('uploadStatus').innerHTML=`Uploaded <b>${d.totalRows}</b> rows with columns: <b>${d.columns.join(', ')}</b>`;
+    csvColumns=d.columns;
+    showMappingUI(d.columns);
+    showPreview(d.preview,d.columns);
+  }catch(e){document.getElementById('uploadStatus').textContent='Error: '+e.message}
+  input.value='';
+}
+
+function showMappingUI(columns){
+  const standardFields=['phone','first_name','last_name','email','company','country','notes'];
+  const panel=document.getElementById('mappingPanel');panel.style.display='';
+  const body=document.getElementById('mappingBody');
+  let html='<p style="font-size:12px;color:var(--text-dim);margin-bottom:14px">Map your CSV columns to standard fields. Only <b>phone</b> is required.</p>';
+  standardFields.forEach(sf=>{
+    const auto=columns.find(c=>c.toLowerCase().replace(/[^a-z]/g,'')===sf.replace(/_/g,''))||
+               columns.find(c=>c.toLowerCase().includes(sf.split('_')[0]))||'';
+    html+=`<div class="mapping-grid">
+      <div><label style="margin:0">${sf}</label></div>
+      <div class="mapping-arrow">&larr;</div>
+      <div><select id="map_${sf}" style="width:100%"><option value="">— not mapped —</option>${columns.map(c=>`<option value="${c}" ${c===auto?'selected':''}>${c}</option>`).join('')}</select></div>
+    </div>`;
+  });
+  body.innerHTML=html;
+}
+
+function showPreview(rows,columns){
+  const panel=document.getElementById('previewPanel');panel.style.display='';
+  let html='<table><thead><tr>'+columns.map(c=>`<th>${esc(c)}</th>`).join('')+'</tr></thead><tbody>';
+  rows.forEach(r=>{html+='<tr>'+columns.map(c=>`<td>${esc(r[c]||'')}</td>`).join('')+'</tr>'});
+  html+='</tbody></table>';
+  document.getElementById('previewBody').innerHTML=html;
+}
+
+async function applyMapping(){
+  const standardFields=['phone','first_name','last_name','email','company','country','notes'];
+  const mapping={};
+  standardFields.forEach(sf=>{
+    const sel=document.getElementById('map_'+sf);
+    if(sel&&sel.value) mapping[sf]=sel.value;
+  });
+  if(!mapping.phone){alert('Phone field must be mapped');return}
+  try{
+    const r=await fetch('/api/leads/mapping',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mapping})});
+    const d=await r.json();
+    if(!r.ok){alert(d.error);return}
+    document.getElementById('uploadStatus').innerHTML=`<span style="color:var(--success)">${d.count} leads imported successfully!</span>`;
+    loadLeads();
+  }catch(e){alert(e.message)}
+}
+
+async function addLeadManual(){
+  const phone=document.getElementById('addPhone').value.trim();
+  if(!phone){alert('Phone number is required');return}
+  const lead={
+    phone,
+    first_name:document.getElementById('addFirstName').value.trim(),
+    last_name:document.getElementById('addLastName').value.trim(),
+    email:document.getElementById('addEmail').value.trim(),
+    company:document.getElementById('addCompany').value.trim(),
+    country:document.getElementById('addCountry').value.trim(),
+  };
+  try{
+    const r=await fetch('/api/leads/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(lead)});
+    const d=await r.json();
+    if(!r.ok){alert(d.error);return}
+    // Clear form
+    ['addPhone','addFirstName','addLastName','addEmail','addCompany','addCountry'].forEach(id=>document.getElementById(id).value='');
+    loadLeads();
+  }catch(e){alert(e.message)}
+}
+
+async function clearLeads(){
+  if(!confirm('Clear all leads?'))return;
+  try{await fetch('/api/leads',{method:'DELETE'});loadLeads()}catch(e){alert(e.message)}
+}
+
+// Drag and drop
+const ua=document.getElementById('uploadArea');
+ua.addEventListener('dragover',e=>{e.preventDefault();ua.classList.add('dragover')});
+ua.addEventListener('dragleave',()=>ua.classList.remove('dragover'));
+ua.addEventListener('drop',e=>{
+  e.preventDefault();ua.classList.remove('dragover');
+  const file=e.dataTransfer.files[0];if(!file)return;
+  const dt=new DataTransfer();dt.items.add(file);
+  document.getElementById('csvFile').files=dt.files;
+  handleFileUpload(document.getElementById('csvFile'));
+});
+
+// ===== CONFIG =====
+async function loadConfig(){
+  try{
+    const r=await fetch('/api/config');const c=await r.json();
+    document.getElementById('cfgAgentName').value=c.agent?.name||'';
+    document.getElementById('cfgLanguage').value=c.agent?.language||'es';
+    document.getElementById('cfgCompany').value=c.agent?.company||'';
+    document.getElementById('cfgTransferExt').value=c.agent?.transfer_extension||'676';
+    document.getElementById('cfgLLMProvider').value=c.llm?.provider||'open_ai';
+    document.getElementById('cfgLLMModel').value=c.llm?.model||'';
+    document.getElementById('cfgSTTProvider').value=c.stt?.provider||'deepgram';
+    document.getElementById('cfgSTTModel').value=c.stt?.model||'';
+    document.getElementById('cfgTTSProvider').value=c.tts?.provider||'deepgram';
+    document.getElementById('cfgTTSModel').value=c.tts?.model||'';
+    document.getElementById('cfgGreeting').value=c.greeting||'';
+    document.getElementById('cfgScript').value=c.script||'';
+  }catch(e){console.error(e)}
+}
+
+async function saveConfig(){
+  const cfg={
+    agent:{
+      name:document.getElementById('cfgAgentName').value,
+      language:document.getElementById('cfgLanguage').value,
+      company:document.getElementById('cfgCompany').value,
+      transfer_extension:document.getElementById('cfgTransferExt').value
+    },
+    llm:{provider:document.getElementById('cfgLLMProvider').value,model:document.getElementById('cfgLLMModel').value},
+    stt:{provider:document.getElementById('cfgSTTProvider').value,model:document.getElementById('cfgSTTModel').value},
+    tts:{provider:document.getElementById('cfgTTSProvider').value,model:document.getElementById('cfgTTSModel').value},
+    greeting:document.getElementById('cfgGreeting').value,
+    script:document.getElementById('cfgScript').value,
+  };
+  try{
+    const r=await fetch('/api/config',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(cfg)});
+    const d=await r.json();if(r.ok)alert('Configuration saved!');else alert(d.error||'Save failed');
+  }catch(e){alert(e.message)}
+}
+
+async function resetConfig(){
+  if(!confirm('Reset all agent config to defaults?'))return;
+  try{const r=await fetch('/api/config/reset',{method:'POST'});if(r.ok){loadConfig();alert('Config reset to defaults')}}catch(e){alert(e.message)}
+}
+
+function esc(s){return s?String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'):''}
+
+connect();
+</script>
+</body>
+</html>

@@ -1,0 +1,333 @@
+[
+  {
+    "relationship_id": "a0037beb-fd98-4565-b78a-7f4a8a596000",
+    "source_entity": "3ecf78b9-55fa-4ecc-986d-491c0c506267",
+    "target_entity": "db98053c-9cd8-4daa-ae26-4654279638d3",
+    "type": "RELATED_TO",
+    "confidence": 0.6,
+    "evidence_chunks": [
+      "1f523d54-0e3a-4a8b-a805-6d9b67bef155"
+    ],
+    "context": "<CodeGroup>\n  ```python Python\n      # Send settings to configure the agent\n            print(\"Sending settings configuration...\")\n            connection.send_settings(settings)\n            "
+  },
+  {
+    "relationship_id": "283ba28a-db82-4811-a6ab-e92a0f4e8f79",
+    "source_entity": "85771359-1904-43c9-9c73-b7d9df69060e",
+    "target_entity": "c31b2390-60e7-48bb-9821-6744fb652752",
+    "type": "RELATED_TO",
+    "confidence": 0.7,
+    "evidence_chunks": [
+      "51e47648-d1ef-40f9-bde9-60b43de023e0",
+      "3ff51a6b-7da4-47f7-8d58-2b8e231fe81c"
+    ],
+    "context": "print(f\"User started speaking\")\n                    with open(\"chatlog.txt\", 'a') as chatlog:\n                        chatlog.write(f\"User started speaking\\n\")\n\nelif msg_type == \"AgentThinking\":\n     "
+  },
+  {
+    "relationship_id": "5af738fe-7070-4ac0-b4cc-70bfad52d193",
+    "source_entity": "3ecf78b9-55fa-4ecc-986d-491c0c506267",
+    "target_entity": "dcd9452a-9a09-4845-b345-1d06f1f77529",
+    "type": "RELATED_TO",
+    "confidence": 0.8999999999999999,
+    "evidence_chunks": [
+      "d797806d-56b6-4eb9-8976-1c2e6a40e144",
+      "40cb845a-32a7-44d9-9348-f4284d04e4e8",
+      "651314a6-3157-4e76-a151-d6ab2062121a",
+      "b5fa3fae-3a7c-464c-93d4-00c8afb03b3a"
+    ],
+    "context": "Second)\n\nfor br := range dch.binaryChan {\n            fmt."
+  },
+  {
+    "relationship_id": "20041c2c-44b6-4991-889e-1e0ba03d40dc",
+    "source_entity": "3ecf78b9-55fa-4ecc-986d-491c0c506267",
+    "target_entity": "6c79fd63-74d5-4d1a-ac99-6b544e3ed861",
+    "type": "RELATED_TO",
+    "confidence": 0.7,
+    "evidence_chunks": [
+      "03476890-9525-4645-a9f6-121a8f882ca7",
+      "290bdcf3-72d2-4d1f-bf22-b9376fc4a540"
+    ],
+    "context": "Done()\n        for closeResp := range dch.closeChan {\n            fmt."
+  },
+  {
+    "relationship_id": "9cb95959-1031-4a78-874c-4b02d70a9fe1",
+    "source_entity": "1c9ba72a-3977-4ca1-9813-2b631f6ffff1",
+    "target_entity": "b89ad0dd-62c7-4dec-9d7c-d4828f614ac2",
+    "type": "USES",
+    "confidence": 0.8,
+    "evidence_chunks": [
+      "e40bcfc0-8f61-4b7b-9d8d-50617f4d6ac7"
+    ],
+    "context": "MIT\n\nusing Deepgram"
+  },
+  {
+    "relationship_id": "1c40f810-d773-40b0-aa61-6174f12613ca",
+    "source_entity": "3ecf78b9-55fa-4ecc-986d-491c0c506267",
+    "target_entity": "40cf921b-681f-450f-b725-7c999a8ab5cf",
+    "type": "RELATED_TO",
+    "confidence": 0.6,
+    "evidence_chunks": [
+      "7ce319ba-8bc1-47f8-9c33-0153a56f0ce2"
+    ],
+    "context": "= 0;\n\n// Start the connection\n                var settingsConfiguration = new SettingsSchema();\n                settingsConfiguration."
+  },
+  {
+    "relationship_id": "124c79ab-4513-4cc8-af4d-fa5694311e94",
+    "source_entity": "3ecf78b9-55fa-4ecc-986d-491c0c506267",
+    "target_entity": "1a9071d6-ab8c-464e-97a2-1046cdef3aa9",
+    "type": "RELATED_TO",
+    "confidence": 0.6,
+    "evidence_chunks": [
+      "90dfd7e9-abe8-42aa-8fdf-814772090b32"
+    ],
+    "context": "[Third Party TTS Voice Models](/docs/voice-agent-tts-models) |\n\n## Supported LLM Models\n\n| Models                                     |\n| ------------------------------------------"
+  },
+  {
+    "relationship_id": "4c972532-9726-4aa8-9042-cc6fea37c21a",
+    "source_entity": "f079d1be-d3c7-4f00-b9d1-f39fcb508fe0",
+    "target_entity": "3ecf78b9-55fa-4ecc-986d-491c0c506267",
+    "type": "RELATED_TO",
+    "confidence": 0.6,
+    "evidence_chunks": [
+      "fa5c948c-0829-46e0-8549-f34594cd5ea4"
+    ],
+    "context": "<Info>\n  For more information on the `Settings` message, see the [Voice Agent API Reference](/reference/voice-agent/voice-agent)\n</Info>"
+  },
+  {
+    "relationship_id": "482c9bbc-1d2a-42c5-8ac5-1459575a27c1",
+    "source_entity": "1a9071d6-ab8c-464e-97a2-1046cdef3aa9",
+    "target_entity": "3f3f776a-88b2-429a-81db-08008c3d3d7c",
+    "type": "RELATED_TO",
+    "confidence": 0.6,
+    "evidence_chunks": [
+      "2b810b13-34b4-4599-b8ea-ac33957b8332"
+    ],
+    "context": "Flux models use `v2` and all other models use `v1`.                                                                                                                                     "
+  },
+  {
+    "relationship_id": "851d3959-2641-406d-af13-40954921a235",
+    "source_entity": "139ebf0d-6db1-4466-b938-2d3254609c85",
+    "target_entity": "0792facb-5984-4111-a9b9-9dabe71faee0",
+    "type": "RELATED_TO",
+    "confidence": 0.6,
+    "evidence_chunks": [
+      "1c1c19d7-ebb7-44d9-a4c5-c36b716a5b2e"
+    ],
+    "context": "**Context Transfer**: A small and fast LLM (via Groq API) summarizes conversation between agents\n\n## Key Technical Concepts\n\n### Session-Based Agent Switching"
+  },
+  {
+    "relationship_id": "4ff2a344-bbd0-4a3f-9391-26aa9281635f",
+    "source_entity": "016ee8e5-be11-4c10-9498-8ee683b72723",
+    "target_entity": "3ecf78b9-55fa-4ecc-986d-491c0c506267",
+    "type": "RELATED_TO",
+    "confidence": 0.7,
+    "evidence_chunks": [
+      "8eb87080-4cb8-4d0f-a53c-4189e795ec56",
+      "8eb87080-4cb8-4d0f-a53c-4189e795ec56"
+    ],
+    "context": "* **Purpose**: Provide consultation and recommendations\n* **Functions**: `handoff_to_next_agent`, `end_conversation`\n* **Context**: Receives summary from qualifier"
+  },
+  {
+    "relationship_id": "95d17ead-d636-4f60-9e94-860d15f534fd",
+    "source_entity": "016ee8e5-be11-4c10-9498-8ee683b72723",
+    "target_entity": "fddb3c80-1170-4265-855d-5242bfcc0f84",
+    "type": "RELATED_TO",
+    "confidence": 0.6,
+    "evidence_chunks": [
+      "8eb87080-4cb8-4d0f-a53c-4189e795ec56"
+    ],
+    "context": "* **Purpose**: Provide consultation and recommendations\n* **Functions**: `handoff_to_next_agent`, `end_conversation`\n* **Context**: Receives summary from qualifier"
+  },
+  {
+    "relationship_id": "5ca4dd8f-8377-4194-ac6d-4252d1912a67",
+    "source_entity": "0792facb-5984-4111-a9b9-9dabe71faee0",
+    "target_entity": "6b50071a-fd1d-4b16-a932-bb5b6ed4ad85",
+    "type": "USES",
+    "confidence": 0.8,
+    "evidence_chunks": [
+      "0f3a76b5-c3f4-4761-be2e-dd0b5001cb4a"
+    ],
+    "context": "conversation using Groq"
+  },
+  {
+    "relationship_id": "4146482b-ece4-454c-b4bd-158b6f398a17",
+    "source_entity": "3ecf78b9-55fa-4ecc-986d-491c0c506267",
+    "target_entity": "5c93de5f-00d2-432a-bc9c-56cba38ab126",
+    "type": "RELATED_TO",
+    "confidence": 0.6,
+    "evidence_chunks": [
+      "d0719847-beec-4480-99b0-56cd33e600e8"
+    ],
+    "context": "Install Dependencies\n\nThis implementation uses the Deepgram Python SDK:\n\n```bash\n# Create virtual environment\npython -m venv venv\nsource venv/bin/activate  # On Windows: venv\\Scripts\\activate\n\n# Insta"
+  },
+  {
+    "relationship_id": "3b8b013e-abb8-429d-87dd-68d1d6fc2d34",
+    "source_entity": "139ebf0d-6db1-4466-b938-2d3254609c85",
+    "target_entity": "69438ef1-c8d1-4973-b6b4-cfa319bee69c",
+    "type": "RELATED_TO",
+    "confidence": 0.7999999999999999,
+    "evidence_chunks": [
+      "a05986b2-d745-4b1c-a750-f37b077a8807",
+      "cd596dab-bb33-4afc-9ed8-e351290e108c",
+      "cd596dab-bb33-4afc-9ed8-e351290e108c"
+    ],
+    "context": "For example, if a user asks for the current weather in a specific location, the LLM can use function calling to call a weather API, fetch real-time data, and present it in a structured response.\n\n"
+  },
+  {
+    "relationship_id": "997fbc15-dee7-4630-9fba-7a405926084b",
+    "source_entity": "3ecf78b9-55fa-4ecc-986d-491c0c506267",
+    "target_entity": "69438ef1-c8d1-4973-b6b4-cfa319bee69c",
+    "type": "RELATED_TO",
+    "confidence": 0.6,
+    "evidence_chunks": [
+      "cd596dab-bb33-4afc-9ed8-e351290e108c"
+    ],
+    "context": "* **Call the Function:**"
+  },
+  {
+    "relationship_id": "a3eb7083-bcbb-4666-84ba-7243d8587f84",
+    "source_entity": "3ecf78b9-55fa-4ecc-986d-491c0c506267",
+    "target_entity": "d02872ba-65d2-4a73-a6de-25fe0161f780",
+    "type": "RELATED_TO",
+    "confidence": 0.7,
+    "evidence_chunks": [
+      "7e64643f-173f-4eb0-bf25-060dcdebd296",
+      "97bb8a89-bf9e-4e25-8617-1826ab2c83a4"
+    ],
+    "context": "EnsureSuccessStatusCode();\n\nvar data = await JsonSerializer."
+  },
+  {
+    "relationship_id": "a334bac7-7102-47cb-b596-93b03bf56126",
+    "source_entity": "87dee4d9-cc81-45e2-8dc6-a357a54fe221",
+    "target_entity": "69438ef1-c8d1-4973-b6b4-cfa319bee69c",
+    "type": "RELATED_TO",
+    "confidence": 0.7,
+    "evidence_chunks": [
+      "21674f6e-931b-427a-98b4-612f7fd87b5b",
+      "6ea6f8b7-cac3-4ec7-baab-8aec3827fc16"
+    ],
+    "context": "Client executes the function and sends a `FunctionCallResponse` \u2192 Returns the function result.\n"
+  },
+  {
+    "relationship_id": "c25073c5-725d-4dd9-b69b-702cd02ca684",
+    "source_entity": "8ca48e97-610a-4596-bb23-bdc8024d32df",
+    "target_entity": "3ecf78b9-55fa-4ecc-986d-491c0c506267",
+    "type": "RELATED_TO",
+    "confidence": 0.6,
+    "evidence_chunks": [
+      "f5b6e052-0807-4e99-8383-cb5cefe5619b"
+    ],
+    "context": "<CodeGroup>\n  ```python Python\n  VOICE = \"aura-2-thalia-en\"\n\n# this gets updated by the agent template\n  FIRST_MESSAGE = \"\"\n\n# audio settings\n  USER_AUDIO_SAMPLE_RATE = 48000\n  USER_AUDIO_SECS_PER_CHU"
+  },
+  {
+    "relationship_id": "980a925c-711b-47fe-a9f6-91f9075089f3",
+    "source_entity": "a134e899-c0ac-4901-8728-ecad0f58a9e3",
+    "target_entity": "69438ef1-c8d1-4973-b6b4-cfa319bee69c",
+    "type": "RELATED_TO",
+    "confidence": 0.6,
+    "evidence_chunks": [
+      "6ea6f8b7-cac3-4ec7-baab-8aec3827fc16"
+    ],
+    "context": "* When `client_side` is `false`, the server will handle the function using built-in logic.\n"
+  },
+  {
+    "relationship_id": "27fc62ed-bb36-4c25-a9eb-788b69a83607",
+    "source_entity": "da7a9012-a85b-4918-becf-d2f79dfb2f19",
+    "target_entity": "3ecf78b9-55fa-4ecc-986d-491c0c506267",
+    "type": "RELATED_TO",
+    "confidence": 0.6,
+    "evidence_chunks": [
+      "37e2bb72-c6ee-4871-ae90-6e2d2d1dde83"
+    ],
+    "context": "Keys from Vertex AI, Workspace Gemini, or Gemini Enterprise will not work with the Agent API.\n</Info>"
+  },
+  {
+    "relationship_id": "d865e081-2dbe-4fc0-a697-c6d066256d77",
+    "source_entity": "3ecf78b9-55fa-4ecc-986d-491c0c506267",
+    "target_entity": "a247267f-f2e9-48db-9c08-c2ab224ce42a",
+    "type": "RELATED_TO",
+    "confidence": 0.6,
+    "evidence_chunks": [
+      "1a69409d-5829-4104-99e2-991e05350f31"
+    ],
+    "context": "* **Use a custom endpoint from one of the supported major LLM providers."
+  },
+  {
+    "relationship_id": "03c2521c-04f9-4b27-9da4-c4cab3ea5e33",
+    "source_entity": "f079d1be-d3c7-4f00-b9d1-f39fcb508fe0",
+    "target_entity": "42e87693-e1b3-49a9-a74c-7252c4b496ba",
+    "type": "RELATED_TO",
+    "confidence": 0.6,
+    "evidence_chunks": [
+      "b38f58a1-736e-446c-b26e-fc79acfd996e"
+    ],
+    "context": "<Info>\n  You can set your Text-to-Speech model in the [Settings Message](/docs/configure-voice-agent) for your Voice Agent."
+  },
+  {
+    "relationship_id": "0be02dc5-e336-4380-b333-45e86e789b36",
+    "source_entity": "3ecf78b9-55fa-4ecc-986d-491c0c506267",
+    "target_entity": "5d4d2d36-e78b-4d7a-93f6-6648e02ef963",
+    "type": "RELATED_TO",
+    "confidence": 0.7999999999999999,
+    "evidence_chunks": [
+      "d55f32a4-d3b1-4c62-b8ad-1b5c1e929c51",
+      "d55f32a4-d3b1-4c62-b8ad-1b5c1e929c51",
+      "1c59c2c6-bda7-4ba0-8f29-2bff9c7dd374"
+    ],
+    "context": "|\n| [Encoding](/docs/encoding)         | Defines the audio encoding format.                       "
+  },
+  {
+    "relationship_id": "bca77008-7279-465b-a8cc-31b5330910d8",
+    "source_entity": "3ecf78b9-55fa-4ecc-986d-491c0c506267",
+    "target_entity": "42e87693-e1b3-49a9-a74c-7252c4b496ba",
+    "type": "RELATED_TO",
+    "confidence": 0.6,
+    "evidence_chunks": [
+      "26a1751f-0d65-4b01-95ad-ed4164bb291a"
+    ],
+    "context": "# Select a multilingual speech-to-text (STT) model.\n\n"
+  },
+  {
+    "relationship_id": "fc0eb6d1-36b4-44ad-8a07-0de89fe59b3f",
+    "source_entity": "bcb54374-cd82-4e86-a794-b01a859ff575",
+    "target_entity": "1a9071d6-ab8c-464e-97a2-1046cdef3aa9",
+    "type": "RELATED_TO",
+    "confidence": 0.6,
+    "evidence_chunks": [
+      "b2ce1c80-9f66-4c81-8b5e-3469afba8f90"
+    ],
+    "context": "OpenAI, Eleven Labs, and Cartesia have multi-lingual language models."
+  },
+  {
+    "relationship_id": "487a4cb6-61d9-4c04-833c-7bd378ca1c02",
+    "source_entity": "7714bf6b-eb93-43e5-b538-679a48c85826",
+    "target_entity": "3920eb43-06da-45a8-9b89-0570963d7179",
+    "type": "RELATED_TO",
+    "confidence": 0.6,
+    "evidence_chunks": [
+      "d14f6f2f-e365-4a19-946e-fa52e27e99f1"
+    ],
+    "context": "## Browser Implementation\n\nChrome implements adaptive echo cancellation effectively through its built-in WebRTC capabilities for real-time communication."
+  },
+  {
+    "relationship_id": "1e92f180-7e94-41c4-826b-02408cf761e0",
+    "source_entity": "3ecf78b9-55fa-4ecc-986d-491c0c506267",
+    "target_entity": "c31b2390-60e7-48bb-9821-6744fb652752",
+    "type": "RELATED_TO",
+    "confidence": 0.6,
+    "evidence_chunks": [
+      "6958e3de-5ebf-497b-9270-ca4356eca59a"
+    ],
+    "context": "## Establish the Connection and Receive Welcome\n\n1."
+  },
+  {
+    "relationship_id": "66095f27-92ba-4683-a306-238cbc13aa35",
+    "source_entity": "5d48366e-3717-4e03-abca-8bd12ed354b9",
+    "target_entity": "2dfbe195-fd53-4d57-972e-9a59786ade32",
+    "type": "RELATED_TO",
+    "confidence": 0.6,
+    "evidence_chunks": [
+      "1bbfbce3-8467-47fd-bf04-e44e79bd8425"
+    ],
+    "context": "<Warning>\n  Do not send audio or inject messages until you receive `SettingsApplied`.\n</Warning>"
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "top_k": 5,
+  "similarity_threshold": 0.7,
+  "rerank": true,
+  "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+  "mmr_enabled": true,
+  "mmr_lambda": 0.7,
+  "include_adjacent_chunks": true,
+  "graph_enhancement": true,
+  "max_context_tokens": 3000,
+  "hybrid_search": {
+    "enabled": true,
+    "vector_weight": 0.5,
+    "keyword_weight": 0.5,
+    "use_rrf": true
+  }
+}

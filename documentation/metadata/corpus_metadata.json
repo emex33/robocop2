@@ -1,0 +1,55 @@
+{
+  "corpus_id": "9e77dba5-44e3-4682-9bda-7ae2b2e8d032",
+  "created_at": "2026-03-04T02:37:27.656579",
+  "source_files": [
+    {
+      "filename": "pages.txt",
+      "file_type": "text",
+      "size_bytes": 285196,
+      "page_count": 1
+    }
+  ],
+  "statistics": {
+    "files_processed": 1,
+    "files_skipped": 0,
+    "chunks_created": 620,
+    "avg_chunk_size": 543.9645161290323,
+    "vectors_generated": 620,
+    "vector_dimension": 384,
+    "batch_size_used": 242,
+    "embedding_model": "all-MiniLM-L6-v2",
+    "processing_mode": "light",
+    "entities_extracted": 623,
+    "relationships_mapped": 29,
+    "document_maps_created": 1,
+    "intra_doc_connections": 20595,
+    "cross_doc_connections": 0,
+    "total_connections": 20595,
+    "ai_usage": {
+      "total_calls": 0,
+      "successful_calls": 0,
+      "failed_calls": 0,
+      "total_input_chars": 0,
+      "total_output_chars": 0,
+      "total_latency_ms": 0,
+      "avg_latency_ms": 0,
+      "calls_by_trigger": {}
+    }
+  },
+  "ai_usage": {
+    "total_calls": 0,
+    "successful_calls": 0,
+    "failed_calls": 0,
+    "total_input_chars": 0,
+    "total_output_chars": 0,
+    "total_latency_ms": 0,
+    "avg_latency_ms": 0,
+    "calls_by_trigger": {}
+  },
+  "processing_info": {
+    "embedding_model": "all-MiniLM-L6-v2",
+    "chunk_size": 512,
+    "chunk_overlap": 128,
+    "vector_dimension": 384
+  }
+}
