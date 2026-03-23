@@ -458,6 +458,19 @@ function initSchema() {
     db.exec("ALTER TABLE call_records ADD COLUMN callback_at TEXT DEFAULT ''");
   }
 
+  // Migration: platform_settings table for dynamic cost rates
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS platform_settings (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL DEFAULT '',
+      updated_at TEXT DEFAULT (datetime('now'))
+    )
+  `);
+  // Seed default cost rates if not set
+  const seedSetting = db.prepare("INSERT OR IGNORE INTO platform_settings (key, value) VALUES (?, ?)");
+  seedSetting.run("voip_cost_per_min", "0.02");
+  seedSetting.run("ai_cost_per_min", "0.40");
+
   // Seed admin user if not exists
   const admin = db.prepare("SELECT id FROM users WHERE email = 'admin'").get();
   if (!admin) {

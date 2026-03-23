@@ -14,6 +14,7 @@ import {
   createAppointment,
   getUserBalance,
   deductCredits,
+  getCostRates,
 } from "./db/helpers.js";
 import { getUserSipSettings, getUserDeepgramKey, getUserDeepgramKeyInfo } from "./api/settings.js";
 import { deepgramKeyManager } from "./deepgram/key-manager.js";
@@ -303,10 +304,11 @@ async function startCampaign(campaignId, userId) {
     const durationMs = new Date(endedAt) - new Date(startedAt);
     const durationSeconds = Math.round(durationMs / 1000);
 
-    // Calculate costs (rated per second)
+    // Calculate costs (dynamic rates from admin settings)
     const aiDurationSec = result.aiDurationSeconds || 0;
-    const voipCost = (durationSeconds / 60) * 0.02;
-    const aiCost = (aiDurationSec / 60) * 0.40;
+    const rates = getCostRates();
+    const voipCost = (durationSeconds / 60) * rates.voipCostPerMin;
+    const aiCost = (aiDurationSec / 60) * rates.aiCostPerMin;
     const callCost = voipCost + aiCost;
 
     // Record in DB

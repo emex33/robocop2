@@ -6,7 +6,7 @@ import { Router } from "express";
 import crypto from "crypto";
 import dgram from "dgram";
 import { getDb } from "../db/schema.js";
-import { addCredits } from "../db/helpers.js";
+import { addCredits, getAllPlatformSettings, setPlatformSetting } from "../db/helpers.js";
 import { getSipConfig } from "../../config/sip.js";
 
 const router = Router();
@@ -331,6 +331,29 @@ router.post("/users/:id/sip/test", async (req, res) => {
     log("error", `Test failed: ${err.message}`);
     return res.json({ success: false, logs });
   }
+});
+
+// GET /api/admin/settings — get all platform settings (cost rates etc.)
+router.get("/settings", (req, res) => {
+  const settings = getAllPlatformSettings();
+  res.json(settings);
+});
+
+// PUT /api/admin/settings — update platform settings
+router.put("/settings", (req, res) => {
+  const allowed = ["voip_cost_per_min", "ai_cost_per_min"];
+  const updates = req.body;
+  let count = 0;
+  for (const key of allowed) {
+    if (updates[key] !== undefined) {
+      const val = parseFloat(updates[key]);
+      if (isNaN(val) || val < 0) return res.status(400).json({ error: `Invalid value for ${key}` });
+      setPlatformSetting(key, val.toString());
+      count++;
+    }
+  }
+  if (count === 0) return res.status(400).json({ error: "No valid settings provided" });
+  res.json({ message: `${count} setting(s) updated`, settings: getAllPlatformSettings() });
 });
 
 // GET /api/admin/users/:id/agents — get agents for a user

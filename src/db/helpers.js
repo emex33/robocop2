@@ -347,6 +347,45 @@ export function deductCredits(userId, amount, description, referenceId = "") {
 }
 
 /**
+ * Get a platform setting by key.
+ */
+export function getPlatformSetting(key, defaultValue = "") {
+  const db = getDb();
+  const row = db.prepare("SELECT value FROM platform_settings WHERE key = ?").get(key);
+  return row ? row.value : defaultValue;
+}
+
+/**
+ * Get all platform settings as a key-value object.
+ */
+export function getAllPlatformSettings() {
+  const db = getDb();
+  const rows = db.prepare("SELECT key, value FROM platform_settings").all();
+  const settings = {};
+  for (const r of rows) settings[r.key] = r.value;
+  return settings;
+}
+
+/**
+ * Set a platform setting (upsert).
+ */
+export function setPlatformSetting(key, value) {
+  const db = getDb();
+  db.prepare(
+    "INSERT INTO platform_settings (key, value, updated_at) VALUES (?, ?, datetime('now')) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = datetime('now')"
+  ).run(key, String(value));
+}
+
+/**
+ * Get cost rates as numbers for billing calculations.
+ */
+export function getCostRates() {
+  const voip = parseFloat(getPlatformSetting("voip_cost_per_min", "0.02"));
+  const ai = parseFloat(getPlatformSetting("ai_cost_per_min", "0.40"));
+  return { voipCostPerMin: voip, aiCostPerMin: ai };
+}
+
+/**
  * Add credits to a user's balance (admin top-up).
  */
 export function addCredits(userId, amount, description, createdBy = "") {

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { api } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
-import { Users, DollarSign, Phone, Clock, X, Plus, ChevronRight, Shield, Settings, Save, Play, RefreshCw, CheckCircle2, XCircle, AlertTriangle, Info } from 'lucide-react';
+import { Users, DollarSign, Phone, Clock, X, Plus, ChevronRight, Shield, Settings, Save, Play, RefreshCw, CheckCircle2, XCircle, AlertTriangle, Info, Sliders } from 'lucide-react';
 
 function fmt$(v) { return '$' + (v || 0).toFixed(2); }
 function fmtMin(s) { return ((s || 0) / 60).toFixed(1) + ' min'; }
@@ -57,6 +57,9 @@ export default function AdminBilling() {
           </div>
         ))}
       </div>
+
+      {/* Cost Settings */}
+      <CostSettingsPanel />
 
       {/* Users table */}
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
@@ -189,6 +192,73 @@ function AddCreditsModal({ user, onClose, onDone }) {
             {saving ? 'Adding...' : `Add ${amount ? '$' + parseFloat(amount).toFixed(2) : ''} Credits`}
           </button>
         </form>
+      </div>
+    </div>
+  );
+}
+
+function CostSettingsPanel() {
+  const [rates, setRates] = useState({ voip_cost_per_min: '', ai_cost_per_min: '' });
+  const [loaded, setLoaded] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState('');
+
+  useEffect(() => {
+    api.adminGetSettings()
+      .then(s => { setRates({ voip_cost_per_min: s.voip_cost_per_min || '0.02', ai_cost_per_min: s.ai_cost_per_min || '0.40' }); setLoaded(true); })
+      .catch(() => setLoaded(true));
+  }, []);
+
+  const handleSave = async () => {
+    setSaving(true);
+    setMsg('');
+    try {
+      const res = await api.adminUpdateSettings({
+        voip_cost_per_min: rates.voip_cost_per_min,
+        ai_cost_per_min: rates.ai_cost_per_min,
+      });
+      setMsg(res.message || 'Saved');
+      if (res.settings) setRates({ voip_cost_per_min: res.settings.voip_cost_per_min, ai_cost_per_min: res.settings.ai_cost_per_min });
+    } catch (e) { setMsg('Error: ' + e.message); }
+    setSaving(false);
+  };
+
+  if (!loaded) return null;
+
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+      <div className="flex items-center gap-2 mb-4">
+        <Sliders className="w-4 h-4 text-indigo-600" />
+        <h2 className="font-semibold text-gray-900">Cost Settings</h2>
+        <span className="text-xs text-gray-400 ml-1">Per-minute rates used to calculate call costs</span>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg">
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1">VoIP Cost ($/min)</label>
+          <input
+            type="number" step="0.001" min="0"
+            value={rates.voip_cost_per_min}
+            onChange={e => setRates({ ...rates, voip_cost_per_min: e.target.value })}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1">AI Cost ($/min)</label>
+          <input
+            type="number" step="0.001" min="0"
+            value={rates.ai_cost_per_min}
+            onChange={e => setRates({ ...rates, ai_cost_per_min: e.target.value })}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+        </div>
+      </div>
+      <div className="flex items-center gap-3 mt-4">
+        <button onClick={handleSave} disabled={saving}
+          className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700 transition disabled:opacity-50">
+          {saving ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+          {saving ? 'Saving...' : 'Save Rates'}
+        </button>
+        {msg && <span className={`text-sm ${msg.startsWith('Error') ? 'text-red-600' : 'text-green-600'}`}>{msg}</span>}
       </div>
     </div>
   );

@@ -233,6 +233,8 @@ export const api = {
   adminUpdateUserSip: (userId, data) => request(`/admin/users/${userId}/sip`, { method: 'PUT', body: JSON.stringify(data) }),
   adminTestUserSip: (userId) => request(`/admin/users/${userId}/sip/test`, { method: 'POST' }),
   adminGetUserAgents: (userId) => request(`/admin/users/${userId}/agents`),
+  adminGetSettings: () => request('/admin/settings'),
+  adminUpdateSettings: (data) => request('/admin/settings', { method: 'PUT', body: JSON.stringify(data) }),
   adminGetTransactions: (params = {}) => {
     const q = new URLSearchParams();
     Object.entries(params).forEach(([k, v]) => { if (v !== undefined && v !== '') q.set(k, v); });
