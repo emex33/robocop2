@@ -1,17 +1,22 @@
 import { useState, useEffect } from 'react';
 import { api } from '../lib/api';
+import { useAuth } from '../contexts/AuthContext';
+import { Navigate } from 'react-router-dom';
 import { Plus, Pencil, Trash2, Copy, Bot, ChevronRight, Play, CheckCircle2, XCircle, Loader2, Info, PhoneForwarded, CalendarCheck } from 'lucide-react';
 
 export default function Agents() {
+  const { isSuperAdmin } = useAuth();
   const [agents, setAgents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState(null);
 
   const load = () => {
-    api.getAgents().then(setAgents).catch(() => {}).finally(() => setLoading(false));
+    if (isSuperAdmin) api.getAgents().then(setAgents).catch(() => {}).finally(() => setLoading(false));
   };
-  useEffect(load, []);
+  useEffect(load, [isSuperAdmin]);
+
+  if (!isSuperAdmin) return <Navigate to="/" replace />;
 
   const handleDelete = async (id) => {
     if (!confirm('Delete this agent?')) return;

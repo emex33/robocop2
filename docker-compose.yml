@@ -39,7 +39,7 @@ services:
     volumes:
       - ./src:/app/src
       - ./config:/app/config
-      - ./data:/app/data
+      - ./data2:/app/data
       - ./logs:/app/logs
     networks:
       - robocop

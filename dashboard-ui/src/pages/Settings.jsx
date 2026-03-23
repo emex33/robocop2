@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Settings as SettingsIcon, Phone, Server, ArrowRightLeft, Save, RefreshCw, Play, CheckCircle2, XCircle, AlertTriangle, Info, FileSpreadsheet, Upload, Trash2, Plus, Star, Edit2, ChevronDown, ChevronUp, Key, Eye, EyeOff } from 'lucide-react';
 import { api } from '../lib/api';
+import { useAuth } from '../contexts/AuthContext';
+import { Navigate } from 'react-router-dom';
 
 function DeepgramSettings() {
   const [loading, setLoading] = useState(true);
@@ -80,7 +82,7 @@ function DeepgramSettings() {
     <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
       <div className="flex items-center gap-3 mb-2">
         <Key className="w-5 h-5 text-violet-600" />
-        <h2 className="text-lg font-semibold text-gray-900">Deepgram API Keys</h2>
+        <h2 className="text-lg font-semibold text-gray-900">API Keys</h2>
       </div>
       <p className="text-sm text-gray-500 mb-4">
         Add multiple keys for auto-rotation. If a key gets 5+ consecutive 402 errors (out of credit), the system auto-switches to the next active key.
@@ -168,7 +170,7 @@ function DeepgramSettings() {
             type="password"
             value={keyInput}
             onChange={(e) => setKeyInput(e.target.value)}
-            placeholder="Paste Deepgram API key..."
+            placeholder="Paste API key..."
             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono focus:ring-2 focus:ring-violet-500 outline-none"
           />
           <button onClick={handleAdd} disabled={adding || !keyInput.trim()}
@@ -375,6 +377,7 @@ function TrunkForm({ trunk, onSave, onCancel, saving }) {
 }
 
 export default function Settings() {
+  const { isSuperAdmin } = useAuth();
   const [trunks, setTrunks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(null);
@@ -387,12 +390,15 @@ export default function Settings() {
   const logRef = useRef(null);
 
   const loadTrunks = () => {
+    if (!isSuperAdmin) return;
     api.getSipTrunks().then(data => {
       setTrunks(Array.isArray(data) ? data : []);
     }).catch(() => setTrunks([])).finally(() => setLoading(false));
   };
 
-  useEffect(() => { loadTrunks(); }, []);
+  useEffect(() => { loadTrunks(); }, [isSuperAdmin]);
+
+  if (!isSuperAdmin) return <Navigate to="/" replace />;
 
   const handleCreate = async (form) => {
     setSaving(true); setMessage('');

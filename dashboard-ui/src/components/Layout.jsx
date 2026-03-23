@@ -24,7 +24,7 @@ export default function Layout() {
     { to: '/agent-users', icon: Users, label: 'Agent Users' },
     { to: '/billing', icon: DollarSign, label: 'Billing' },
     ...(isSuperAdmin ? [{ to: '/admin-billing', icon: Shield, label: 'Admin Billing' }] : []),
-    { to: '/settings', icon: Settings, label: 'Settings' },
+    ...(isSuperAdmin ? [{ to: '/settings', icon: Settings, label: 'Settings' }] : []),
   ];
 
   const handleLogout = () => {

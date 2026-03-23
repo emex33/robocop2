@@ -3,8 +3,11 @@
  */
 
 import { Router } from "express";
+import crypto from "crypto";
+import dgram from "dgram";
 import { getDb } from "../db/schema.js";
 import { addCredits } from "../db/helpers.js";
+import { getSipConfig } from "../../config/sip.js";
 
 const router = Router();
 
@@ -154,6 +157,187 @@ router.get("/billing/transactions", (req, res) => {
   `).all(...params, limit, offset);
 
   res.json({ transactions, total, page, pages: Math.ceil(total / limit) });
+});
+
+// GET /api/admin/users/:id/sip — get SIP settings for a user
+router.get("/users/:id/sip", (req, res) => {
+  const db = getDb();
+  const userId = req.params.id;
+  const settings = db.prepare("SELECT * FROM sip_settings WHERE user_id = ?").get(userId);
+  res.json({
+    mode: settings?.mode || "account",
+    username: settings?.username || "",
+    password: settings?.password ? "********" : "",
+    server: settings?.server || "",
+    port: settings?.port || 12835,
+    transport: settings?.transport || "udp",
+    callerId: settings?.caller_id || "",
+    trunkUsername: settings?.trunk_username || "",
+    trunkHost: settings?.trunk_host || "",
+    trunkPort: settings?.trunk_port || 12835,
+    sourceIp: settings?.source_ip || "",
+    transferUri: settings?.transfer_uri || "",
+  });
+});
+
+// PUT /api/admin/users/:id/sip — update SIP settings for a user
+router.put("/users/:id/sip", (req, res) => {
+  const db = getDb();
+  const userId = req.params.id;
+  const user = db.prepare("SELECT id FROM users WHERE id = ?").get(userId);
+  if (!user) return res.status(404).json({ error: "User not found" });
+
+  const {
+    mode, username, password, server, port, transport,
+    callerId, trunkUsername, trunkHost, trunkPort, sourceIp, transferUri,
+  } = req.body;
+
+  const existing = db.prepare("SELECT id FROM sip_settings WHERE user_id = ?").get(userId);
+
+  if (existing) {
+    const sets = [];
+    const vals = [];
+    if (mode !== undefined) { sets.push("mode = ?"); vals.push(mode); }
+    if (username !== undefined) { sets.push("username = ?"); vals.push(username); }
+    if (password !== undefined && password !== "********") { sets.push("password = ?"); vals.push(password); }
+    if (server !== undefined) { sets.push("server = ?"); vals.push(server); }
+    if (port !== undefined) { sets.push("port = ?"); vals.push(parseInt(port)); }
+    if (transport !== undefined) { sets.push("transport = ?"); vals.push(transport); }
+    if (callerId !== undefined) { sets.push("caller_id = ?"); vals.push(callerId); }
+    if (trunkUsername !== undefined) { sets.push("trunk_username = ?"); vals.push(trunkUsername); }
+    if (trunkHost !== undefined) { sets.push("trunk_host = ?"); vals.push(trunkHost); }
+    if (trunkPort !== undefined) { sets.push("trunk_port = ?"); vals.push(parseInt(trunkPort)); }
+    if (sourceIp !== undefined) { sets.push("source_ip = ?"); vals.push(sourceIp); }
+    if (transferUri !== undefined) { sets.push("transfer_uri = ?"); vals.push(transferUri); }
+    if (sets.length > 0) {
+      sets.push("updated_at = datetime('now')");
+      vals.push(userId);
+      db.prepare(`UPDATE sip_settings SET ${sets.join(", ")} WHERE user_id = ?`).run(...vals);
+    }
+  } else {
+    db.prepare(`
+      INSERT INTO sip_settings (id, user_id, mode, username, password, server, port, transport, caller_id, trunk_username, trunk_host, trunk_port, source_ip, transfer_uri)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      crypto.randomBytes(8).toString("hex"), userId,
+      mode || "account", username || "",
+      (password && password !== "********") ? password : "",
+      server || "", parseInt(port || "12835"), transport || "udp",
+      callerId || "", trunkUsername || "", trunkHost || "",
+      parseInt(trunkPort || "12835"), sourceIp || "", transferUri || "",
+    );
+  }
+
+  res.json({ message: "SIP settings saved for user." });
+});
+
+// POST /api/admin/users/:id/sip/test — test SIP settings for a user
+router.post("/users/:id/sip/test", async (req, res) => {
+  const db = getDb();
+  const userId = req.params.id;
+  const settings = db.prepare("SELECT * FROM sip_settings WHERE user_id = ?").get(userId);
+  if (!settings) {
+    return res.json({ success: false, logs: [{ time: new Date().toISOString(), level: "error", message: "No SIP settings configured for this user. Save settings first." }] });
+  }
+  const sip = getSipConfig(settings);
+  const logs = [];
+  const log = (level, msg) => logs.push({ time: new Date().toISOString(), level, message: msg });
+
+  const isValidIp = (ip) => {
+    if (!ip) return false;
+    const parts = ip.split(".");
+    if (parts.length !== 4) return false;
+    return parts.every(p => { const n = parseInt(p); return n >= 0 && n <= 255 && String(n) === p; });
+  };
+
+  log("info", `SIP Mode: ${sip.mode}`);
+  let hasErrors = false;
+
+  if (sip.mode === "account") {
+    log("info", `Server: ${sip.server}:${sip.port} (${sip.transport})`);
+    log("info", `Username: ${sip.username}`);
+    log("info", `Password: ${sip.password ? "***set***" : "NOT SET"}`);
+    if (!sip.username) { log("error", "Username is required"); hasErrors = true; }
+    if (!sip.password) { log("error", "Password is required"); hasErrors = true; }
+    if (!sip.server) { log("error", "Server is required"); hasErrors = true; }
+  } else {
+    log("info", `Trunk Host: ${sip.trunkHost}:${sip.trunkPort}`);
+    log("info", `Username: ${sip.username}`);
+    log("info", `Source IP: ${sip.sourceIp || "(NOT SET)"}`);
+    if (!sip.username) { log("error", "Username is required"); hasErrors = true; }
+    if (!sip.trunkHost) { log("error", "Trunk Host is required"); hasErrors = true; }
+    if (!sip.sourceIp) { log("error", "Source IP is required for trunk mode"); hasErrors = true; }
+    if (sip.sourceIp && !isValidIp(sip.sourceIp)) { log("error", `Source IP "${sip.sourceIp}" is invalid`); hasErrors = true; }
+  }
+
+  if (hasErrors) return res.json({ success: false, logs });
+
+  const targetHost = sip.mode === "trunk" ? sip.trunkHost : sip.server;
+  const targetPort = sip.mode === "trunk" ? sip.trunkPort : sip.port;
+  log("info", `Checking UDP reachability to ${targetHost}:${targetPort}...`);
+
+  try {
+    const result = await new Promise((resolve) => {
+      const client = dgram.createSocket("udp4");
+      const branch = `z9hG4bK-${Date.now()}`;
+      const tag = `tag-${Date.now()}`;
+      const fromUser = sip.username;
+      const fromHost = sip.mode === "trunk" ? sip.sourceIp : targetHost;
+      const optionsMsg = [
+        `OPTIONS sip:${targetHost}:${targetPort} SIP/2.0`,
+        `Via: SIP/2.0/UDP ${fromHost}:5050;branch=${branch}`,
+        `From: <sip:${fromUser}@${fromHost}:5050>;tag=${tag}`,
+        `To: <sip:${targetHost}:${targetPort}>`,
+        `Call-ID: test-${Date.now()}@robocop`,
+        `CSeq: 1 OPTIONS`, `Max-Forwards: 70`, `Content-Length: 0`, ``, ``,
+      ].join("\r\n");
+
+      let responded = false;
+      const timer = setTimeout(() => {
+        if (!responded) { responded = true; client.close(); resolve({ success: false }); }
+      }, 10000);
+      client.on("message", (msg) => {
+        if (responded) return;
+        responded = true; clearTimeout(timer);
+        const firstLine = msg.toString().split("\r\n")[0];
+        const m = firstLine.match(/SIP\/2\.0\s+(\d+)\s+(.*)/);
+        client.close();
+        resolve({ success: true, statusCode: m ? parseInt(m[1]) : 0, statusText: m ? m[2] : firstLine });
+      });
+      client.on("error", () => {
+        if (!responded) { responded = true; clearTimeout(timer); client.close(); resolve({ success: false }); }
+      });
+      const buf = Buffer.from(optionsMsg, "utf-8");
+      client.send(buf, 0, buf.length, targetPort, targetHost);
+    });
+
+    if (result.success) {
+      log("success", `Server responded: ${result.statusCode} ${result.statusText}`);
+      log("warn", "Note: This only confirms UDP reachability. It does NOT verify credentials or IP whitelist.");
+    } else {
+      log("error", `No response from ${targetHost}:${targetPort} (timeout). Check host/port/firewall.`);
+      return res.json({ success: false, logs });
+    }
+
+    if (sip.mode === "trunk") {
+      log("info", `--- INVITE preview ---`);
+      log("info", `INVITE sip:[number]@${sip.trunkHost}:${sip.trunkPort}`);
+      log("info", `From: ${sip.username} <sip:${sip.username}@${sip.sourceIp}:5050>`);
+      log("info", `To: [number] <sip:[number]@${sip.trunkHost}:${sip.trunkPort}>`);
+      log("info", `Contact: <sip:${sip.username}@${sip.sourceIp}:5050>`);
+    }
+    return res.json({ success: true, logs });
+  } catch (err) {
+    log("error", `Test failed: ${err.message}`);
+    return res.json({ success: false, logs });
+  }
+});
+
+// GET /api/admin/users/:id/agents — get agents for a user
+router.get("/users/:id/agents", (req, res) => {
+  const db = getDb();
+  const agents = db.prepare("SELECT id, name, language, mode FROM agents WHERE user_id = ?").all(req.params.id);
+  res.json(agents);
 });
 
 export default router;

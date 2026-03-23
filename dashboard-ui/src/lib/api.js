@@ -229,6 +229,10 @@ export const api = {
   adminGetUser: (id) => request(`/admin/users/${id}`),
   adminAddCredits: (userId, amount, description) => request(`/admin/users/${userId}/credits`, { method: 'POST', body: JSON.stringify({ amount, description }) }),
   adminGetBilling: () => request('/admin/billing'),
+  adminGetUserSip: (userId) => request(`/admin/users/${userId}/sip`),
+  adminUpdateUserSip: (userId, data) => request(`/admin/users/${userId}/sip`, { method: 'PUT', body: JSON.stringify(data) }),
+  adminTestUserSip: (userId) => request(`/admin/users/${userId}/sip/test`, { method: 'POST' }),
+  adminGetUserAgents: (userId) => request(`/admin/users/${userId}/agents`),
   adminGetTransactions: (params = {}) => {
     const q = new URLSearchParams();
     Object.entries(params).forEach(([k, v]) => { if (v !== undefined && v !== '') q.set(k, v); });

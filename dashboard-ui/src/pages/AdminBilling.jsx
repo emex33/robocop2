@@ -1,11 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { api } from '../lib/api';
-import { Users, DollarSign, Phone, Clock, X, Plus, ChevronRight, Shield } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { Navigate } from 'react-router-dom';
+import { Users, DollarSign, Phone, Clock, X, Plus, ChevronRight, Shield, Settings, Save, Play, RefreshCw, CheckCircle2, XCircle, AlertTriangle, Info } from 'lucide-react';
 
 function fmt$(v) { return '$' + (v || 0).toFixed(2); }
 function fmtMin(s) { return ((s || 0) / 60).toFixed(1) + ' min'; }
 
 export default function AdminBilling() {
+  const { isSuperAdmin } = useAuth();
   const [users, setUsers] = useState([]);
   const [overview, setOverview] = useState({});
   const [loading, setLoading] = useState(true);
@@ -13,6 +16,7 @@ export default function AdminBilling() {
   const [showAddCredits, setShowAddCredits] = useState(null);
 
   const load = () => {
+    if (!isSuperAdmin) return;
     setLoading(true);
     Promise.all([api.adminGetUsers(), api.adminGetBilling()])
       .then(([u, o]) => { setUsers(u); setOverview(o); })
@@ -20,7 +24,9 @@ export default function AdminBilling() {
       .finally(() => setLoading(false));
   };
 
-  useEffect(load, []);
+  useEffect(load, [isSuperAdmin]);
+
+  if (!isSuperAdmin) return <Navigate to="/" replace />;
 
   return (
     <div className="p-6 max-w-[1400px] mx-auto">
@@ -190,6 +196,50 @@ function AddCreditsModal({ user, onClose, onDone }) {
 
 function UserDetailModal({ data, onClose }) {
   const { user, transactions, callStats } = data;
+  const [tab, setTab] = useState('overview');
+  const [sip, setSip] = useState(null);
+  const [sipLoading, setSipLoading] = useState(false);
+  const [sipSaving, setSipSaving] = useState(false);
+  const [sipTesting, setSipTesting] = useState(false);
+  const [sipTestLogs, setSipTestLogs] = useState([]);
+  const [sipTestResult, setSipTestResult] = useState(null);
+  const [sipMsg, setSipMsg] = useState('');
+  const logRef = useRef(null);
+
+  const loadSip = () => {
+    setSipLoading(true);
+    api.adminGetUserSip(user.id).then(setSip).catch(() => {}).finally(() => setSipLoading(false));
+  };
+
+  const handleSipSave = async () => {
+    setSipSaving(true);
+    setSipMsg('');
+    try {
+      const res = await api.adminUpdateUserSip(user.id, sip);
+      setSipMsg(res.message || 'Saved');
+    } catch (e) { setSipMsg('Error: ' + e.message); }
+    setSipSaving(false);
+  };
+
+  const handleSipTest = async () => {
+    setSipTesting(true);
+    setSipTestLogs([]);
+    setSipTestResult(null);
+    setSipMsg('');
+    try {
+      const res = await api.adminTestUserSip(user.id);
+      setSipTestLogs(res.logs || []);
+      setSipTestResult(res.success);
+      setTimeout(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight; }, 100);
+    } catch (e) {
+      setSipTestLogs([{ level: 'error', message: e.message || 'Test request failed' }]);
+      setSipTestResult(false);
+    }
+    setSipTesting(false);
+  };
+
+  const sipSet = (key) => (e) => setSip({ ...sip, [key]: e.target.value });
+  const inputCls = "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500";
 
   return (
     <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={onClose}>
@@ -202,44 +252,197 @@ function UserDetailModal({ data, onClose }) {
           <button onClick={onClose} className="p-1.5 hover:bg-gray-100 rounded"><X className="w-5 h-5 text-gray-400" /></button>
         </div>
 
-        {/* Stats */}
-        <div className="px-6 py-4 border-b border-gray-100 grid grid-cols-3 gap-4 flex-shrink-0">
+        {/* Tabs */}
+        <div className="flex border-b border-gray-100 px-6 flex-shrink-0">
           {[
-            { label: 'Total Calls', value: callStats?.total_calls || 0 },
-            { label: 'Total Spent', value: fmt$(callStats?.total_spent) },
-            { label: 'AI Minutes', value: fmtMin(callStats?.total_ai_duration) },
-          ].map(s => (
-            <div key={s.label} className="text-center">
-              <p className="text-lg font-bold text-gray-900">{s.value}</p>
-              <p className="text-[10px] text-gray-400 font-medium uppercase">{s.label}</p>
-            </div>
+            { id: 'overview', label: 'Overview' },
+            { id: 'sip', label: 'SIP Settings' },
+          ].map(t => (
+            <button key={t.id}
+              onClick={() => { setTab(t.id); if (t.id === 'sip' && !sip) loadSip(); }}
+              className={`px-4 py-2.5 text-sm font-medium border-b-2 transition -mb-px ${
+                tab === t.id ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}>{t.label}</button>
           ))}
         </div>
 
-        {/* Transactions */}
-        <div className="flex-1 overflow-y-auto p-6">
-          <h4 className="text-sm font-semibold text-gray-700 mb-3">Recent Transactions</h4>
-          {transactions.length === 0 ? (
-            <p className="text-sm text-gray-400 text-center py-8">No transactions yet</p>
-          ) : (
-            <div className="space-y-2">
-              {transactions.map(t => (
-                <div key={t.id} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gray-50">
+        <div className="flex-1 overflow-y-auto">
+          {tab === 'overview' && (
+            <>
+              {/* Stats */}
+              <div className="px-6 py-4 border-b border-gray-100 grid grid-cols-3 gap-4">
+                {[
+                  { label: 'Total Calls', value: callStats?.total_calls || 0 },
+                  { label: 'Total Spent', value: fmt$(callStats?.total_spent) },
+                  { label: 'AI Minutes', value: fmtMin(callStats?.total_ai_duration) },
+                ].map(s => (
+                  <div key={s.label} className="text-center">
+                    <p className="text-lg font-bold text-gray-900">{s.value}</p>
+                    <p className="text-[10px] text-gray-400 font-medium uppercase">{s.label}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Transactions */}
+              <div className="p-6">
+                <h4 className="text-sm font-semibold text-gray-700 mb-3">Recent Transactions</h4>
+                {transactions.length === 0 ? (
+                  <p className="text-sm text-gray-400 text-center py-8">No transactions yet</p>
+                ) : (
+                  <div className="space-y-2">
+                    {transactions.map(t => (
+                      <div key={t.id} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gray-50">
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">
+                            {t.type === 'topup' ? 'Credit Top-up' : 'Call Charge'}
+                          </p>
+                          <p className="text-xs text-gray-400">{t.description || '—'}</p>
+                          <p className="text-xs text-gray-300">{t.created_at?.replace('T', ' ').slice(0, 19)}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className={`text-sm font-bold ${t.amount >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                            {t.amount >= 0 ? '+' : ''}{fmt$(t.amount)}
+                          </p>
+                          <p className="text-xs text-gray-400">Bal: {fmt$(t.balance_after)}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+
+          {tab === 'sip' && (
+            <div className="p-6 space-y-4">
+              {sipLoading ? (
+                <div className="flex justify-center py-12"><div className="animate-spin w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full" /></div>
+              ) : sip ? (
+                <>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {t.type === 'topup' ? 'Credit Top-up' : 'Call Charge'}
-                    </p>
-                    <p className="text-xs text-gray-400">{t.description || '—'}</p>
-                    <p className="text-xs text-gray-300">{t.created_at?.replace('T', ' ').slice(0, 19)}</p>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">SIP Mode</label>
+                    <select value={sip.mode} onChange={sipSet('mode')} className={inputCls}>
+                      <option value="account">Account (REGISTER)</option>
+                      <option value="trunk">Trunk (IP-based)</option>
+                    </select>
                   </div>
-                  <div className="text-right">
-                    <p className={`text-sm font-bold ${t.amount >= 0 ? 'text-green-600' : 'text-red-500'}`}>
-                      {t.amount >= 0 ? '+' : ''}{fmt$(t.amount)}
-                    </p>
-                    <p className="text-xs text-gray-400">Bal: {fmt$(t.balance_after)}</p>
+
+                  {sip.mode === 'account' ? (
+                    <>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Username</label>
+                          <input type="text" value={sip.username} onChange={sipSet('username')} className={inputCls} />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Password</label>
+                          <input type="password" value={sip.password} onChange={sipSet('password')} className={inputCls} />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Server</label>
+                          <input type="text" value={sip.server} onChange={sipSet('server')} className={inputCls} />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Port</label>
+                          <input type="number" value={sip.port} onChange={sipSet('port')} className={inputCls} />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Transport</label>
+                          <select value={sip.transport} onChange={sipSet('transport')} className={inputCls}>
+                            <option value="udp">UDP</option>
+                            <option value="tcp">TCP</option>
+                          </select>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Username</label>
+                          <input type="text" value={sip.trunkUsername || sip.username} onChange={sipSet('trunkUsername')} className={inputCls} />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Source IP</label>
+                          <input type="text" value={sip.sourceIp} onChange={sipSet('sourceIp')} className={inputCls} placeholder="Your server public IP" />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Trunk Host</label>
+                          <input type="text" value={sip.trunkHost} onChange={sipSet('trunkHost')} className={inputCls} />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Trunk Port</label>
+                          <input type="number" value={sip.trunkPort} onChange={sipSet('trunkPort')} className={inputCls} />
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">Caller ID</label>
+                      <input type="text" value={sip.callerId} onChange={sipSet('callerId')} className={inputCls} placeholder="+15551234567" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">Transfer URI</label>
+                      <input type="text" value={sip.transferUri} onChange={sipSet('transferUri')} className={inputCls} placeholder="sip:agent@server.com" />
+                    </div>
                   </div>
-                </div>
-              ))}
+
+                  {sipMsg && <p className={`text-sm ${sipMsg.startsWith('Error') ? 'text-red-600' : 'text-green-600'}`}>{sipMsg}</p>}
+
+                  <div className="flex items-center gap-3">
+                    <button onClick={handleSipSave} disabled={sipSaving}
+                      className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700 transition disabled:opacity-50">
+                      {sipSaving ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                      {sipSaving ? 'Saving...' : 'Save SIP Settings'}
+                    </button>
+                    <button onClick={handleSipTest} disabled={sipTesting}
+                      className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-lg text-sm font-semibold hover:bg-emerald-700 transition disabled:opacity-50">
+                      {sipTesting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
+                      {sipTesting ? 'Testing...' : 'Test Connection'}
+                    </button>
+                  </div>
+
+                  {sipTestLogs.length > 0 && (
+                    <div className="bg-gray-50 rounded-lg border border-gray-200 mt-3">
+                      <div className="px-4 py-2 border-b border-gray-200 flex items-center justify-between">
+                        <span className="text-xs font-semibold text-gray-700 flex items-center gap-2">
+                          {sipTestResult === true && <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />}
+                          {sipTestResult === false && <XCircle className="w-3.5 h-3.5 text-red-500" />}
+                          {sipTestResult === null && <RefreshCw className="w-3.5 h-3.5 text-gray-400 animate-spin" />}
+                          SIP Test Results
+                        </span>
+                        <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
+                          sipTestResult === true ? 'bg-green-100 text-green-700' :
+                          sipTestResult === false ? 'bg-red-100 text-red-700' :
+                          'bg-gray-100 text-gray-500'
+                        }`}>
+                          {sipTestResult === true ? 'PASS' : sipTestResult === false ? 'FAIL' : 'RUNNING'}
+                        </span>
+                      </div>
+                      <div ref={logRef} className="px-3 py-2 max-h-48 overflow-y-auto font-mono text-xs space-y-1">
+                        {sipTestLogs.map((l, i) => {
+                          const Icon = l.level === 'success' ? CheckCircle2 : l.level === 'error' ? XCircle : l.level === 'warn' ? AlertTriangle : Info;
+                          const color = l.level === 'success' ? 'text-green-600' : l.level === 'error' ? 'text-red-600' : l.level === 'warn' ? 'text-amber-600' : 'text-gray-500';
+                          return (
+                            <div key={i} className={`flex items-start gap-2 ${color}`}>
+                              <Icon className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
+                              <pre className="whitespace-pre-wrap break-all">{l.message}</pre>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <p className="text-sm text-gray-400 text-center py-8">Failed to load SIP settings</p>
+              )}
             </div>
           )}
         </div>
