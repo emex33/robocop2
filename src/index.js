@@ -338,6 +338,31 @@ async function startCampaign(campaignId, userId) {
       logger.error(`Failed to record call: ${e.message}`);
     }
 
+    // Fire-and-forget: push transfer to Google Sheets
+    if (result.outcome === "transferred" && callRecordId) {
+      setTimeout(() => {
+        import("./services/google-sheets.js").then(({ pushTransferToSheet }) => {
+          pushTransferToSheet({
+            id: callRecordId,
+            campaign_id: campaignId,
+            user_id: userId,
+            lead_id: lead.id,
+            lead_name: displayName,
+            phone: lead.phone,
+            email: lead.email || "",
+            call_id: result.callId || "",
+            transferred_to: result.transferredTo || "",
+            notes: result.notes || "",
+            status: "transferred",
+            duration_seconds: durationSeconds,
+            transferred_at: endedAt,
+          }).catch(err => {
+            logger.error(`Google Sheets transfer push failed: ${err.message}`);
+          });
+        }).catch(() => {});
+      }, 2000);
+    }
+
     // Fire-and-forget: upload recording to Google Drive (waits for ffmpeg to finish)
     if (callRecordId && result.recordingPath) {
       setTimeout(() => {

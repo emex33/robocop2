@@ -57,6 +57,7 @@ class DeepgramKeyManager {
 
   /**
    * Report a 402 error. Increments counter and auto-rotates if threshold reached.
+   * Uses atomic UPDATE to prevent race conditions with concurrent calls.
    * Returns the new key info if rotated, or null if no keys left.
    */
   report402(userId, keyId) {
@@ -68,22 +69,30 @@ class DeepgramKeyManager {
     }
 
     const key = db.prepare("SELECT * FROM deepgram_keys WHERE id = ?").get(keyId);
-    if (!key) return null;
+    if (!key || key.status !== "active") return null;
 
-    const newCount = (key.error_count_402 || 0) + 1;
+    // Atomic increment — avoids race condition with concurrent calls
     db.prepare(
-      "UPDATE deepgram_keys SET error_count_402 = ?, last_error = '402 Payment Required', last_error_at = datetime('now') WHERE id = ?"
-    ).run(newCount, keyId);
+      "UPDATE deepgram_keys SET error_count_402 = error_count_402 + 1, last_error = '402 Payment Required', last_error_at = datetime('now') WHERE id = ? AND status = 'active'"
+    ).run(keyId);
+
+    const updated = db.prepare("SELECT error_count_402 FROM deepgram_keys WHERE id = ?").get(keyId);
+    const newCount = updated.error_count_402;
 
     logger.warn(`Deepgram 402 on key "${key.label || key.id}" (${newCount}/${ERROR_THRESHOLD})`, { userId });
 
     if (newCount >= ERROR_THRESHOLD) {
-      db.prepare(
-        "UPDATE deepgram_keys SET status = 'depleted', is_current = 0 WHERE id = ?"
+      // Only deplete if still active (another thread may have already done it)
+      const changed = db.prepare(
+        "UPDATE deepgram_keys SET status = 'depleted', is_current = 0 WHERE id = ? AND status = 'active'"
       ).run(keyId);
-      logger.error(`Key "${key.label || key.id}" marked DEPLETED after ${ERROR_THRESHOLD} consecutive 402 errors`, { userId });
 
-      return this._rotateToNext(userId, keyId);
+      if (changed.changes > 0) {
+        logger.error(`Key "${key.label || key.id}" marked DEPLETED after ${ERROR_THRESHOLD} consecutive 402 errors`, { userId });
+        return this._rotateToNext(userId, keyId);
+      }
+      // Already depleted by another thread — just return current key
+      return this.getKey(userId);
     }
 
     return { id: keyId, key: key.api_key, label: key.label, source: "pool", rotated: false };
@@ -91,16 +100,19 @@ class DeepgramKeyManager {
 
   /**
    * Report a 401 error — key is invalid/deactivated, mark it immediately.
+   * Only acts if key is still active (prevents cascading from concurrent calls).
    */
   report401(userId, keyId) {
     if (!keyId) return null;
     const db = getDb();
 
-    db.prepare(
-      "UPDATE deepgram_keys SET status = 'invalid', is_current = 0, last_error = '401 Unauthorized', last_error_at = datetime('now') WHERE id = ?"
+    const changed = db.prepare(
+      "UPDATE deepgram_keys SET status = 'invalid', is_current = 0, last_error = '401 Unauthorized', last_error_at = datetime('now') WHERE id = ? AND status = 'active'"
     ).run(keyId);
-    logger.error(`Key "${keyId}" marked INVALID (401 Unauthorized)`, { userId });
 
+    if (changed.changes === 0) return this.getKey(userId);
+
+    logger.error(`Key "${keyId}" marked INVALID (401 Unauthorized)`, { userId });
     return this._rotateToNext(userId, keyId);
   }
 

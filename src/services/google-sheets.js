@@ -291,6 +291,136 @@ export async function updateRecordingLinkInSheet(callId, recordingUrl, spreadshe
   }
 }
 
+const TRANSFER_HEADER_ROW = [
+  "Transfer ID",
+  "Status",
+  "Transferred To",
+  "Lead Name",
+  "First Name",
+  "Last Name",
+  "Phone",
+  "Email",
+  "Company",
+  "Country",
+  "Notes",
+  "Campaign",
+  "Call ID",
+  "Call Duration (s)",
+  "Extra Data",
+  "Transferred At",
+  "Recording",
+];
+
+async function ensureTransferSheet(sheets, spreadsheetId) {
+  const meta = await sheets.spreadsheets.get({ spreadsheetId });
+  const sheetNames = meta.data.sheets.map(s => s.properties.title);
+
+  if (!sheetNames.includes("Transfers")) {
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId,
+      requestBody: {
+        requests: [{ addSheet: { properties: { title: "Transfers" } } }],
+      },
+    });
+    logger.info(`Google Sheets: created "Transfers" tab in ${spreadsheetId}`);
+  }
+
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId,
+    range: "Transfers!A1:Q1",
+  });
+
+  const firstRow = res.data.values?.[0];
+  if (!firstRow || firstRow.length === 0 || firstRow.length < TRANSFER_HEADER_ROW.length) {
+    await sheets.spreadsheets.values.update({
+      spreadsheetId,
+      range: "Transfers!A1:Q1",
+      valueInputOption: "RAW",
+      requestBody: { values: [TRANSFER_HEADER_ROW] },
+    });
+    logger.info(`Google Sheets: wrote transfer headers to ${spreadsheetId}`);
+  }
+}
+
+function buildTransferRow(transfer, lead, campaignName, recordingUrl) {
+  return [
+    transfer.id || "",
+    transfer.status || "transferred",
+    transfer.transferred_to || "",
+    transfer.lead_name || "",
+    lead?.first_name || "",
+    lead?.last_name || "",
+    transfer.phone || lead?.phone || "",
+    transfer.email || lead?.email || "",
+    lead?.company || "",
+    lead?.country || "",
+    transfer.notes || "",
+    campaignName || "",
+    transfer.call_id || "",
+    transfer.duration_seconds || "",
+    lead?.extra_json && lead.extra_json !== "{}" ? lead.extra_json : "",
+    transfer.transferred_at || new Date().toISOString(),
+    recordingUrl || "",
+  ];
+}
+
+/**
+ * Push a live transfer row to the "Transfers" tab in the linked Google Sheet.
+ */
+export async function pushTransferToSheet(transferData) {
+  const db = getDb();
+
+  const campaign = db.prepare(
+    "SELECT name, google_sheet_id, user_id FROM campaigns WHERE id = ?"
+  ).get(transferData.campaign_id);
+
+  if (!campaign?.google_sheet_id) {
+    logger.debug("Google Sheets: campaign has no linked sheet, skipping transfer push");
+    return;
+  }
+
+  const creds = db.prepare(
+    "SELECT google_sheets_credentials FROM users WHERE id = ?"
+  ).get(transferData.user_id || campaign.user_id);
+
+  if (!creds?.google_sheets_credentials) {
+    logger.warn(`Google Sheets: no credentials for user, skipping transfer push`);
+    return;
+  }
+
+  let lead = null;
+  if (transferData.lead_id) {
+    lead = db.prepare("SELECT * FROM leads WHERE id = ?").get(transferData.lead_id);
+  }
+
+  let recordingUrl = "";
+  if (transferData.call_id) {
+    const callRec = db.prepare(
+      "SELECT recording_url FROM call_records WHERE call_id = ? LIMIT 1"
+    ).get(transferData.call_id);
+    recordingUrl = callRec?.recording_url || "";
+  }
+
+  try {
+    const sheets = await getSheetsClient(creds.google_sheets_credentials);
+    await ensureTransferSheet(sheets, campaign.google_sheet_id);
+
+    const row = buildTransferRow(transferData, lead, campaign.name, recordingUrl);
+
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: campaign.google_sheet_id,
+      range: "Transfers!A:Q",
+      valueInputOption: "RAW",
+      insertDataOption: "INSERT_ROWS",
+      requestBody: { values: [row] },
+    });
+
+    logger.info(`Google Sheets: pushed transfer to "Transfers" tab in ${campaign.google_sheet_id}`);
+  } catch (err) {
+    logger.error(`Google Sheets: failed to push transfer: ${err.message}`);
+  }
+}
+
 /**
  * Test connection to a Google Sheet (validates credentials + sheet access).
  */

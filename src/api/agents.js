@@ -248,9 +248,20 @@ router.post("/test", async (req, res) => {
   log("info", `Settings built: LLM=${llm_provider}/${llm_model}, STT=${stt_provider}/${stt_model}, TTS=${tts_provider}/${tts_model}`);
   log("info", `Language: ${language || "en"}, Greeting: "${(greeting || "Hello, this is a test.").slice(0, 60)}..."`);
 
-  const db2 = getDb();
-  const userRow = db2.prepare("SELECT deepgram_api_key FROM users WHERE id = ?").get(req.user.userId);
-  const apiKey = userRow?.deepgram_api_key || process.env.DEEPGRAM_API_KEY;
+  let apiKey;
+  try {
+    const { getUserDeepgramKeyInfo } = await import("./settings.js");
+    const keyInfo = getUserDeepgramKeyInfo(req.user.userId);
+    if (keyInfo) {
+      apiKey = keyInfo.key;
+      log("info", `Using Deepgram key: "${keyInfo.label}" (source: ${keyInfo.source})`);
+    }
+  } catch (e) { /* ignore */ }
+  if (!apiKey) {
+    const db2 = getDb();
+    const userRow = db2.prepare("SELECT deepgram_api_key FROM users WHERE id = ?").get(req.user.userId);
+    apiKey = userRow?.deepgram_api_key || process.env.DEEPGRAM_API_KEY;
+  }
   if (!apiKey) {
     log("error", "No Deepgram API key configured. Set it in Settings or .env");
     return res.json({ success: false, logs });
