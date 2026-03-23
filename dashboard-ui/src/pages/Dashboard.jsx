@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../lib/api';
+import { useAuth } from '../contexts/AuthContext';
 import {
   Phone, PhoneForwarded, PhoneOff, PhoneMissed, Clock, Users, Bot, Megaphone,
   TrendingUp, DollarSign, CalendarCheck, AlertTriangle, VoicemailIcon, Ban,
@@ -76,6 +77,7 @@ function formatCost(v) {
 export default function Dashboard() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { isSuperAdmin } = useAuth();
 
   useEffect(() => {
     api.getDashboard()
@@ -113,7 +115,7 @@ export default function Dashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Overview of your AI calling operations</p>
+          <p className="text-sm text-gray-500 mt-0.5">Overview of your calling operations</p>
         </div>
         <button onClick={() => { setLoading(true); api.getDashboard().then(setData).catch(() => {}).finally(() => setLoading(false)); }}
           className="text-sm text-indigo-600 hover:text-indigo-800 font-medium">

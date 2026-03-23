@@ -1,0 +1,101 @@
+phone,lead_name,outcome,duration_seconds,notes,started_at
+15196946585,Vinamra,not_interested,326,"Client asked inappropriate personal questions (appearance, clothing, race, address). Did not demonstrate genuine interest in trading services. Terminated call professionally after multiple redirects.",2026-03-18T22:49:06.948Z
+14036207459,Rj,not_interested,239,"Client has significant mobility issues, is blind with macular degeneration, no longer has a computer, only uses cell phone. Previously traded Bitcoin 5 years ago but stopped. Not interested in continuing due to physical limitations.",2026-03-18T23:45:55.402Z
+15877089110,Abhishek,lead_hangup,231,"",2026-03-18T23:08:59.148Z
+14313347576,Diomede,not_interested,210,"Client repeatedly questioned if speaking to a robot/computer. Expressed frustration with call quality and tone. Declined to continue conversation. Politely ended call.",2026-03-19T00:14:12.028Z
+14168340750,Luke,lead_hangup,189,"",2026-03-18T23:42:17.669Z
+12043849911,Dave,do_not_call,177,"Client requested to be removed from calling list and not contacted again. Had previous trading experience, not interested in starting with minimum deposit.",2026-03-18T23:05:13.931Z
+14032727287,George,lead_hangup,174,"",2026-03-18T23:34:17.182Z
+17804347058,"George Cassady",not_interested,173,"Client stated they did not request information. Expressed concern about legitimacy (""I don't think you're real""). Politely declined after brief objection handling attempt. Ended call himself.",2026-03-18T21:04:00.681Z
+13064707214,Shannon,lead_hangup,172,"",2026-03-19T00:10:29.824Z
+12049603609,Fake,not_interested,167,"Client indicated not interested, language barrier present, politely declined multiple times",2026-03-18T23:42:31.182Z
+18673344032,Sven,not_interested,162,"Client asked about company legitimacy, provided regulatory info. Expressed not interested twice. Attempted objection handling once. Final rejection received.",2026-03-18T22:37:04.660Z
+4915256568509,Dirk,lead_hangup,149,"",2026-03-18T19:28:29.901Z
+16476798286,Gracis,lead_hangup,143,"",2026-03-18T22:42:54.576Z
+16043515809,Diane,not_interested,143,"Client clearly stated not interested multiple times. Attempted one objection rebuttal, client firmly declined and ended call.",2026-03-19T00:06:02.561Z
+15148332221,Jonathan,lead_hangup,136,"",2026-03-18T23:18:49.259Z
+13066306010,"Aaron Devost",not_interested,132,"Client stated not interested immediately after clarifying what the call was about. Did not want to proceed with conversation.",2026-03-18T19:05:28.080Z
+15874525558,"G Hh",lead_hangup,129,"",2026-03-18T19:53:06.255Z
+15199459779,Judy,not_interested,125,"Client did not recall signing up. Works in nursing home care with rotating shifts (days/nights). Very busy and not interested in learning more. Polite but firm.",2026-03-18T23:55:55.982Z
+15197290894,Mike,lead_hangup,122,"",2026-03-18T23:00:34.610Z
+15875979717,"Muna Wijesundera",lead_hangup,121,"",2026-03-18T19:28:39.664Z
+14168874306,Randa,not_interested,119,"Client stated they found something else and was not interested in discussing further or proceeding with qualification",2026-03-18T23:20:10.329Z
+17802220998,"Valerie Downing",not_interested,114,"Client stated they did not request information about online trading and were not interested in world markets at all. No qualification attempted due to lack of interest and confusion about lead source.",2026-03-18T21:00:27.449Z
+17785824000,Coral,lead_hangup,111,"",2026-03-19T00:00:54.772Z
+17807099811,"Tom J",not_interested,111,"Client stated it was the wrong number, did not request information, appears to be a mix-up with housemate giving info",2026-03-18T19:14:00.072Z
+17802679383,"Almira Foco",do_not_call,110,"Client did not recall requesting information. Asked to be removed from list. Stated not interested twice. Respectfully ended call and confirmed removal.",2026-03-18T20:33:42.205Z
+18193193174,"Marie-hélène Patry",lead_hangup,109,"",2026-03-18T21:09:49.082Z
+15195801572,Mavio,lead_hangup,108,"",2026-03-18T22:32:01.269Z
+17806554010,"Cathrin Aarshat",lead_hangup,107,"",2026-03-18T18:52:15.168Z
+14035971916,"Charlene Belan",lead_hangup,105,"",2026-03-18T20:26:58.245Z
+14169193408,Zeckria,not_interested,104,"Client became hostile and asked to end conversation. Expressed skepticism about legitimacy and asked detailed verification questions before becoming aggressive.",2026-03-18T23:56:24.508Z
+17808027496,"Melody Guo",lead_hangup,103,"",2026-03-18T19:28:38.164Z
+17809260000,Deanna,lead_hangup,102,"",2026-03-19T00:19:12.315Z
+17807168558,"Vine Mwanga",lead_hangup,101,"",2026-03-18T21:15:14.919Z
+4917673930248,Mohamed,lead_hangup,99,"",2026-03-18T19:32:11.087Z
+16134083588,Anissa,lead_hangup,98,"",2026-03-18T23:45:10.353Z
+18193521053,Jonathan,lead_hangup,97,"",2026-03-18T22:56:46.402Z
+16395712516,Tolulade,lead_hangup,97,"",2026-03-18T23:41:11.601Z
+17802631584,Angela,lead_hangup,96,"",2026-03-18T23:56:03.489Z
+16479395456,Senthil,lead_hangup,96,"",2026-03-18T23:57:26.082Z
+15878898162,"Shokria Adel",not_interested,96,"Client (Sofia) did not recall requesting information and declined immediately when clarified. Polite but not interested in discussing further.",2026-03-18T18:52:31.686Z
+12509862019,"Olu B",not_interested,95,"Client (Alexandra, not Olu B) did not recall requesting info and declined immediately. No interest in proceeding.",2026-03-18T19:05:52.107Z
+17809169396,"Brett Purdy",not_interested,95,"Client stated they never filled out any forms or submitted information online. Denied any interest or prior contact. Ended call politely due to likely data error.",2026-03-18T20:23:25.023Z
+4915210315235,Werner,do_not_call,94,"Maximale Anzahl der Versuche überschritten.",2026-03-18T19:38:03.415Z
+4917643551686,Dennis,lead_hangup,94,"",2026-03-18T19:23:40.605Z
+4915775283912,Mo,lead_hangup,94,"",2026-03-18T19:31:12.028Z
+17802375810,"Benjamin Endara-gillis",lead_hangup,94,"",2026-03-18T20:30:02.959Z
+17802664013,"Manveer Aujla",not_interested,94,"Wrong number - person confirmed this number previously belonged to Manveer Aujla but was switched years ago. Current holder has no connection to the lead.",2026-03-18T19:40:07.381Z
+18196295673,Robin,lead_hangup,91,"",2026-03-18T22:43:35.112Z
+13063147614,Mickey,not_interested,91,"Wrong number - SIM card mix-up. Client is Stefan, not Mickey. Never requested information about trading.",2026-03-18T23:31:24.521Z
+4915735460218,Marius,lead_hangup,88,"",2026-03-18T19:27:19.325Z
+12508897533,Muhammad,not_interested,88,"Client immediately stated no interest and declined after one objection attempt. Polite but firm refusal.",2026-03-18T23:22:31.468Z
+16472059902,"Dsfsdf Bhbfb",lead_hangup,87,"",2026-03-18T19:46:39.331Z
+15147917231,Raphael,lead_hangup,87,"",2026-03-18T23:09:42.686Z
+17809651979,"Akram Abubaha",not_interested,87,"Client stated they never requested information about trading. No interest. Ended call politely.",2026-03-18T21:09:46.080Z
+15193060255,Arpad,not_interested,87,"Client did not recall requesting information about trading. No recollection of inquiry. Ended call politely.",2026-03-18T23:04:12.331Z
+18193742553,Casey,lead_hangup,86,"",2026-03-18T23:47:28.494Z
+4916092596850,Florian,lead_hangup,85,"",2026-03-18T19:19:11.319Z
+17809636396,"John Did",lead_hangup,85,"",2026-03-18T20:23:38.537Z
+16048680064,Miranda,lead_hangup,84,"",2026-03-18T23:04:43.897Z
+16476093839,Inderjit,lead_hangup,84,"",2026-03-18T23:10:03.706Z
+14384988968,Christina,lead_hangup,84,"",2026-03-19T00:17:30.219Z
+17804461876,"Yvon Cormier",not_interested,84,"Client stated they did not request information or it was by error. Not interested in proceeding. Politely declined and ended call.",2026-03-18T20:58:19.806Z
+17809681660,"Lisa Stewart",not_interested,84,"Wrong number - Lisa Stewart no longer at this number. Current resident received recycled phone number about 5 years ago. Lisa Stewart left town and had outstanding debts. Caller was polite and explained the situation.",2026-03-18T21:06:59.400Z
+14033835703,"Aimee Sibal Dionisio",lead_hangup,83,"",2026-03-18T19:23:17.324Z
+12044519254,Allan,lead_hangup,83,"",2026-03-18T23:02:55.755Z
+12045721717,Sarah,lead_hangup,83,"",2026-03-19T19:19:38.005Z
+4915155579161,Ronny,lead_hangup,82,"",2026-03-18T19:19:15.823Z
+4917635813316,Wolfgang,lead_hangup,82,"",2026-03-18T19:48:05.044Z
+17809060508,"Bola Badmus",lead_hangup,82,"",2026-03-18T20:59:55.918Z
+13066207538,Rasak,lead_hangup,82,"",2026-03-19T00:20:48.407Z
+4915201999191,Niklas,lead_hangup,81,"",2026-03-18T19:15:39.055Z
+4917624490810,Thomas,lead_hangup,81,"",2026-03-18T19:38:31.440Z
+17809198816,"Daisy Zhang",lead_hangup,81,"",2026-03-18T21:04:47.260Z
+17807198673,"Natalie Radetic",lead_hangup,81,"",2026-03-18T21:10:22.118Z
+14036883778,Tom,lead_hangup,81,"",2026-03-18T23:42:58.206Z
+4915219191010,Yasser,lead_hangup,80,"",2026-03-18T19:38:10.423Z
+17802575683,"Kaylee Masini",lead_hangup,80,"",2026-03-18T20:42:45.792Z
+17805169191,"Danielle Cormier",lead_hangup,80,"",2026-03-18T20:46:41.555Z
+17809184124,"Tara Richardson",lead_hangup,80,"",2026-03-18T20:52:40.448Z
+13064902929,Obiora,lead_hangup,80,"",2026-03-18T23:16:44.643Z
+4915786068974,Guido,lead_hangup,79,"",2026-03-18T19:19:06.314Z
+4915736405425,Valerij,lead_hangup,79,"",2026-03-18T19:19:33.866Z
+17803941981,"Hassan Mehmood",lead_hangup,79,"",2026-03-18T20:55:21.121Z
+17808684468,"Tom Sanderson",lead_hangup,78,"",2026-03-18T18:59:39.689Z
+4915777144966,Christos,lead_hangup,78,"",2026-03-18T19:23:51.116Z
+4915753692016,Rami,lead_hangup,78,"",2026-03-18T19:28:35.906Z
+17808068430,Amanda,lead_hangup,78,"",2026-03-18T22:41:48.513Z
+15149752962,Luc,lead_hangup,78,"",2026-03-18T23:22:19.452Z
+16133324855,Brian,lead_hangup,78,"",2026-03-18T23:57:51.605Z
+15879874389,"Kimberlee Hodgson",lead_hangup,77,"",2026-03-18T19:24:08.377Z
+16042188595,"Amy Larocque-walker",lead_hangup,77,"",2026-03-18T20:59:42.405Z
+14508488050,Debbie,lead_hangup,77,"",2026-03-18T22:31:55.262Z
+-17806902112,Stella,lead_hangup,77,"",2026-03-18T22:35:33.042Z
+15873363995,"Finn Frazer",not_interested,77,"Client politely declined after initial objection handling attempt. Not interested in proceeding with any information or scheduling.",2026-03-18T18:50:01.518Z
+4917639113977,Rene,lead_hangup,76,"",2026-03-18T19:20:14.901Z
+17805541245,"Robert Buff",lead_hangup,76,"",2026-03-18T20:26:32.716Z
+17808840142,"Liz Van Wyk",lead_hangup,76,"",2026-03-18T20:43:29.335Z
+14504863317,Sylvain,lead_hangup,76,"",2026-03-18T23:07:18.549Z
+4915785920373,Enrico,lead_hangup,75,"",2026-03-18T19:50:14.684Z
+4917672611876,Sebastian,lead_hangup,75,"",2026-03-18T19:51:56.783Z

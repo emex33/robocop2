@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { api } from '../lib/api';
+import { useAuth } from '../contexts/AuthContext';
 import {
   Search, Download, Filter, Phone, ChevronLeft, ChevronRight, X, Eye,
   Clock, PhoneForwarded, PhoneOff, CalendarCheck, Bot, AlertCircle,
@@ -383,6 +384,25 @@ export default function Calls() {
 
 function CallDetailModal({ call, onClose }) {
   const [tab, setTab] = useState('info');
+  const { isSuperAdmin } = useAuth();
+
+  const infoItems = [
+    { label: 'Phone', value: call.phone },
+    { label: 'Lead', value: call.lead_name || '—' },
+    { label: 'Email', value: call.email || '—' },
+    { label: 'Campaign', value: call.campaign_name || '—' },
+    ...(isSuperAdmin ? [{ label: 'AI Agent', value: call.agent_name || '—' }] : []),
+    { label: 'Outcome', value: call.outcome },
+    { label: 'Started', value: call.started_at ? `${formatDate(call.started_at)} ${formatTime(call.started_at)}` : '—' },
+    { label: 'Ended', value: call.ended_at ? `${formatDate(call.ended_at)} ${formatTime(call.ended_at)}` : '—' },
+    ...(call.call_cost > 0 ? (isSuperAdmin
+      ? [{ label: 'Call Cost', value: `$${call.call_cost.toFixed(4)} (VoIP: $${(call.voip_cost||0).toFixed(4)}, AI: $${(call.ai_cost||0).toFixed(4)})` }]
+      : [{ label: 'Call Cost', value: `$${call.call_cost.toFixed(4)}` }]
+    ) : []),
+    ...(isSuperAdmin && call.ai_duration_seconds > 0 ? [{ label: 'AI Talk Time', value: `${(call.ai_duration_seconds / 60).toFixed(1)} min` }] : []),
+    ...(call.transferred_to ? [{ label: 'Transferred To', value: call.transferred_to }] : []),
+    ...(call.error_message ? [{ label: 'Error', value: call.error_message }] : []),
+  ];
 
   return (
     <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={onClose}>
@@ -431,20 +451,7 @@ function CallDetailModal({ call, onClose }) {
 
               {/* Details grid */}
               <div className="grid grid-cols-2 gap-4">
-                {[
-                  { label: 'Phone', value: call.phone },
-                  { label: 'Lead', value: call.lead_name || '—' },
-                  { label: 'Email', value: call.email || '—' },
-                  { label: 'Campaign', value: call.campaign_name || '—' },
-                  { label: 'AI Agent', value: call.agent_name || '—' },
-                  { label: 'Outcome', value: call.outcome },
-                  { label: 'Started', value: call.started_at ? `${formatDate(call.started_at)} ${formatTime(call.started_at)}` : '—' },
-                  { label: 'Ended', value: call.ended_at ? `${formatDate(call.ended_at)} ${formatTime(call.ended_at)}` : '—' },
-                  ...(call.call_cost > 0 ? [{ label: 'Call Cost', value: `$${call.call_cost.toFixed(4)} (VoIP: $${(call.voip_cost||0).toFixed(4)}, AI: $${(call.ai_cost||0).toFixed(4)})` }] : []),
-                  ...(call.ai_duration_seconds > 0 ? [{ label: 'AI Talk Time', value: `${(call.ai_duration_seconds / 60).toFixed(1)} min` }] : []),
-                  ...(call.transferred_to ? [{ label: 'Transferred To', value: call.transferred_to }] : []),
-                  ...(call.error_message ? [{ label: 'Error', value: call.error_message }] : []),
-                ].map(item => (
+                {infoItems.map(item => (
                   <div key={item.label}>
                     <p className="text-xs text-gray-400 font-medium uppercase tracking-wider mb-0.5">{item.label}</p>
                     <p className="text-sm text-gray-900">{item.value}</p>

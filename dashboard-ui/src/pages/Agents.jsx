@@ -114,7 +114,7 @@ export default function Agents() {
   );
 }
 
-// ===== Provider → Model catalogs (from Deepgram Voice Agent docs) =====
+// ===== Provider → Model catalogs =====
 const LLM_PROVIDERS = {
   open_ai: {
     label: 'OpenAI',
@@ -163,7 +163,7 @@ const LLM_PROVIDERS = {
 
 const STT_PROVIDERS = {
   deepgram: {
-    label: 'Deepgram',
+    label: 'Default',
     models: [
       { id: 'flux-general-en', name: 'Flux (Voice Agent Optimized, ~260ms latency)', version: 'v2', recommended: true },
       { id: 'nova-3', name: 'Nova-3 (Multilingual)', version: 'v1' },
@@ -175,7 +175,7 @@ const STT_PROVIDERS = {
   },
 };
 
-// Deepgram Aura-2 voices grouped by language (from /v1/models API)
+// Voice models grouped by language
 const DEEPGRAM_VOICES = {
   en: [
     { id: 'aura-2-thalia-en', name: 'Thalia (Female, US)' },
@@ -291,7 +291,7 @@ function getDefaultVoice(lang) {
 
 const TTS_PROVIDERS = {
   deepgram: {
-    label: 'Deepgram',
+    label: 'Default',
     fieldName: 'model',
     getModels: (lang) => DEEPGRAM_VOICES[lang] || DEEPGRAM_VOICES['en'],
   },
@@ -305,7 +305,7 @@ const TTS_PROVIDERS = {
       { id: '79a125e8-cd45-4c13-8a67-188112f4dd22', name: 'British Lady (Female)' },
       { id: '6ccbfb76-1fc6-48f7-b71d-91ac6298247b', name: 'Tessa (Female, Emotive)' },
       { id: '408daed0-c597-4c27-aae8-fa0497d644bf', name: 'Italian Lady (Female)' },
-      { id: 'cefcb124-080b-4655-b31f-932f3ee743de', name: 'Deepgram ES Voice (Female)' },
+      { id: 'cefcb124-080b-4655-b31f-932f3ee743de', name: 'Spanish Voice (Female)' },
       { id: '228fca29-3a0a-435c-8728-5cb483251068', name: 'Kiefer (Male, Stable)' },
       { id: 'c961b81c-a935-4c17-bfb3-ba2239de8c2f', name: 'Kyle (Male, Emotive)' },
       { id: 'a0e99841-438c-4a64-b679-ae501e7d6091', name: 'Barbershop Man (Male)' },
@@ -701,7 +701,7 @@ function AgentModal({ agent, onClose, onSaved }) {
                       </div>
                     )}
                     <p className="text-xs text-indigo-600 bg-indigo-50 px-3 py-2 rounded-lg">
-                      Cartesia Sonic-2 is multilingual — any voice works with any language. Managed by Deepgram (no API key needed).
+                      Cartesia Sonic-2 is multilingual — any voice works with any language. Fully managed (no API key needed).
                     </p>
                   </>
                 )}
@@ -714,7 +714,7 @@ function AgentModal({ agent, onClose, onSaved }) {
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500 font-mono" />
                     </div>
                     <p className="text-xs text-indigo-600 bg-indigo-50 px-3 py-2 rounded-lg">
-                      ElevenLabs is managed by Deepgram (no API key needed). Paste an ElevenLabs voice ID above. Multilingual v2 supports all languages.
+                      ElevenLabs is fully managed (no API key needed). Paste an ElevenLabs voice ID above. Multilingual v2 supports all languages.
                     </p>
                   </>
                 )}
@@ -754,7 +754,7 @@ function AgentModal({ agent, onClose, onSaved }) {
                   </button>
                 </div>
                 <p className="text-xs text-gray-400 mb-3">
-                  Connects to Deepgram and verifies API key, LLM, STT, TTS models, and greeting generation.
+                  Verifies LLM, STT, TTS models, and greeting generation.
                 </p>
 
                 {testLogs.length > 0 && (

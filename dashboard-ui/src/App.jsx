@@ -38,6 +38,13 @@ function PublicRoute({ children }) {
   return user ? <Navigate to="/" /> : children;
 }
 
+function AdminRoute({ children }) {
+  const { user, loading, isSuperAdmin } = useAuth();
+  if (loading) return null;
+  if (!user) return <Navigate to="/login" />;
+  return isSuperAdmin ? children : <Navigate to="/" />;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -49,7 +56,7 @@ export default function App() {
           <Route path="/agent/softphone" element={<AgentSoftphone />} />
           <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
             <Route index element={<Dashboard />} />
-            <Route path="agents" element={<Agents />} />
+            <Route path="agents" element={<AdminRoute><Agents /></AdminRoute>} />
             <Route path="campaigns" element={<Campaigns />} />
             <Route path="campaigns/:id" element={<CampaignDetail />} />
             <Route path="lists" element={<Lists />} />
@@ -60,7 +67,7 @@ export default function App() {
             <Route path="softphone" element={<Softphone />} />
             <Route path="agent-users" element={<AgentUsers />} />
             <Route path="billing" element={<Billing />} />
-            <Route path="admin-billing" element={<AdminBilling />} />
+            <Route path="admin-billing" element={<AdminRoute><AdminBilling /></AdminRoute>} />
             <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>

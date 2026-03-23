@@ -1,0 +1,1396 @@
+phone,lead_name,outcome,duration_seconds,notes,started_at
+38640751637,Blaz,lead_hangup,31,"",2026-03-19T20:56:10.572Z
+16477499085,Shoeb,lead_hangup,30,"",2026-03-19T19:27:16.007Z
+12049304609,Scott,lead_hangup,40,"",2026-03-19T19:25:21.879Z
+16138753447,Nathalie,lead_hangup,33,"",2026-03-19T19:22:47.212Z
+27842064710,Marowa.arnold@gmail.com,lead_hangup,26,"",2026-03-19T19:22:09.673Z
+14035501142,N\/a,lead_hangup,24,"",2026-03-19T19:20:33.570Z
+12045721717,Sarah,lead_hangup,83,"",2026-03-19T19:19:38.005Z
+16134337575,Kyle,lead_hangup,28,"",2026-03-19T00:21:55.972Z
+14033976658,Babak,lead_hangup,51,"",2026-03-19T00:21:37.956Z
+19058720881,Treffsimpson,lead_hangup,61,"",2026-03-19T00:21:36.455Z
+12505721660,Justin,lead_hangup,19,"",2026-03-19T00:21:28.948Z
+16046161461,Siega,lead_hangup,46,"",2026-03-19T00:21:27.447Z
+13062018414,Melodie,lead_hangup,40,"",2026-03-19T00:21:16.935Z
+14373333709,Steve,callback,74,"Gatekeeper answered, Steve not available. Left voicemail message requesting callback.",2026-03-19T00:21:13.933Z
+13066207538,Rasak,lead_hangup,82,"",2026-03-19T00:20:48.407Z
+12893806349,Stefan,lead_hangup,40,"",2026-03-19T00:20:36.389Z
+14037909060,Melissa,lead_hangup,60,"",2026-03-19T00:20:30.385Z
+18192719712,Michel,lead_hangup,73,"",2026-03-19T00:20:25.880Z
+14166189720,Hassib,lead_hangup,40,"",2026-03-19T00:20:19.873Z
+14039928132,Tarik,callback,67,"Screened by gatekeeper, Tarik not available. Left voicemail message requesting callback.",2026-03-19T00:20:13.867Z
+14389345579,Asifur,lead_hangup,29,"",2026-03-19T00:20:10.864Z
+17786788443,Varun,lead_hangup,25,"",2026-03-19T00:20:09.363Z
+13066327099,Tammy,lead_hangup,24,"",2026-03-19T00:19:52.848Z
+15144444444,Maxime,lead_hangup,25,"",2026-03-19T00:19:27.327Z
+14034362007,Muhamed,not_interested,33,"Wrong person answered - not Muhamed, refused to identify themselves",2026-03-19T00:19:22.824Z
+17809260000,Deanna,lead_hangup,102,"",2026-03-19T00:19:12.315Z
+15197601474,Jeremy,lead_hangup,18,"",2026-03-19T00:19:06.308Z
+14508083617,Blacky,lead_hangup,51,"",2026-03-19T00:18:55.799Z
+19059061197,Donald,lead_hangup,33,"",2026-03-19T00:18:40.784Z
+14383995079,Lyne,lead_hangup,30,"",2026-03-19T00:18:27.273Z
+16478637975,Maxim,lead_hangup,29,"",2026-03-19T00:18:18.264Z
+15144433958,Stacy,lead_hangup,41,"",2026-03-19T00:18:10.757Z
+12897757044,Karson,lead_hangup,40,"",2026-03-19T00:18:07.754Z
+15147129669,Tony,lead_hangup,22,"",2026-03-19T00:17:51.240Z
+16138128546,Ryan,lead_hangup,32,"",2026-03-19T00:17:48.238Z
+14033322770,Johnathon,lead_hangup,44,"",2026-03-19T00:17:45.235Z
+13064500781,A.muhammad,lead_hangup,45,"",2026-03-19T00:17:40.730Z
+12045096614,Paige,lead_hangup,37,"",2026-03-19T00:17:34.723Z
+14384988968,Christina,lead_hangup,84,"",2026-03-19T00:17:30.219Z
+17802390503,Kenneth,lead_hangup,22,"",2026-03-19T00:17:25.713Z
+14037044483,Josh,lead_hangup,21,"",2026-03-19T00:17:22.711Z
+16139157536,Peter,not_interested,30,"Client immediately rejected call and stated ""Go away. Nope."" Clear do not contact signal.",2026-03-19T00:17:09.190Z
+16472912984,Keziah,lead_hangup,32,"",2026-03-19T00:17:06.187Z
+19055992767,Ishan,lead_hangup,23,"",2026-03-19T00:16:57.179Z
+12268801994,Jonas,lead_hangup,27,"",2026-03-19T00:16:30.156Z
+15142618556,Stephanie,lead_hangup,58,"",2026-03-19T00:16:25.653Z
+15194667984,Brian,lead_hangup,27,"",2026-03-19T00:16:24.150Z
+14039918877,Aryou,lead_hangup,39,"",2026-03-19T00:16:22.648Z
+14032899494,Vaughn,lead_hangup,19,"",2026-03-19T00:16:10.635Z
+15874331783,James,lead_hangup,22,"",2026-03-19T00:16:09.134Z
+12503179878,Chris,lead_hangup,26,"",2026-03-19T00:16:06.131Z
+14167952384,Julia,lead_hangup,26,"",2026-03-19T00:15:58.625Z
+16476281363,Ira,lead_hangup,14,"",2026-03-19T00:15:57.124Z
+14164577443,Dharam,lead_hangup,35,"",2026-03-19T00:15:54.121Z
+16139811905,Wissam,lead_hangup,27,"",2026-03-19T00:15:48.118Z
+16478953706,Belinda,lead_hangup,21,"",2026-03-19T00:15:42.115Z
+19059224294,Sav,lead_hangup,21,"",2026-03-19T00:15:34.608Z
+19054347735,Florin,lead_hangup,49,"",2026-03-19T00:15:33.107Z
+15148366920,Angelina,lead_hangup,24,"",2026-03-19T00:15:25.600Z
+19024780683,Daniel,lead_hangup,31,"",2026-03-19T00:15:13.591Z
+15147785445,David,lead_hangup,38,"",2026-03-19T00:14:55.576Z
+14168804564,Thas,lead_hangup,41,"",2026-03-19T00:14:48.068Z
+16133021653,Lance,lead_hangup,27,"",2026-03-19T00:14:42.060Z
+15874323448,Kelton,lead_hangup,31,"",2026-03-19T00:14:15.032Z
+14313347576,Diomede,not_interested,210,"Client repeatedly questioned if speaking to a robot/computer. Expressed frustration with call quality and tone. Declined to continue conversation. Politely ended call.",2026-03-19T00:14:12.028Z
+12508791561,Tanvi,lead_hangup,32,"",2026-03-19T00:14:07.524Z
+15197777919,Daniel,lead_hangup,52,"",2026-03-19T00:13:52.508Z
+15873364710,Robert,lead_hangup,30,"",2026-03-19T00:13:37.497Z
+16475716706,Robert,lead_hangup,67,"",2026-03-19T00:13:32.993Z
+19055716058,Gyongyi,lead_hangup,30,"",2026-03-19T00:13:19.482Z
+15142397117,Santo,lead_hangup,70,"",2026-03-19T00:13:02.968Z
+14164609253,Dilan,lead_hangup,61,"",2026-03-19T00:11:59.915Z
+12505678103,Jimm,lead_hangup,63,"",2026-03-19T00:11:55.411Z
+12498789091,Melissa,lead_hangup,39,"",2026-03-19T00:11:50.906Z
+15198610049,Oliver,callback,73,"Reached voicemail system with screening service. Left message for callback. No direct contact with lead.",2026-03-19T00:11:32.884Z
+12508915788,Annie,lead_hangup,25,"",2026-03-19T00:11:29.881Z
+14039881221,Alvina,lead_hangup,26,"",2026-03-19T00:11:26.878Z
+14183174382,Shawn,lead_hangup,15,"",2026-03-19T00:11:19.371Z
+14508990980,Huguette,callback,237,"Client interested but dealing with power outage aftermath, has $0.26 in bank account. Requested callback next Friday 2026-03-28 at 3:30 PM. Not qualified yet - needs to complete qualification questions on callback.",2026-03-19T00:11:16.368Z
+12044120220,Gloria,lead_hangup,27,"",2026-03-19T00:11:13.365Z
+14505216069,Tyler,lead_hangup,21,"",2026-03-19T00:11:11.865Z
+17053301347,Tiffiny,not_interested,26,"Wrong number - person stated this hasn't been Tiffiny's number for about 6 years",2026-03-19T00:11:07.359Z
+16475390613,Nikhil,lead_hangup,43,"",2026-03-19T00:11:04.358Z
+17057953371,David,lead_hangup,42,"",2026-03-19T00:10:43.338Z
+14383452773,Charu,lead_hangup,27,"",2026-03-19T00:10:41.837Z
+14388881675,Agata,lead_hangup,48,"",2026-03-19T00:10:31.325Z
+13064707214,Shannon,lead_hangup,172,"",2026-03-19T00:10:29.824Z
+16047830986,Kamal,lead_hangup,35,"",2026-03-19T00:09:56.784Z
+16478312093,Mohammed,lead_hangup,23,"",2026-03-19T00:09:34.257Z
+15064723144,Jade,lead_hangup,12,"",2026-03-19T00:09:22.246Z
+15874096435,Jasper,lead_hangup,15,"",2026-03-19T00:09:20.744Z
+12503085488,Chris,lead_hangup,34,"",2026-03-19T00:09:08.733Z
+14168363655,Jagruti,lead_hangup,34,"",2026-03-19T00:09:01.229Z
+12896800115,Chris,not_interested,44,"Client was unclear and ended the call immediately after greeting, said ""bye bye""",2026-03-19T00:08:56.726Z
+17786801000,Syed,lead_hangup,61,"",2026-03-19T00:08:47.716Z
+16476272007,Karanbir,callback,33,"Client answered but indicated they cannot talk right now, requested callback for later",2026-03-19T00:08:44.713Z
+12894893706,Jacob,lead_hangup,19,"",2026-03-19T00:08:35.706Z
+16137975354,Jo-anne,callback,73,"Gatekeeper answered. Jo-anne not available. Left message to call back.",2026-03-19T00:08:25.195Z
+17057689477,Tom,lead_hangup,25,"",2026-03-19T00:08:22.192Z
+16048484814,Marc,lead_hangup,30,"",2026-03-19T00:08:11.682Z
+15877077474,Feven,lead_hangup,14,"",2026-03-19T00:08:10.180Z
+16477017494,Niththiya,lead_hangup,20,"",2026-03-19T00:07:59.667Z
+16476074873,Mariejoseph621@gmail.com,lead_hangup,17,"",2026-03-19T00:07:46.153Z
+17055292157,Sherry,lead_hangup,54,"",2026-03-19T00:07:35.644Z
+14169388402,Nick,lead_hangup,20,"",2026-03-19T00:07:28.139Z
+16474009054,Apekshaben,lead_hangup,26,"",2026-03-19T00:07:17.630Z
+14313348324,Bhawya,lead_hangup,54,"",2026-03-19T00:07:10.124Z
+14163578240,Parth,lead_hangup,13,"",2026-03-19T00:06:53.608Z
+16479623429,Tracia,lead_hangup,36,"",2026-03-19T00:06:49.105Z
+16475286368,Anjana,lead_hangup,49,"",2026-03-19T00:06:04.064Z
+16043515809,Diane,not_interested,143,"Client clearly stated not interested multiple times. Attempted one objection rebuttal, client firmly declined and ended call.",2026-03-19T00:06:02.561Z
+14036291416,Ricky,do_not_call,52,"Wrong number - not Ricky. Requested to be removed from calling list.",2026-03-19T00:05:50.542Z
+16476675460,Kanza,lead_hangup,21,"",2026-03-19T00:05:46.039Z
+19056165530,Cyrel,lead_hangup,12,"",2026-03-19T00:05:20.511Z
+16476677023,Radek,lead_hangup,44,"",2026-03-19T00:04:54.983Z
+17096973531,Tapanga,lead_hangup,42,"",2026-03-19T00:04:50.480Z
+14168714229,Evan,lead_hangup,21,"",2026-03-19T00:04:42.972Z
+18194328026,Olive,lead_hangup,46,"",2026-03-19T00:04:39.970Z
+14168207640,Maninderjeet,lead_hangup,14,"",2026-03-19T00:04:30.965Z
+16046164133,Amenah,lead_hangup,69,"",2026-03-19T00:04:20.456Z
+12048008530,Samy,lead_hangup,16,"",2026-03-19T00:04:09.947Z
+13065509998,Darwin,lead_hangup,26,"",2026-03-19T00:04:08.446Z
+17808978635,Cody,not_interested,63,"Client stated they did not request information, not interested in learning about trading. Clear rejection after initial attempt.",2026-03-19T00:04:02.441Z
+16472964599,Rajdeep,lead_hangup,24,"",2026-03-19T00:03:47.429Z
+17808073695,Mirela,lead_hangup,51,"",2026-03-19T00:03:39.922Z
+16476494811,Shawn,callback,75,"Spoke with gatekeeper/screener. Shawn not available. Left message to call back at better time.",2026-03-19T00:03:38.420Z
+12502191578,Kyle,lead_hangup,47,"",2026-03-19T00:03:09.894Z
+16134172410,Jessie,lead_hangup,69,"",2026-03-19T00:03:08.393Z
+13062127809,Shane,lead_hangup,51,"",2026-03-19T00:03:00.884Z
+15877102212,Alanna,lead_hangup,24,"",2026-03-19T00:02:59.382Z
+17788900985,Augusta,callback,105,"Client at work, scheduled callback for 2026-03-20 at 14:00. Not yet qualified.",2026-03-19T00:02:50.376Z
+15878029724,Parnell,lead_hangup,19,"",2026-03-19T00:02:44.370Z
+17096442311,Eric,lead_hangup,45,"",2026-03-19T00:02:38.364Z
+16475271710,Anmol,lead_hangup,39,"",2026-03-19T00:02:24.851Z
+17809917765,Joseph,lead_hangup,68,"",2026-03-19T00:02:06.838Z
+18194779220,Robert,callback,61,"Client prefers French language support. Requested callback from French-speaking representative.",2026-03-19T00:01:51.825Z
+19024128311,Lisa,lead_hangup,19,"",2026-03-19T00:01:48.822Z
+17809015204,Azad,lead_hangup,37,"",2026-03-19T00:01:30.798Z
+12042908730,Gagandeep,lead_hangup,24,"",2026-03-19T00:01:29.298Z
+16137259908,Gloria,lead_hangup,43,"",2026-03-19T00:01:27.797Z
+16479858485,Millan,lead_hangup,26,"",2026-03-19T00:01:20.292Z
+17788835486,Polly,lead_hangup,43,"",2026-03-19T00:01:18.791Z
+16472967566,Arturo,callback,72,"Did not speak with Arturo directly. Spoke with gatekeeper who said Arturo was not available. Left callback message with gatekeeper.",2026-03-19T00:01:12.787Z
+14037144256,Linda,lead_hangup,36,"",2026-03-19T00:01:09.784Z
+16475182297,Baljeet,lead_hangup,35,"",2026-03-19T00:01:00.777Z
+17785824000,Coral,lead_hangup,111,"",2026-03-19T00:00:54.772Z
+12049623488,Chris,lead_hangup,39,"",2026-03-19T00:00:42.764Z
+17802636650,Jacqueline,lead_hangup,29,"",2026-03-19T00:00:17.240Z
+19023291205,Wendy,lead_hangup,23,"",2026-03-19T00:00:02.225Z
+15146593307,Joyce,lead_hangup,48,"",2026-03-19T00:00:00.726Z
+16047605747,Srishti,lead_hangup,36,"",2026-03-18T23:59:45.712Z
+18074076475,Lisa,lead_hangup,29,"",2026-03-18T23:59:38.206Z
+13065026539,Mehakdeep,callback,75,"Person not available. Gatekeeper took message. Left voicemail requesting callback or will attempt again later.",2026-03-18T23:59:35.204Z
+15877160185,Justin,lead_hangup,19,"",2026-03-18T23:59:33.701Z
+19025396918,Deborah,lead_hangup,31,"",2026-03-18T23:59:29.196Z
+14039266633,Zorev,lead_hangup,25,"",2026-03-18T23:59:26.193Z
+15879993933,Xander,lead_hangup,63,"",2026-03-18T23:58:45.657Z
+15193385234,Ann,lead_hangup,61,"",2026-03-18T23:58:42.654Z
+15819844782,Tommy,lead_hangup,60,"",2026-03-18T23:58:39.651Z
+16139241556,Janice,lead_hangup,30,"",2026-03-18T23:58:36.648Z
+16477715664,Rezwanul,lead_hangup,34,"",2026-03-18T23:58:29.141Z
+17788330387,Maninder,lead_hangup,38,"",2026-03-18T23:58:09.622Z
+13065192979,Hang,lead_hangup,55,"",2026-03-18T23:58:08.120Z
+15149953191,Nicolas,lead_hangup,53,"",2026-03-18T23:58:06.618Z
+16472805866,Sunny,lead_hangup,32,"",2026-03-18T23:58:05.115Z
+16478360819,Eva,lead_hangup,31,"",2026-03-18T23:57:54.607Z
+14317770876,Clifford,lead_hangup,28,"",2026-03-18T23:57:53.106Z
+16133324855,Brian,lead_hangup,78,"",2026-03-18T23:57:51.605Z
+15064760100,Nikolai,lead_hangup,30,"",2026-03-18T23:57:48.603Z
+16479810645,Narinder,lead_hangup,25,"",2026-03-18T23:57:45.599Z
+15148361804,Tina,lead_hangup,32,"",2026-03-18T23:57:38.092Z
+16479395456,Senthil,lead_hangup,96,"",2026-03-18T23:57:26.082Z
+13065140255,Kulbir,lead_hangup,39,"",2026-03-18T23:57:23.079Z
+15143588956,Roberto,lead_hangup,13,"",2026-03-18T23:57:21.578Z
+14039238855,Lavern,lead_hangup,37,"",2026-03-18T23:57:15.553Z
+16133630154,Mark,lead_hangup,41,"",2026-03-18T23:57:05.045Z
+16476385871,Will,lead_hangup,36,"",2026-03-18T23:57:02.043Z
+14169193408,Zeckria,not_interested,104,"Client became hostile and asked to end conversation. Expressed skepticism about legitimacy and asked detailed verification questions before becoming aggressive.",2026-03-18T23:56:24.508Z
+15146914255,Dishu,lead_hangup,25,"",2026-03-18T23:56:21.506Z
+12509578216,Benita,not_interested,40,"Called for Benita, wrong person answered and immediately ended conversation",2026-03-18T23:56:09.496Z
+12046199535,William,not_interested,28,"Client was hostile and used profanity. Ended call immediately.",2026-03-18T23:56:04.990Z
+17802631584,Angela,lead_hangup,96,"",2026-03-18T23:56:03.489Z
+15145168806,Nathalie,lead_hangup,64,"",2026-03-18T23:55:57.483Z
+15199459779,Judy,not_interested,125,"Client did not recall signing up. Works in nursing home care with rotating shifts (days/nights). Very busy and not interested in learning more. Polite but firm.",2026-03-18T23:55:55.982Z
+16477602035,Nshan,lead_hangup,20,"",2026-03-18T23:55:49.975Z
+14034509731,Jackson,lead_hangup,60,"",2026-03-18T23:55:43.968Z
+16477467682,Mowsumi,lead_hangup,40,"",2026-03-18T23:55:31.955Z
+14188243624,Steeve,lead_hangup,71,"",2026-03-18T23:55:28.952Z
+16479962604,Carlos,lead_hangup,37,"",2026-03-18T23:55:22.949Z
+12502992607,Moriah,lead_hangup,18,"",2026-03-18T23:55:04.932Z
+17808700959,Steven,lead_hangup,27,"",2026-03-18T23:54:58.925Z
+17806809750,Gebrewold,callback,48,"Reached voicemail/auto-response. Client requested callback at better time. Will attempt again later.",2026-03-18T23:54:57.424Z
+15872577856,Dhaka,lead_hangup,23,"",2026-03-18T23:54:24.395Z
+16472364554,Arnett,lead_hangup,40,"",2026-03-18T23:54:15.385Z
+17809514838,Tom,lead_hangup,48,"",2026-03-18T23:54:12.381Z
+15145007716,Stu00e9phanie,lead_hangup,24,"",2026-03-18T23:54:10.880Z
+12897768275,Raj,lead_hangup,29,"",2026-03-18T23:54:06.375Z
+14383986191,Ron,lead_hangup,45,"",2026-03-18T23:53:58.869Z
+12048221017,Mary,do_not_call,51,"Client stated she does not do online trading and requested to be removed from list. Do not call again.",2026-03-18T23:53:57.368Z
+17783456965,Jaskaran,lead_hangup,27,"",2026-03-18T23:53:54.365Z
+14038783069,Clarence,lead_hangup,21,"",2026-03-18T23:53:45.358Z
+18193291270,Loukman,lead_hangup,30,"",2026-03-18T23:53:28.848Z
+14167238555,Moses,lead_hangup,31,"",2026-03-18T23:53:27.347Z
+12896004256,Cheryl,lead_hangup,21,"",2026-03-18T23:53:04.825Z
+14163008674,Sazzad,callback,78,"Reached someone else, Sazzad not available. Person who answered does not know when he'll be back. Will attempt callback later.",2026-03-18T23:52:40.803Z
+17802319789,Terelene,lead_hangup,35,"",2026-03-18T23:52:37.800Z
+16479979950,Aena,lead_hangup,43,"",2026-03-18T23:52:34.796Z
+18196390614,Patrick,lead_hangup,50,"",2026-03-18T23:52:30.292Z
+12045242235,Kaylynn,not_interested,34,"Client was immediately hostile and not interested in conversation",2026-03-18T23:52:19.781Z
+15068991061,Stacy,lead_hangup,24,"",2026-03-18T23:52:16.779Z
+12042304381,Storm,lead_hangup,17,"",2026-03-18T23:52:15.278Z
+16475547271,Kawusalya,lead_hangup,19,"",2026-03-18T23:52:10.774Z
+14319980234,Brent,lead_hangup,15,"",2026-03-18T23:51:55.761Z
+16043627976,Andy,lead_hangup,45,"",2026-03-18T23:51:46.753Z
+16476186017,Dennis,lead_hangup,44,"",2026-03-18T23:51:43.750Z
+17097277995,Stoyan,lead_hangup,27,"",2026-03-18T23:51:12.218Z
+15146088541,Mack,lead_hangup,24,"",2026-03-18T23:50:16.659Z
+18199183217,Cathrine,lead_hangup,38,"",2026-03-18T23:50:13.656Z
+12047716898,Brenda,lead_hangup,30,"",2026-03-18T23:50:01.645Z
+17802700022,Russ,lead_hangup,70,"",2026-03-18T23:49:52.636Z
+14037087652,Phil,lead_hangup,28,"",2026-03-18T23:49:42.128Z
+19054102710,David,lead_hangup,24,"",2026-03-18T23:49:40.628Z
+17809089683,Ken,lead_hangup,26,"",2026-03-18T23:49:36.124Z
+12502872340,Len,lead_hangup,40,"",2026-03-18T23:49:30.120Z
+14185599562,Danny,lead_hangup,42,"",2026-03-18T23:49:27.108Z
+15064499037,Alan,not_interested,41,"Client stated they did not request information. Denied signing up. Ended call politely.",2026-03-18T23:49:25.607Z
+15195006802,Kirandeep,callback,96,"Client requested callback tomorrow at 10 AM. Connection issues during call. No qualification completed.",2026-03-18T23:49:21.104Z
+15199339695,Delroy,lead_hangup,33,"",2026-03-18T23:49:15.098Z
+14388201164,Vishwanath,lead_hangup,30,"",2026-03-18T23:49:12.095Z
+17807076090,Robert,lead_hangup,32,"",2026-03-18T23:49:06.089Z
+16477840774,Ankit,lead_hangup,66,"",2026-03-18T23:48:37.564Z
+15199812058,Brad,lead_hangup,16,"",2026-03-18T23:48:31.557Z
+16478791597,Jenelle,not_interested,31,"Wrong number - not Jenelle. Person declined to provide name and did not wish to continue conversation.",2026-03-18T23:48:25.553Z
+19023501637,Shane,lead_hangup,23,"",2026-03-18T23:48:21.042Z
+14165209906,Jim,lead_hangup,42,"",2026-03-18T23:48:12.033Z
+15873344820,Tanis,lead_hangup,23,"",2026-03-18T23:48:09.030Z
+14508227940,Sylvain,lead_hangup,31,"",2026-03-18T23:48:04.525Z
+17055594548,Matt,lead_hangup,52,"",2026-03-18T23:48:03.024Z
+15149804201,Jonathan,lead_hangup,47,"",2026-03-18T23:47:57.019Z
+12506343888,Shirley,lead_hangup,21,"",2026-03-18T23:47:54.016Z
+16132772777,Melissa,lead_hangup,58,"",2026-03-18T23:47:51.014Z
+18193742553,Casey,lead_hangup,86,"",2026-03-18T23:47:28.494Z
+15197293118,Ligia,lead_hangup,30,"",2026-03-18T23:47:26.993Z
+16477716264,Jatinder,callback,75,"Reached voicemail system with gatekeeper. Jatinder not available. Left callback message.",2026-03-18T23:47:14.977Z
+17059298820,Crystal,lead_hangup,49,"",2026-03-18T23:47:11.975Z
+18074723970,Lorna,lead_hangup,32,"",2026-03-18T23:47:10.474Z
+12503047875,Pawandeep,not_interested,56,"Wrong number - person stated Pawandeep hasn't had this phone for at least 8 years",2026-03-18T23:47:02.968Z
+16477808967,Sayan,lead_hangup,21,"",2026-03-18T23:46:43.445Z
+17783855867,Krzysztof,lead_hangup,42,"",2026-03-18T23:46:41.944Z
+14034044479,N\/a,lead_hangup,55,"",2026-03-18T23:46:40.443Z
+15197295656,Milena,lead_hangup,13,"",2026-03-18T23:46:13.417Z
+16136065828,Joele,lead_hangup,52,"",2026-03-18T23:46:01.406Z
+14036207459,Rj,not_interested,239,"Client has significant mobility issues, is blind with macular degeneration, no longer has a computer, only uses cell phone. Previously traded Bitcoin 5 years ago but stopped. Not interested in continuing due to physical limitations.",2026-03-18T23:45:55.402Z
+17809015651,Justi,lead_hangup,40,"",2026-03-18T23:45:47.892Z
+12046196128,Nick,do_not_call,65,"Client stated they never requested information and explicitly asked not to be called again. Ended call immediately per request.",2026-03-18T23:45:44.888Z
+14166962938,Daveheehak,lead_hangup,31,"",2026-03-18T23:45:13.355Z
+16134083588,Anissa,lead_hangup,98,"",2026-03-18T23:45:10.353Z
+12504017976,Roldan,lead_hangup,35,"",2026-03-18T23:45:08.851Z
+12894899088,Sue,lead_hangup,11,"",2026-03-18T23:45:05.849Z
+13063143919,Stephanie,lead_hangup,66,"",2026-03-18T23:45:02.845Z
+14165879427,Sandy,lead_hangup,23,"",2026-03-18T23:44:53.837Z
+14034830986,Jubair,lead_hangup,44,"",2026-03-18T23:44:52.336Z
+14163152511,Ravi,lead_hangup,19,"",2026-03-18T23:44:50.834Z
+15149987787,Hassan,lead_hangup,23,"",2026-03-18T23:44:37.321Z
+14163886675,Tatiana,lead_hangup,45,"",2026-03-18T23:44:26.810Z
+14165616841,Robert,lead_hangup,70,"",2026-03-18T23:44:14.800Z
+15199027419,Robert,lead_hangup,35,"",2026-03-18T23:44:11.796Z
+19058519948,Mahadeo,lead_hangup,30,"",2026-03-18T23:44:05.774Z
+19053415669,Abdirman,not_interested,45,"Client insisted call was AI and requested no further calls. Ended call respectfully.",2026-03-18T23:44:01.270Z
+13657779783,Jasmeet,lead_hangup,47,"",2026-03-18T23:43:53.766Z
+17808610221,Linda,callback,44,"Wrong person - reached Chantal instead of Linda. Client unable to take call at this time. Should attempt callback later.",2026-03-18T23:43:40.252Z
+14168972153,Philipkinney,lead_hangup,51,"",2026-03-18T23:43:29.740Z
+15197321090,Jim,callback,171,"Client requested callback in a couple of months. Not ready to discuss at this time.",2026-03-18T23:43:28.239Z
+16477856129,Brian,lead_hangup,33,"",2026-03-18T23:43:25.236Z
+16478082159,Arthur,lead_hangup,32,"",2026-03-18T23:43:13.223Z
+14036883778,Tom,lead_hangup,81,"",2026-03-18T23:42:58.206Z
+15192754676,Carol,lead_hangup,15,"",2026-03-18T23:42:53.703Z
+16476670169,Ayyappa,lead_hangup,52,"",2026-03-18T23:42:52.202Z
+17052069876,Kimberly,callback,73,"Receptionist/gatekeeper answered. Kimberly not available. Left message to call back at better time.",2026-03-18T23:42:49.200Z
+16047834098,Unknown,lead_hangup,14,"",2026-03-18T23:42:38.690Z
+12049603609,Fake,not_interested,167,"Client indicated not interested, language barrier present, politely declined multiple times",2026-03-18T23:42:31.182Z
+14167994018,Kevin,lead_hangup,36,"",2026-03-18T23:42:29.680Z
+14168340750,Luke,lead_hangup,189,"",2026-03-18T23:42:17.669Z
+14166485539,Uoc,lead_hangup,28,"",2026-03-18T23:42:10.161Z
+12895016593,Shannon-marie,not_interested,72,"Wrong person answered (Damon). Shannon-marie not available and no alternative contact method provided. Call ended.",2026-03-18T23:42:05.657Z
+17809023782,Christopher,not_interested,45,"Wrong number - person stated this was not Christopher",2026-03-18T23:41:59.653Z
+16045000087,Brandi,lead_hangup,31,"",2026-03-18T23:41:20.612Z
+15877859487,Jennifer,lead_hangup,20,"",2026-03-18T23:41:14.603Z
+16395712516,Tolulade,lead_hangup,97,"",2026-03-18T23:41:11.601Z
+17785877721,Kayla,lead_hangup,38,"",2026-03-18T23:41:07.095Z
+17808076436,Harpreet,lead_hangup,12,"",2026-03-18T23:40:59.585Z
+19052674011,Ayesha,lead_hangup,23,"",2026-03-18T23:40:40.067Z
+13064914422,Afolabi,lead_hangup,31,"",2026-03-18T23:40:34.058Z
+15192872709,Clarence,callback,102,"Client requested callback tomorrow 2026-03-19 at 18:00. Did not complete qualification or schedule specialist appointment yet.",2026-03-18T23:40:23.551Z
+14036150417,Peter,lead_hangup,52,"",2026-03-18T23:40:19.047Z
+16474015299,Jude,lead_hangup,36,"",2026-03-18T23:39:31.001Z
+12505742996,Jake,not_interested,39,"Wrong number or person refused to identify themselves. Not the intended contact (Jake). Call ended politely.",2026-03-18T23:39:26.497Z
+16137125544,Melkam,lead_hangup,17,"",2026-03-18T23:39:24.995Z
+12045145975,Jon,lead_hangup,56,"",2026-03-18T23:39:00.962Z
+16399981987,Brycen,callback,70,"Reached voicemail/screener - person not available. Left callback message.",2026-03-18T23:38:38.437Z
+14505163300,William,lead_hangup,26,"",2026-03-18T23:38:23.422Z
+14038789125,Linda,lead_hangup,33,"",2026-03-18T23:38:20.420Z
+19057999364,Marcus,lead_hangup,44,"",2026-03-18T23:37:14.355Z
+16042000349,Fatima,lead_hangup,24,"",2026-03-18T23:37:06.847Z
+16042262218,Sabrina,lead_hangup,21,"",2026-03-18T23:36:54.834Z
+13064209214,Clifford,lead_hangup,19,"",2026-03-18T23:36:42.827Z
+17805815482,Dave,lead_hangup,40,"",2026-03-18T23:36:39.823Z
+13069409097,Loretta,lead_hangup,49,"",2026-03-18T23:36:32.318Z
+16134030419,Ewald,lead_hangup,40,"",2026-03-18T23:36:00.785Z
+15067170305,Gionet,lead_hangup,19,"",2026-03-18T23:35:45.770Z
+14036308844,Adnan,lead_hangup,28,"",2026-03-18T23:35:42.767Z
+19023686087,Gerald,lead_hangup,27,"",2026-03-18T23:35:14.236Z
+16048804668,Test,callback,72,"Gatekeeper answered. Test was not available. Left message with gatekeeper to call back or will try again later.",2026-03-18T23:35:03.728Z
+15193796247,Beverly,lead_hangup,27,"",2026-03-18T23:34:57.722Z
+17786832700,Hardeep,lead_hangup,19,"",2026-03-18T23:34:54.719Z
+15877005288,Margaret,callback,75,"Gatekeeper answered. Margaret not available. Left message with name and reason for call. Polite reception.",2026-03-18T23:34:38.202Z
+16042608806,Shannon,lead_hangup,37,"",2026-03-18T23:34:21.687Z
+15148391711,Ralph,lead_hangup,22,"",2026-03-18T23:34:20.185Z
+14032727287,George,lead_hangup,174,"",2026-03-18T23:34:17.182Z
+14169395741,Neil,lead_hangup,58,"",2026-03-18T23:34:03.670Z
+18674449809,Terri,lead_hangup,56,"",2026-03-18T23:34:00.667Z
+13068618078,Corny,lead_hangup,33,"",2026-03-18T23:33:53.160Z
+12899909926,Kimberley,lead_hangup,31,"",2026-03-18T23:33:51.660Z
+15067213399,Holly,lead_hangup,31,"",2026-03-18T23:33:48.657Z
+16476771055,Joseph,lead_hangup,18,"",2026-03-18T23:33:45.655Z
+16477082844,Irene,lead_hangup,18,"",2026-03-18T23:33:32.144Z
+14168212050,Md,lead_hangup,51,"",2026-03-18T23:32:59.115Z
+14168214544,John,lead_hangup,21,"",2026-03-18T23:32:57.614Z
+12506000326,Curtis,lead_hangup,49,"",2026-03-18T23:32:54.611Z
+16478016363,Malvinder,lead_hangup,20,"",2026-03-18T23:32:30.585Z
+14038908051,Tory,lead_hangup,27,"",2026-03-18T23:32:21.573Z
+15147959020,Nicolas,lead_hangup,22,"",2026-03-18T23:32:18.571Z
+12899521854,Garth,lead_hangup,17,"",2026-03-18T23:32:11.062Z
+15194344536,Larry,lead_hangup,72,"",2026-03-18T23:31:48.542Z
+16138017515,Timothy,lead_hangup,11,"",2026-03-18T23:31:45.540Z
+13063147614,Mickey,not_interested,91,"Wrong number - SIM card mix-up. Client is Stefan, not Mickey. Never requested information about trading.",2026-03-18T23:31:24.521Z
+18193745048,Keven,lead_hangup,13,"",2026-03-18T23:30:49.990Z
+15874478902,Keith,lead_hangup,49,"",2026-03-18T23:30:42.483Z
+19058326568,Afshan,lead_hangup,30,"",2026-03-18T23:30:39.479Z
+16043740667,Cindy,callback,76,"Spoke with gatekeeper. Cindy not available. Left message to call back.",2026-03-18T23:30:03.443Z
+19023941628,Stewart,lead_hangup,18,"",2026-03-18T23:29:57.436Z
+14033928670,Mike,lead_hangup,35,"",2026-03-18T23:29:52.933Z
+19024392742,David,lead_hangup,16,"",2026-03-18T23:29:39.423Z
+16476086746,Ananthavarunan,lead_hangup,18,"",2026-03-18T23:29:16.901Z
+13068213444,Henry,lead_hangup,46,"",2026-03-18T23:29:15.399Z
+14503501303,Christy,lead_hangup,15,"",2026-03-18T23:29:10.895Z
+16474708552,Mahendra,lead_hangup,22,"",2026-03-18T23:29:09.394Z
+15145917935,Patricia,lead_hangup,57,"",2026-03-18T23:29:01.886Z
+12507065263,Janey,lead_hangup,20,"",2026-03-18T23:28:46.872Z
+17809876886,Strve,lead_hangup,20,"",2026-03-18T23:28:36.361Z
+17785510408,Arse,lead_hangup,38,"",2026-03-18T23:28:34.860Z
+17099877957,Nathan,lead_hangup,32,"",2026-03-18T23:28:33.358Z
+16475703822,Ranjeet,lead_hangup,29,"",2026-03-18T23:28:24.350Z
+14034792219,Jasha,lead_hangup,41,"",2026-03-18T23:27:55.811Z
+17807817159,Gregory,lead_hangup,33,"",2026-03-18T23:27:52.807Z
+16132461376,Ray,lead_hangup,39,"",2026-03-18T23:27:46.802Z
+15192771813,Normano,callback,70,"Reached voicemail/screener. Person not available. Left message about follow-up on trading information request. Will attempt callback later.",2026-03-18T23:27:42.297Z
+17806671954,Valerie,lead_hangup,52,"",2026-03-18T23:27:36.293Z
+15877000751,Valentine,lead_hangup,24,"",2026-03-18T23:27:09.265Z
+14035480470,Ryan,callback,59,"Client identified as Brian (not Ryan). Client requested to be called back later. Reached voicemail after client ended call.",2026-03-18T23:27:01.757Z
+17809047977,Marvin,lead_hangup,29,"",2026-03-18T23:26:54.248Z
+18076222739,Jonathon,lead_hangup,74,"",2026-03-18T23:26:45.240Z
+16477746027,Rajeshwar,lead_hangup,20,"",2026-03-18T23:26:22.721Z
+13064605647,Aaron,lead_hangup,20,"",2026-03-18T23:26:19.716Z
+16475702754,Nusrat,lead_hangup,36,"",2026-03-18T23:26:04.687Z
+19059854237,Fred,lead_hangup,65,"",2026-03-18T23:25:49.675Z
+12896006523,Akin-bgb-pride1,lead_hangup,22,"",2026-03-18T23:25:43.669Z
+13062507074,Shelly,lead_hangup,17,"",2026-03-18T23:25:27.150Z
+16043745083,Donald,lead_hangup,19,"",2026-03-18T23:25:21.144Z
+16473467055,Pamela,lead_hangup,15,"",2026-03-18T23:25:13.634Z
+15872070547,Tammy,lead_hangup,21,"",2026-03-18T23:25:09.130Z
+12262200504,Andrew,lead_hangup,57,"",2026-03-18T23:24:55.618Z
+14389895616,Ulises,lead_hangup,46,"",2026-03-18T23:24:25.588Z
+12049635797,N\/a,lead_hangup,47,"",2026-03-18T23:24:21.083Z
+16137960315,Jason,lead_hangup,19,"",2026-03-18T23:24:12.074Z
+16478328064,Haroon,lead_hangup,43,"",2026-03-18T23:24:09.071Z
+12504380165,Lola,lead_hangup,56,"",2026-03-18T23:23:40.536Z
+14167897889,Luzy,lead_hangup,16,"",2026-03-18T23:22:44.983Z
+16472377817,Yvonne,lead_hangup,22,"",2026-03-18T23:22:32.969Z
+12508897533,Muhammad,not_interested,88,"Client immediately stated no interest and declined after one objection attempt. Polite but firm refusal.",2026-03-18T23:22:31.468Z
+15142918684,Bakary,lead_hangup,30,"",2026-03-18T23:22:29.967Z
+14388800761,Guy,lead_hangup,26,"",2026-03-18T23:22:25.462Z
+15149752962,Luc,lead_hangup,78,"",2026-03-18T23:22:19.452Z
+19055151663,N\/a,lead_hangup,31,"",2026-03-18T23:22:14.948Z
+12896758122,Zachary,lead_hangup,23,"",2026-03-18T23:21:43.419Z
+12505078614,Blair,lead_hangup,34,"",2026-03-18T23:21:41.918Z
+14166276820,Gyula,lead_hangup,24,"",2026-03-18T23:21:04.384Z
+16475513044,Michael,lead_hangup,25,"",2026-03-18T23:20:58.378Z
+13439984290,Leah,lead_hangup,31,"",2026-03-18T23:20:52.371Z
+13067007966,Carla,lead_hangup,23,"",2026-03-18T23:20:46.363Z
+12502041267,Austin,lead_hangup,28,"",2026-03-18T23:20:40.358Z
+14163203819,Anthony,lead_hangup,35,"",2026-03-18T23:20:34.353Z
+17059784520,Tammy,lead_hangup,16,"",2026-03-18T23:20:32.852Z
+12049145517,William,lead_hangup,25,"",2026-03-18T23:20:28.348Z
+12269777969,Debbie,lead_hangup,28,"",2026-03-18T23:20:23.843Z
+16134499256,Sue,lead_hangup,23,"",2026-03-18T23:20:20.840Z
+15063432485,Andrea,lead_hangup,28,"",2026-03-18T23:20:13.332Z
+14168874306,Randa,not_interested,119,"Client stated they found something else and was not interested in discussing further or proceeding with qualification",2026-03-18T23:20:10.329Z
+17058220452,Tony,do_not_call,66,"Spoke with someone named Dave who informed that Tony has passed away and won't be returning. Expressed condolences and confirmed no further contact should be made.",2026-03-18T23:19:31.298Z
+15195913468,Hope,do_not_call,23,"Client stated wrong number twice. Not the intended contact.",2026-03-18T23:19:19.289Z
+15199906541,Helen,lead_hangup,23,"",2026-03-18T23:19:08.777Z
+15149521134,Corey,lead_hangup,28,"",2026-03-18T23:19:07.275Z
+15148332221,Jonathan,lead_hangup,136,"",2026-03-18T23:18:49.259Z
+17096800456,Tina,lead_hangup,47,"",2026-03-18T23:18:43.254Z
+15192394927,Darryl,not_interested,73,"Client did not recall requesting information and declined to hear any overview after multiple attempts. Not interested in proceeding.",2026-03-18T23:18:37.247Z
+14185429833,Guy,lead_hangup,34,"",2026-03-18T23:18:34.245Z
+14039881222,Chelsi,lead_hangup,41,"",2026-03-18T23:18:32.744Z
+12262187175,Jean,lead_hangup,36,"",2026-03-18T23:18:20.733Z
+16478781671,Joel,lead_hangup,22,"",2026-03-18T23:18:14.729Z
+15877856163,Che,lead_hangup,22,"",2026-03-18T23:17:58.214Z
+19058780009,Eileen,lead_hangup,28,"",2026-03-18T23:17:47.703Z
+16476069805,Adan,lead_hangup,30,"",2026-03-18T23:17:40.195Z
+16478021238,Diego,lead_hangup,36,"",2026-03-18T23:17:34.188Z
+14166249048,Antonio,lead_hangup,19,"",2026-03-18T23:16:53.655Z
+16139867364,Michel,lead_hangup,63,"",2026-03-18T23:16:50.651Z
+16472417740,Prasanna,lead_hangup,56,"",2026-03-18T23:16:49.150Z
+13064902929,Obiora,lead_hangup,80,"",2026-03-18T23:16:44.643Z
+12043719683,Erwan,lead_hangup,32,"",2026-03-18T23:16:11.611Z
+17804462839,Crystal,lead_hangup,25,"",2026-03-18T23:16:07.107Z
+12047958090,Jim,lead_hangup,21,"",2026-03-18T23:16:04.103Z
+12048912854,Matthew,callback,75,"Reached screener/gatekeeper. Matthew not available. Left message to call back at another time.",2026-03-18T23:16:02.602Z
+15877002138,Stella,lead_hangup,46,"",2026-03-18T23:15:53.591Z
+14509447446,Hamdi,lead_hangup,34,"",2026-03-18T23:14:09.955Z
+14388304701,Agadiran,lead_hangup,49,"",2026-03-18T23:13:51.940Z
+14038436225,Lois,lead_hangup,50,"",2026-03-18T23:13:47.436Z
+16477860364,Rana,lead_hangup,32,"",2026-03-18T23:13:36.927Z
+14509153255,Augustin,lead_hangup,15,"",2026-03-18T23:13:33.925Z
+14168334311,Rafeek,lead_hangup,74,"",2026-03-18T23:13:29.420Z
+18196409951,N\/a,lead_hangup,45,"",2026-03-18T23:13:11.402Z
+19054646431,N\/a,lead_hangup,17,"",2026-03-18T23:13:06.897Z
+14039528654,Peter,lead_hangup,34,"",2026-03-18T23:12:27.851Z
+17785805297,Peter,callback,74,"Gatekeeper answered, Peter not available. Left message to call back or will try again later.",2026-03-18T23:11:57.817Z
+17809038526,Tarek,lead_hangup,24,"",2026-03-18T23:11:06.769Z
+14182914060,U00c9tienne,lead_hangup,44,"",2026-03-18T23:10:36.740Z
+16476093839,Inderjit,lead_hangup,84,"",2026-03-18T23:10:03.706Z
+14169929387,Temitope,lead_hangup,23,"",2026-03-18T23:09:47.189Z
+15147917231,Raphael,lead_hangup,87,"",2026-03-18T23:09:42.686Z
+12042953188,Micheal,lead_hangup,23,"",2026-03-18T23:09:38.182Z
+16477405802,Refat,callback,73,"Receptionist/screener answered. Refat not available. Will need to callback at another time.",2026-03-18T23:09:29.173Z
+15875003249,Hawa,lead_hangup,64,"",2026-03-18T23:09:23.168Z
+16474968806,Jacqueline,lead_hangup,21,"",2026-03-18T23:09:05.152Z
+17805420066,Rick,lead_hangup,34,"",2026-03-18T23:09:02.151Z
+15877089110,Abhishek,lead_hangup,231,"",2026-03-18T23:08:59.148Z
+18076322953,Dennis,callback,55,"Client answered but requested to be contacted via text instead. Not available to speak on phone at this time. Should attempt callback later.",2026-03-18T23:08:42.633Z
+16134019812,Kyle,lead_hangup,54,"",2026-03-18T23:08:41.132Z
+15148314990,Christine,lead_hangup,29,"",2026-03-18T23:08:35.125Z
+16477851647,Brianna,lead_hangup,38,"",2026-03-18T23:08:09.605Z
+14168362508,Burair,callback,81,"Client requested callback tomorrow at same time as today's call. Did not proceed with qualification.",2026-03-18T23:07:47.082Z
+12049515433,Ganeev,lead_hangup,37,"",2026-03-18T23:07:45.581Z
+15879691123,Casey,callback,45,"Wrong person answered. Not Casey. Requested callback at another time.",2026-03-18T23:07:32.062Z
+14504863317,Sylvain,lead_hangup,76,"",2026-03-18T23:07:18.549Z
+14168438521,Ric,lead_hangup,56,"",2026-03-18T23:07:08.040Z
+16477729298,Nuel,lead_hangup,42,"",2026-03-18T23:06:12.479Z
+13062300552,Vincent,lead_hangup,30,"",2026-03-18T23:06:00.469Z
+18194461074,Jean,lead_hangup,19,"",2026-03-18T23:05:46.959Z
+15146672243,Sarto,lead_hangup,24,"",2026-03-18T23:05:37.952Z
+13067720022,Mike,lead_hangup,27,"",2026-03-18T23:05:24.440Z
+16134157902,Chibuike,lead_hangup,32,"",2026-03-18T23:05:15.432Z
+12043849911,Dave,do_not_call,177,"Client requested to be removed from calling list and not contacted again. Had previous trading experience, not interested in starting with minimum deposit.",2026-03-18T23:05:13.931Z
+16045510807,Shayne,lead_hangup,33,"",2026-03-18T23:05:03.418Z
+17806743551,Andrew,lead_hangup,19,"",2026-03-18T23:05:00.414Z
+12507029011,George,lead_hangup,44,"",2026-03-18T23:04:57.412Z
+16047990002,Rober,lead_hangup,23,"",2026-03-18T23:04:45.399Z
+16048680064,Miranda,lead_hangup,84,"",2026-03-18T23:04:43.897Z
+15149678565,Jose,lead_hangup,56,"",2026-03-18T23:04:24.371Z
+14038783716,Linda,lead_hangup,69,"",2026-03-18T23:04:22.869Z
+15193060255,Arpad,not_interested,87,"Client did not recall requesting information about trading. No recollection of inquiry. Ended call politely.",2026-03-18T23:04:12.331Z
+16472176751,Kerlon,lead_hangup,36,"",2026-03-18T23:04:09.328Z
+14166554528,Spencer,lead_hangup,72,"",2026-03-18T23:04:07.827Z
+18193422054,Mathieu,lead_hangup,43,"",2026-03-18T23:03:57.316Z
+15878884565,Merle,lead_hangup,49,"",2026-03-18T23:03:22.780Z
+15145709984,John,lead_hangup,21,"",2026-03-18T23:02:57.256Z
+12044519254,Allan,lead_hangup,83,"",2026-03-18T23:02:55.755Z
+14389304985,Abdel,lead_hangup,51,"",2026-03-18T23:02:36.239Z
+17808604503,Caleb,lead_hangup,19,"",2026-03-18T23:02:18.221Z
+16134240226,Murtaza,lead_hangup,43,"",2026-03-18T23:02:13.716Z
+16475295262,Chaitanya,lead_hangup,25,"",2026-03-18T23:02:09.210Z
+15192900088,Paul,lead_hangup,30,"",2026-03-18T23:02:06.208Z
+15199987515,Nhan,lead_hangup,35,"",2026-03-18T23:01:58.684Z
+16044429519,Helen,lead_hangup,40,"",2026-03-18T23:01:49.675Z
+17806745323,Marilyn,lead_hangup,39,"",2026-03-18T23:01:07.634Z
+13067743158,Norman,callback,73,"Spoke with gatekeeper. Norman not available. Left message with name, company, and reason for call. Requested callback at client's convenience.",2026-03-18T23:00:57.126Z
+15147030851,Guy,lead_hangup,50,"",2026-03-18T23:00:54.123Z
+12265052919,Yasmin,lead_hangup,14,"",2026-03-18T23:00:45.118Z
+15197290894,Mike,lead_hangup,122,"",2026-03-18T23:00:34.610Z
+17802283269,Tara,callback,68,"Screened call - gatekeeper took message, Tara not available. Left voicemail requesting callback.",2026-03-18T23:00:28.606Z
+16395710324,Jeff,callback,57,"Client asked for a callback at a later time. Will reconnect later.",2026-03-18T23:00:00.084Z
+13068804538,Vivienne,lead_hangup,42,"",2026-03-18T22:59:37.560Z
+15196232265,Barry,lead_hangup,71,"",2026-03-18T22:59:34.556Z
+17052380053,Connor,callback,79,"Gatekeeper answered. Connor not available. Left message with gatekeeper to have Connor call back regarding trading information request.",2026-03-18T22:59:30.053Z
+15142742158,Krishna,lead_hangup,60,"",2026-03-18T22:59:25.549Z
+14507505669,Aaaaa,lead_hangup,25,"",2026-03-18T22:59:19.545Z
+15794888931,Sarah,lead_hangup,18,"",2026-03-18T22:59:16.540Z
+16472157862,Stephan,lead_hangup,23,"",2026-03-18T22:59:13.537Z
+13065967017,Lorrie,lead_hangup,15,"",2026-03-18T22:58:55.522Z
+14384979694,Anthony,lead_hangup,48,"",2026-03-18T22:58:52.519Z
+15145467112,Jairo,lead_hangup,20,"",2026-03-18T22:58:43.510Z
+14168541070,Mukesh,callback,76,"Mukesh not available, left voicemail message for callback",2026-03-18T22:58:20.989Z
+18074642804,Larry,lead_hangup,35,"",2026-03-18T22:58:14.979Z
+12045908682,Minh,lead_hangup,61,"",2026-03-18T22:58:07.471Z
+12502191412,Danisha,lead_hangup,28,"",2026-03-18T22:57:22.434Z
+13069215629,Cody,lead_hangup,36,"",2026-03-18T22:57:13.425Z
+97455107017,Ahamath,lead_hangup,29,"",2026-03-18T22:56:52.409Z
+14388752451,Tristan,lead_hangup,20,"",2026-03-18T22:56:49.405Z
+18193521053,Jonathan,lead_hangup,97,"",2026-03-18T22:56:46.402Z
+15063231581,Dylan,lead_hangup,32,"",2026-03-18T22:56:34.389Z
+13069618880,Jacek,lead_hangup,29,"",2026-03-18T22:56:26.883Z
+14034024481,Ring,lead_hangup,63,"",2026-03-18T22:56:10.371Z
+14186953405,Carol,lead_hangup,40,"",2026-03-18T22:55:59.862Z
+15149959805,Tu00e9o,lead_hangup,19,"",2026-03-18T22:55:56.860Z
+18193037229,Jessica,lead_hangup,32,"",2026-03-18T22:55:43.347Z
+15147102934,Waqar,lead_hangup,37,"",2026-03-18T22:55:40.343Z
+17785514916,Nate,not_interested,51,"Client clearly not interested, requested to end the call. Did not wish to proceed with any conversation.",2026-03-18T22:55:10.315Z
+12269781660,N\/a,lead_hangup,35,"",2026-03-18T22:55:04.310Z
+13063742874,Doreen,lead_hangup,16,"",2026-03-18T22:55:02.804Z
+15064713966,N\/a,lead_hangup,38,"",2026-03-18T22:54:11.756Z
+16139213594,Ethan,lead_hangup,52,"",2026-03-18T22:54:04.249Z
+15195359981,Joan,lead_hangup,18,"",2026-03-18T22:53:34.220Z
+17808639869,Odile,lead_hangup,58,"",2026-03-18T22:53:31.219Z
+16478910732,Austin,lead_hangup,21,"",2026-03-18T22:53:22.211Z
+16043008866,Dan,lead_hangup,34,"",2026-03-18T22:53:11.699Z
+15062304155,Barb,lead_hangup,38,"",2026-03-18T22:52:55.184Z
+14165696546,Haris,lead_hangup,24,"",2026-03-18T22:52:47.676Z
+15145732885,Juliet,lead_hangup,43,"",2026-03-18T22:52:13.140Z
+17808649477,Neil,lead_hangup,31,"",2026-03-18T22:52:02.627Z
+14038377652,Michelle,lead_hangup,17,"",2026-03-18T22:51:22.088Z
+17807292706,Aveer,lead_hangup,50,"",2026-03-18T22:51:17.583Z
+15062516311,Chris,lead_hangup,48,"",2026-03-18T22:51:10.067Z
+16138064670,Martine,lead_hangup,29,"",2026-03-18T22:51:05.563Z
+15146215777,Ahmad,lead_hangup,25,"",2026-03-18T22:50:52.051Z
+14039151356,Ron,lead_hangup,31,"",2026-03-18T22:50:44.543Z
+16138544908,Ahmad,lead_hangup,16,"",2026-03-18T22:50:34.033Z
+14169172720,Nur,lead_hangup,17,"",2026-03-18T22:50:16.016Z
+15145781921,Munjula,lead_hangup,63,"",2026-03-18T22:50:14.514Z
+18072121747,Wendy,lead_hangup,70,"",2026-03-18T22:50:13.011Z
+16475519124,Koura,lead_hangup,68,"",2026-03-18T22:50:04.003Z
+14503652459,Pierre,lead_hangup,47,"",2026-03-18T22:49:50.487Z
+15193031868,Sally,lead_hangup,59,"",2026-03-18T22:49:44.483Z
+13065502467,Kat,lead_hangup,18,"",2026-03-18T22:49:17.460Z
+16477711306,Daniel,lead_hangup,17,"",2026-03-18T22:49:15.959Z
+15196946585,Vinamra,not_interested,326,"Client asked inappropriate personal questions (appearance, clothing, race, address). Did not demonstrate genuine interest in trading services. Terminated call professionally after multiple redirects.",2026-03-18T22:49:06.948Z
+16475056413,Glenn,callback,55,"Client unable to take the call, requested callback at a better time. Polite response, no further qualification attempted.",2026-03-18T22:49:00.942Z
+19058732164,Harry,callback,58,"Poor connection, client could not hear clearly. Agreed to callback later.",2026-03-18T22:48:57.939Z
+17059334633,Al,lead_hangup,13,"",2026-03-18T22:48:54.937Z
+15192171446,Keith,lead_hangup,54,"",2026-03-18T22:48:45.929Z
+14388096892,Lisa,lead_hangup,53,"",2026-03-18T22:48:32.405Z
+16477602131,Anaeyt001,lead_hangup,69,"",2026-03-18T22:48:18.892Z
+16132276100,Mirlande,lead_hangup,37,"",2026-03-18T22:47:53.369Z
+16477851074,Ayanna,not_interested,38,"Wrong number - person confirmed they are not Ayanna",2026-03-18T22:47:48.864Z
+14183789711,Marie,lead_hangup,23,"",2026-03-18T22:47:47.362Z
+14163585903,Yory,lead_hangup,54,"",2026-03-18T22:47:42.858Z
+17807217197,Paul,do_not_call,55,"Client requested not to be called again. Do not call list.",2026-03-18T22:47:12.828Z
+17783477575,Brad,lead_hangup,45,"",2026-03-18T22:46:56.312Z
+17059876805,Peter,lead_hangup,37,"",2026-03-18T22:46:38.292Z
+15877078247,Yousif,callback,74,"Reached gatekeeper/voicemail system. Left message for callback. Client was not available to speak.",2026-03-18T22:46:06.761Z
+-14165868269,Peter,lead_hangup,28,"",2026-03-18T22:45:57.752Z
+15149831162,Robert,lead_hangup,72,"",2026-03-18T22:45:44.239Z
+12899275383,William,lead_hangup,27,"",2026-03-18T22:45:38.233Z
+15875001897,Greg,not_interested,71,"Wrong number - person confirmed they are not Greg and did not request information. Declined to provide their name.",2026-03-18T22:45:21.719Z
+15192228509,Owen,lead_hangup,57,"",2026-03-18T22:44:51.689Z
+13063135124,Muhammad,lead_hangup,71,"",2026-03-18T22:44:41.182Z
+14389885598,Peguy,lead_hangup,33,"",2026-03-18T22:44:36.678Z
+15194961031,Noah,lead_hangup,47,"",2026-03-18T22:44:33.674Z
+14189433120,Sylvie,lead_hangup,58,"",2026-03-18T22:44:30.671Z
+18674456001,Benjamin,lead_hangup,37,"",2026-03-18T22:44:20.160Z
+15197914056,Isaak,lead_hangup,43,"",2026-03-18T22:43:48.627Z
+16477721159,Nigel,lead_hangup,62,"",2026-03-18T22:43:39.618Z
+18196295673,Robin,lead_hangup,91,"",2026-03-18T22:43:35.112Z
+17802140414,Terry,lead_hangup,44,"",2026-03-18T22:43:23.100Z
+15144007687,Thomas,lead_hangup,16,"",2026-03-18T22:42:56.077Z
+16476798286,Gracis,lead_hangup,143,"",2026-03-18T22:42:54.576Z
+19023852633,Korwyn,lead_hangup,60,"",2026-03-18T22:42:41.063Z
+16477211234,Oswald,lead_hangup,48,"",2026-03-18T22:42:11.035Z
+16477017787,Mui,lead_hangup,20,"",2026-03-18T22:42:08.032Z
+19022137129,Shaniece,lead_hangup,20,"",2026-03-18T22:41:59.022Z
+13065291890,Vincent,lead_hangup,48,"",2026-03-18T22:41:53.018Z
+17808068430,Amanda,lead_hangup,78,"",2026-03-18T22:41:48.513Z
+16479618903,Vedant,lead_hangup,35,"",2026-03-18T22:41:41.005Z
+17093689187,Chris,not_interested,47,"Wrong number - Chris hasn't been at this number for approximately 20 years. Contact politely declined and corrected the information.",2026-03-18T22:41:30.497Z
+13065014102,Lee,lead_hangup,52,"",2026-03-18T22:41:28.996Z
+16134139754,Serge,lead_hangup,15,"",2026-03-18T22:41:19.988Z
+15143485028,Richard,lead_hangup,17,"",2026-03-18T22:41:18.486Z
+15197176642,Sean,lead_hangup,49,"",2026-03-18T22:40:57.461Z
+14034021466,Mohammed,not_interested,71,"Client clearly stated not interested and preferred not to be contacted again. Polite but firm rejection.",2026-03-18T22:40:16.904Z
+12265333226,Calvin,lead_hangup,20,"",2026-03-18T22:39:49.871Z
+14387631363,Raudel,lead_hangup,59,"",2026-03-18T22:39:25.820Z
+16046174110,Jacobus,lead_hangup,48,"",2026-03-18T22:39:18.309Z
+17788753366,Godfrey,lead_hangup,42,"",2026-03-18T22:38:46.772Z
+15192715591,Jeff,lead_hangup,43,"",2026-03-18T22:38:21.246Z
+15148877612,Chamroen,lead_hangup,31,"",2026-03-18T22:38:19.744Z
+15146271765,Ward,lead_hangup,52,"",2026-03-18T22:38:15.239Z
+16478839407,Sirtaj,lead_hangup,49,"",2026-03-18T22:38:06.230Z
+16047150061,Constantin,lead_hangup,56,"",2026-03-18T22:38:04.727Z
+12895017513,Dominic,lead_hangup,48,"",2026-03-18T22:37:18.177Z
+15192815420,Dharmaraj,not_interested,53,"Client declined to speak now and also declined callback options. Not interested in proceeding.",2026-03-18T22:37:10.669Z
+18673344032,Sven,not_interested,162,"Client asked about company legitimacy, provided regulatory info. Expressed not interested twice. Attempted objection handling once. Final rejection received.",2026-03-18T22:37:04.660Z
+17052972467,Ashley,lead_hangup,39,"",2026-03-18T22:36:52.645Z
+14036814584,Zahir,lead_hangup,37,"",2026-03-18T22:36:37.628Z
+15145662443,Devan,lead_hangup,33,"",2026-03-18T22:36:12.100Z
+12044088820,Wilhelm,lead_hangup,47,"",2026-03-18T22:35:43.556Z
+13433330772,Joe,lead_hangup,21,"",2026-03-18T22:35:36.048Z
+-17806902112,Stella,lead_hangup,77,"",2026-03-18T22:35:33.042Z
+13065773133,Larry,lead_hangup,54,"",2026-03-18T22:35:25.533Z
+15148308326,Gad,lead_hangup,75,"",2026-03-18T22:35:06.006Z
+12269279204,Sian,lead_hangup,25,"",2026-03-18T22:34:41.977Z
+16047513447,Tina,lead_hangup,15,"",2026-03-18T22:34:38.974Z
+13432648576,James,lead_hangup,39,"",2026-03-18T22:34:37.473Z
+14168583689,Natalie,lead_hangup,30,"",2026-03-18T22:34:28.461Z
+15879907661,Eva,lead_hangup,24,"",2026-03-18T22:34:26.960Z
+17806803494,Dega,lead_hangup,21,"",2026-03-18T22:34:22.454Z
+14389902846,Deepak,lead_hangup,68,"",2026-03-18T22:33:32.891Z
+16476075694,Adrian,lead_hangup,28,"",2026-03-18T22:33:28.386Z
+16476710309,Abigail,lead_hangup,15,"",2026-03-18T22:33:19.375Z
+16475340683,Danelia,lead_hangup,22,"",2026-03-18T22:33:07.358Z
+18199434426,Francis,lead_hangup,27,"",2026-03-18T22:32:59.848Z
+14035560164,Dale,lead_hangup,49,"",2026-03-18T22:32:50.840Z
+14034637522,Henry,lead_hangup,29,"",2026-03-18T22:32:19.297Z
+15195801572,Mavio,lead_hangup,108,"",2026-03-18T22:32:01.269Z
+14508488050,Debbie,lead_hangup,77,"",2026-03-18T22:31:55.262Z
+15144491194,Guy,lead_hangup,18,"",2026-03-18T22:31:53.761Z
+17804444444,"Jenn Yip",lead_hangup,11,"",2026-03-18T21:19:07.654Z
+17808980765,"Samantha Paige",lead_hangup,58,"",2026-03-18T21:19:01.648Z
+17802243719,"Matt Gallant",lead_hangup,50,"",2026-03-18T21:18:57.145Z
+17807221434,"Jason Lauritsen",lead_hangup,49,"",2026-03-18T21:18:07.594Z
+17804602256,"John Smythe",lead_hangup,73,"",2026-03-18T21:18:03.089Z
+17806813917,"Bob ****off",lead_hangup,20,"",2026-03-18T21:17:54.080Z
+15879304482,"Jacqueline Jackson-cole",lead_hangup,47,"",2026-03-18T21:17:52.578Z
+15875918282,"Krishneil Kumar",lead_hangup,28,"",2026-03-18T21:17:36.056Z
+18073459006,"Angelique Masik",lead_hangup,74,"",2026-03-18T21:17:28.549Z
+17807099404,"Liudmila Anokhina",lead_hangup,36,"",2026-03-18T21:17:19.540Z
+17809090780,"Pika D",lead_hangup,32,"",2026-03-18T21:17:16.538Z
+17809358972,"Manda Hauer",callback,61,"Client was busy, asked to be called back later or to be texted. Could not have full conversation. Line went to voicemail.",2026-03-18T21:17:04.526Z
+17807357999,"Sharan De Waal",lead_hangup,49,"",2026-03-18T21:17:03.024Z
+17809958173,"Lola Smith",lead_hangup,31,"",2026-03-18T21:16:52.513Z
+17807583281,"Ryan Adams",lead_hangup,12,"",2026-03-18T21:16:38.999Z
+17809673121,"Neil Bussche",lead_hangup,61,"",2026-03-18T21:16:35.995Z
+17809605582,"No Way",lead_hangup,47,"",2026-03-18T21:16:31.491Z
+17806747399,"Lyn Hintz",lead_hangup,53,"",2026-03-18T21:16:29.989Z
+14039573365,"Claudia Chung",lead_hangup,54,"",2026-03-18T21:15:56.960Z
+17807287963,"Marawan Ahmed",lead_hangup,26,"",2026-03-18T21:15:49.453Z
+15873369426,"Ben Luciano",lead_hangup,57,"",2026-03-18T21:15:34.441Z
+16134002992,"John Adeyeri",lead_hangup,33,"",2026-03-18T21:15:23.930Z
+17807168558,"Vine Mwanga",lead_hangup,101,"",2026-03-18T21:15:14.919Z
+15879833770,"Miguel Yubahwe",lead_hangup,28,"",2026-03-18T21:14:59.900Z
+17808500437,"Tehama Sham",lead_hangup,56,"",2026-03-18T21:14:47.889Z
+17808075616,"Armine Frangulyan",lead_hangup,19,"",2026-03-18T21:14:17.860Z
+17809642231,"Not Telling",callback,78,"Screener answered, requested name and reason for call. Client was not available. Left voicemail message for callback.",2026-03-18T21:14:07.348Z
+15875204737,"Katrina Rempel",lead_hangup,55,"",2026-03-18T21:13:55.336Z
+15877857634,"Yuki Palmer",lead_hangup,42,"",2026-03-18T21:13:53.834Z
+17809062278,"Leah Legere",lead_hangup,38,"",2026-03-18T21:13:29.813Z
+17804445212,"Nig Ball",lead_hangup,35,"",2026-03-18T21:13:02.786Z
+17809522956,"Michael Androschuk",lead_hangup,45,"",2026-03-18T21:12:58.282Z
+14034000666,"Susan Mckee",lead_hangup,49,"",2026-03-18T21:12:47.773Z
+17809079077,"Amanda Morin",lead_hangup,34,"",2026-03-18T21:12:31.258Z
+17809757859,"David Karpiak",lead_hangup,35,"",2026-03-18T21:12:05.735Z
+17809824999,"Melissa Sahota",lead_hangup,33,"",2026-03-18T21:11:56.718Z
+17809879879,"Cassandra Nugggcvj",lead_hangup,27,"",2026-03-18T21:11:19.182Z
+17809298792,"Kim Hallett",lead_hangup,21,"",2026-03-18T21:11:16.178Z
+17802933802,"Stephanie Pierce",lead_hangup,24,"",2026-03-18T21:11:10.170Z
+17809190240,"Shahinoor Meghji",lead_hangup,36,"",2026-03-18T21:11:04.163Z
+17806286610,"Jake Reese",not_interested,57,"Wrong person answered - Hannah from Trumbull First Movement Organization, not Jake Reese. Call crossed with another outbound call.",2026-03-18T21:10:58.156Z
+17808034041,"Alicia Stevenson",lead_hangup,33,"",2026-03-18T21:10:31.127Z
+17802006545,"Damla Maden",lead_hangup,18,"",2026-03-18T21:10:26.623Z
+17802579611,"Lisa Dorwart",lead_hangup,33,"",2026-03-18T21:10:23.620Z
+17807198673,"Natalie Radetic",lead_hangup,81,"",2026-03-18T21:10:22.118Z
+14039734788,"Taylor Hodgkinson",lead_hangup,50,"",2026-03-18T21:09:58.090Z
+17802677777,"Mari Dbd",callback,71,"Gatekeeper answered, prospect not available. Left voicemail message for callback.",2026-03-18T21:09:53.586Z
+17805421245,"No Way",lead_hangup,32,"",2026-03-18T21:09:50.583Z
+18193193174,"Marie-hélène Patry",lead_hangup,109,"",2026-03-18T21:09:49.082Z
+17809651979,"Akram Abubaha",not_interested,87,"Client stated they never requested information about trading. No interest. Ended call politely.",2026-03-18T21:09:46.080Z
+17807000373,"Nathen Doyle",lead_hangup,36,"",2026-03-18T21:09:44.578Z
+17805143800,"Sp O",lead_hangup,24,"",2026-03-18T21:09:25.051Z
+17804444444,"As A",lead_hangup,11,"",2026-03-18T21:09:23.550Z
+17809750394,"Nadia Cruickshank",lead_hangup,26,"",2026-03-18T21:09:08.537Z
+15195363397,"Tonmm Joe",lead_hangup,32,"",2026-03-18T21:08:55.022Z
+17807226683,"Jessi Hu",lead_hangup,37,"",2026-03-18T21:08:14.480Z
+17808854740,"Randy Poulin",lead_hangup,31,"",2026-03-18T21:07:42.942Z
+17802158443,"Emz Nola",lead_hangup,36,"",2026-03-18T21:07:38.438Z
+17806685031,"Pam Odynski",lead_hangup,30,"",2026-03-18T21:07:29.429Z
+17805275555,"Bob Burger",lead_hangup,37,"",2026-03-18T21:07:27.928Z
+13063616366,"Sophie Gelineau",lead_hangup,48,"",2026-03-18T21:07:26.426Z
+17809640026,"Ingrid Jansen",lead_hangup,39,"",2026-03-18T21:07:24.925Z
+17802888946,"Tina Levasseur",lead_hangup,34,"",2026-03-18T21:07:15.915Z
+17809681660,"Lisa Stewart",not_interested,84,"Wrong number - Lisa Stewart no longer at this number. Current resident received recycled phone number about 5 years ago. Lisa Stewart left town and had outstanding debts. Caller was polite and explained the situation.",2026-03-18T21:06:59.400Z
+17802399933,"Shantia Das",lead_hangup,28,"",2026-03-18T21:06:56.395Z
+17808197230,"Kate Levitt",lead_hangup,34,"",2026-03-18T21:06:35.375Z
+17809132987,"Lena Scheuerman",lead_hangup,22,"",2026-03-18T21:06:33.874Z
+14034312102,"Rory Myhre",lead_hangup,26,"",2026-03-18T21:06:30.871Z
+17802214392,"Ann Ruecroft",lead_hangup,43,"",2026-03-18T21:06:23.363Z
+17809967424,"Tiana Sirois",lead_hangup,40,"",2026-03-18T21:06:20.360Z
+17809321520,"Dj Petrin",lead_hangup,21,"",2026-03-18T21:06:11.353Z
+15192234112,"Marie Illerbrun",lead_hangup,43,"",2026-03-18T21:05:48.824Z
+17809015480,"Bridget Nargang",lead_hangup,12,"",2026-03-18T21:05:42.821Z
+17802336444,"Abby Kozma",lead_hangup,44,"",2026-03-18T21:05:30.807Z
+17802390000,"Betty Khober",lead_hangup,29,"",2026-03-18T21:05:26.301Z
+17804346673,"Ray Deslauriers",lead_hangup,62,"",2026-03-18T21:05:24.800Z
+17802426454,"Janelle Boychuk",lead_hangup,17,"",2026-03-18T21:05:02.276Z
+15879900330,"Amanda Murphy",lead_hangup,24,"",2026-03-18T21:04:56.271Z
+17809821455,"Carrie Anton",lead_hangup,49,"",2026-03-18T21:04:54.769Z
+17808856558,"Bkh Hjh",lead_hangup,21,"",2026-03-18T21:04:50.263Z
+17809198816,"Daisy Zhang",lead_hangup,81,"",2026-03-18T21:04:47.260Z
+17802320407,"Pam P",lead_hangup,55,"",2026-03-18T21:04:09.692Z
+17807222469,"Jay Imeson",lead_hangup,35,"",2026-03-18T21:04:05.185Z
+17804347058,"George Cassady",not_interested,173,"Client stated they did not request information. Expressed concern about legitimacy (""I don't think you're real""). Politely declined after brief objection handling attempt. Ended call himself.",2026-03-18T21:04:00.681Z
+17809109478,"Lesley Lehto",lead_hangup,30,"",2026-03-18T21:03:59.180Z
+17804994834,"Stephanie Cashin",lead_hangup,45,"",2026-03-18T21:03:51.673Z
+17809772411,"Jillian M",lead_hangup,20,"",2026-03-18T21:03:47.168Z
+17807121762,"Kayleigh Breen",lead_hangup,29,"",2026-03-18T21:03:45.667Z
+17805545589,"Kelly Giese",lead_hangup,27,"",2026-03-18T21:03:33.654Z
+17809963884,"Krista Repka",lead_hangup,58,"",2026-03-18T21:03:32.149Z
+17809954311,"Brian Wyatt",lead_hangup,32,"",2026-03-18T21:03:26.144Z
+17807009410,"Cory Cooper",lead_hangup,27,"",2026-03-18T21:03:20.137Z
+17809753089,"Debbie Vranas",callback,76,"Gatekeeper answered - Debbie Vranas not available. Left message with name, company, and reason for call. Will callback later.",2026-03-18T21:03:12.628Z
+17802455182,"Laura Witkin",lead_hangup,28,"",2026-03-18T21:02:56.111Z
+15873383563,"Fran Saunders",lead_hangup,43,"",2026-03-18T21:02:38.092Z
+17807359864,"Bob Brown",not_interested,43,"Wrong number - reached Grey Nunn's IV Clinic instead of Bob Brown",2026-03-18T21:02:27.581Z
+17807181570,"Lisa Weidel",lead_hangup,26,"",2026-03-18T21:02:20.073Z
+17807094211,"Wallace Yip",lead_hangup,53,"",2026-03-18T21:02:05.060Z
+17809658205,"Beverly Dixon",lead_hangup,33,"",2026-03-18T21:02:00.555Z
+15878340555,"Kelly Newton",lead_hangup,52,"",2026-03-18T21:01:48.544Z
+17802221234,"Laura Kekek",callback,71,"Client asked to stay on the line, then voicemail message played indicating person not available. Will attempt callback later.",2026-03-18T21:01:42.535Z
+15879861910,"Jenni Gowsell",lead_hangup,35,"",2026-03-18T21:01:27.518Z
+17092220686,"Ashley Tuck",lead_hangup,46,"",2026-03-18T21:01:20.010Z
+15875991620,"Alexa Poullas",lead_hangup,48,"",2026-03-18T21:01:04.994Z
+15872284228,"Jinny Hwang",lead_hangup,63,"",2026-03-18T21:01:03.492Z
+19024996716,"Ann Mary Jacob",lead_hangup,34,"",2026-03-18T21:00:58.987Z
+17805705160,"Delores Dahmer",lead_hangup,54,"",2026-03-18T21:00:54.483Z
+17804997956,"Billie Jean Mepham",lead_hangup,23,"",2026-03-18T21:00:52.981Z
+17802220998,"Valerie Downing",not_interested,114,"Client stated they did not request information about online trading and were not interested in world markets at all. No qualification attempted due to lack of interest and confusion about lead source.",2026-03-18T21:00:27.449Z
+17802889008,"Kim Caskey",lead_hangup,26,"",2026-03-18T21:00:18.442Z
+17805049201,"James Sarah",lead_hangup,29,"",2026-03-18T21:00:07.932Z
+17809060508,"Bola Badmus",lead_hangup,82,"",2026-03-18T20:59:55.918Z
+17809999283,"Kaekeng Dkfj",lead_hangup,25,"",2026-03-18T20:59:48.410Z
+16042188595,"Amy Larocque-walker",lead_hangup,77,"",2026-03-18T20:59:42.405Z
+17804444444,"Heather B",lead_hangup,17,"",2026-03-18T20:59:40.904Z
+17808155894,"Alyssa Threadkell",lead_hangup,29,"",2026-03-18T20:59:25.871Z
+17802316236,"Edwin Agito",lead_hangup,72,"",2026-03-18T20:59:13.858Z
+15879905060,"Jack Robert",lead_hangup,22,"",2026-03-18T20:59:09.355Z
+17809832753,"Sam Gourley",lead_hangup,33,"",2026-03-18T20:59:07.853Z
+15879892797,"Marshall Dunphy",lead_hangup,23,"",2026-03-18T20:59:06.351Z
+17809641425,"Sksksksksk Kansjsks",lead_hangup,31,"",2026-03-18T20:58:48.333Z
+17802981231,"Chantel Boyd",lead_hangup,50,"",2026-03-18T20:58:30.315Z
+15879374081,"Jay Lord",lead_hangup,37,"",2026-03-18T20:58:28.814Z
+17809531990,"Candace Lussier",lead_hangup,58,"",2026-03-18T20:58:27.313Z
+17809045643,"Jade Martell",lead_hangup,22,"",2026-03-18T20:58:24.310Z
+17804461876,"Yvon Cormier",not_interested,84,"Client stated they did not request information or it was by error. Not interested in proceeding. Politely declined and ended call.",2026-03-18T20:58:19.806Z
+17809154920,"Tracy Walker",lead_hangup,42,"",2026-03-18T20:58:16.803Z
+17803990128,"Barbara Dunsmore",lead_hangup,19,"",2026-03-18T20:58:15.302Z
+17809189483,"Cheryl Rannie",lead_hangup,34,"",2026-03-18T20:58:12.299Z
+17804444444,"Fsdfa Sfsadasd",lead_hangup,14,"",2026-03-18T20:58:06.292Z
+17806605479,"Sara Mckay",lead_hangup,20,"",2026-03-18T20:57:58.786Z
+17804331323,"Meg Charlton",lead_hangup,63,"",2026-03-18T20:57:52.783Z
+17809878798,"Cat Car",lead_hangup,38,"",2026-03-18T20:57:51.281Z
+17807228686,"Tira Kile",lead_hangup,32,"",2026-03-18T20:57:39.269Z
+17804893009,"Amanda Loren",lead_hangup,11,"",2026-03-18T20:57:25.755Z
+17807320731,"Hshdhdh Gdjdh",lead_hangup,27,"",2026-03-18T20:57:15.243Z
+17802649689,"Alexander Dussault",lead_hangup,29,"",2026-03-18T20:56:55.720Z
+17804307578,"Tony Yu",callback,48,"Spoke with someone else, Tony Yu not available. Advised to call back later.",2026-03-18T20:56:54.219Z
+17806673289,"Merwe Jlkj",lead_hangup,26,"",2026-03-18T20:56:52.718Z
+12505883631,"Sharon V",not_interested,33,"Wrong number or person refused to identify themselves. Client declined to provide any information.",2026-03-18T20:56:46.712Z
+17809154479,"Alix Kemp",lead_hangup,26,"",2026-03-18T20:56:40.707Z
+17809355936,"Phil Hender",lead_hangup,15,"",2026-03-18T20:56:34.699Z
+17802329873,"Gregor Black",callback,75,"Gregor Black not available. Spoke with gatekeeper who took message. Left callback message with name and company. Will attempt to reach again later.",2026-03-18T20:56:28.693Z
+12049518339,"Adam Hanad",lead_hangup,31,"",2026-03-18T20:56:16.679Z
+17805846342,"Sarah Thea",lead_hangup,38,"",2026-03-18T20:55:45.146Z
+17809072173,"Cherith Klotz",lead_hangup,33,"",2026-03-18T20:55:25.627Z
+17803941981,"Hassan Mehmood",lead_hangup,79,"",2026-03-18T20:55:21.121Z
+15875663834,"Amandeep Kaur",lead_hangup,43,"",2026-03-18T20:55:19.618Z
+15194973031,"Boris G",callback,72,"Gatekeeper answered. Boris G not available. Left voicemail message for callback.",2026-03-18T20:55:18.117Z
+17809755787,"Bruce Cable",lead_hangup,30,"",2026-03-18T20:55:04.605Z
+15879885695,"Jessica Mac",not_interested,37,"Wrong number or refused to identify themselves. Client declined to provide their name.",2026-03-18T20:54:52.594Z
+17809775745,"Diane Corazza",lead_hangup,38,"",2026-03-18T20:54:46.587Z
+15875996309,"Hernan Iglesias",lead_hangup,32,"",2026-03-18T20:54:43.583Z
+17806862709,"Joel Bojeczko",lead_hangup,27,"",2026-03-18T20:54:39.078Z
+17803406865,"Lana Hartwell",lead_hangup,17,"",2026-03-18T20:54:30.063Z
+15878773850,"Sam Barry",lead_hangup,64,"",2026-03-18T20:54:27.061Z
+17804980580,"Phy Li",lead_hangup,31,"",2026-03-18T20:54:22.556Z
+17807077864,"Sonia Kirby",lead_hangup,29,"",2026-03-18T20:54:21.054Z
+15875680495,"James Trajano",lead_hangup,51,"",2026-03-18T20:54:15.047Z
+17805232201,"Carol R",lead_hangup,31,"",2026-03-18T20:54:12.043Z
+15873726340,"Frieda Neufeld",lead_hangup,29,"",2026-03-18T20:54:06.035Z
+17803946172,"Muskaan Parhar",lead_hangup,32,"",2026-03-18T20:54:00.030Z
+17802132333,"Jfkasdfk Wdfqfqwef",lead_hangup,33,"",2026-03-18T20:53:46.515Z
+17802637797,"Ursula Navarrete",lead_hangup,55,"",2026-03-18T20:53:45.014Z
+17809909573,"Joanne Higgins",lead_hangup,39,"",2026-03-18T20:53:39.006Z
+14037966475,"Christine Vestre",lead_hangup,34,"",2026-03-18T20:53:29.997Z
+17809184124,"Tara Richardson",lead_hangup,80,"",2026-03-18T20:52:40.448Z
+12045737539,"Ashley B",lead_hangup,31,"",2026-03-18T20:52:31.441Z
+16047239214,"Carol Kostopoulos",lead_hangup,25,"",2026-03-18T20:52:29.940Z
+17807164792,"Tylor John",lead_hangup,28,"",2026-03-18T20:52:20.932Z
+17804785457,"Nicole Jenkins",lead_hangup,44,"",2026-03-18T20:52:11.923Z
+17802987795,"Nathalii Perez",lead_hangup,34,"",2026-03-18T20:52:10.421Z
+13067373590,"Kolten Solomon",lead_hangup,40,"",2026-03-18T20:52:08.920Z
+17809913287,"Karen Hollands",lead_hangup,34,"",2026-03-18T20:52:05.917Z
+15875977825,"Brad Russell",lead_hangup,34,"",2026-03-18T20:51:46.395Z
+17804050313,"Ashley Barker",lead_hangup,53,"",2026-03-18T20:51:44.892Z
+17806559023,"Mona Sogy",lead_hangup,27,"",2026-03-18T20:51:26.874Z
+17807209074,"Ryan Scott",lead_hangup,31,"",2026-03-18T20:51:19.367Z
+17808879936,"Lauren Benedet",callback,73,"Gatekeeper answered. Lauren Benedet not available. Left message to call back later.",2026-03-18T20:51:02.850Z
+16475510718,"Mohammed Arif",lead_hangup,17,"",2026-03-18T20:50:55.338Z
+17802226488,"Tessa Painchaud",lead_hangup,25,"",2026-03-18T20:50:50.829Z
+17802007273,"Delit Yeboah",lead_hangup,48,"",2026-03-18T20:50:26.803Z
+17809538585,"Bohdana Stepanenko-lypovyk",lead_hangup,33,"",2026-03-18T20:50:20.797Z
+17809837139,"Cassidy Biuvier",lead_hangup,20,"",2026-03-18T20:50:08.779Z
+17809876543,"C K",lead_hangup,66,"",2026-03-18T20:50:02.771Z
+17808036553,"Karen Morales",lead_hangup,24,"",2026-03-18T20:49:55.262Z
+17809405217,"Yannick L'abbe",lead_hangup,38,"",2026-03-18T20:49:46.253Z
+17802213533,"Zoey Burgett",lead_hangup,66,"",2026-03-18T20:49:37.243Z
+15197611763,"Brittany Riley-outtrim",lead_hangup,48,"",2026-03-18T20:49:14.715Z
+17808429527,"David Feener",lead_hangup,25,"",2026-03-18T20:49:13.214Z
+13062925304,"Jori Wright",lead_hangup,28,"",2026-03-18T20:49:05.704Z
+17809807890,"Jdjs Ui",lead_hangup,20,"",2026-03-18T20:48:55.194Z
+17802893880,"Molli Hay",callback,74,"Spoke with gatekeeper/receptionist. Molli Hay not available. Left message to call back at better time.",2026-03-18T20:48:46.182Z
+17808041918,"Jessica Amanda",lead_hangup,26,"",2026-03-18T20:48:44.680Z
+17807575305,"Roshan Perera",lead_hangup,32,"",2026-03-18T20:48:38.674Z
+17804521444,"Brieana Stead",lead_hangup,48,"",2026-03-18T20:48:28.163Z
+17809106260,"Jules G",lead_hangup,31,"",2026-03-18T20:48:17.652Z
+17807083611,"Mai Sue",lead_hangup,29,"",2026-03-18T20:46:59.572Z
+17809352244,"Elizabeth W",lead_hangup,64,"",2026-03-18T20:46:53.568Z
+17809148955,"Kamryn Moscrip",lead_hangup,31,"",2026-03-18T20:46:46.060Z
+17809053544,"Susan Hopkins",lead_hangup,22,"",2026-03-18T20:46:43.057Z
+17805169191,"Danielle Cormier",lead_hangup,80,"",2026-03-18T20:46:41.555Z
+17806686475,"Ramey Rouleau",lead_hangup,28,"",2026-03-18T20:46:31.043Z
+17802007975,"Somiya Goe",lead_hangup,46,"",2026-03-18T20:46:25.038Z
+17805476789,"Sara Dee",lead_hangup,23,"",2026-03-18T20:45:56.504Z
+17809024693,"Keira May",lead_hangup,18,"",2026-03-18T20:45:29.470Z
+17802631093,"Greg Outtrim",lead_hangup,49,"",2026-03-18T20:45:27.967Z
+17808888888,"Joshua Howard",lead_hangup,11,"",2026-03-18T20:45:11.448Z
+15879195566,"Kim Young",lead_hangup,38,"",2026-03-18T20:44:57.932Z
+14038036647,"Kanishka Marasinghe",lead_hangup,33,"",2026-03-18T20:44:50.424Z
+17804696969,"Poopy Bum",lead_hangup,73,"",2026-03-18T20:44:47.422Z
+14034832889,"Owen Gagne",lead_hangup,26,"",2026-03-18T20:44:45.921Z
+17802989322,"Lindsay Hort",lead_hangup,29,"",2026-03-18T20:44:42.918Z
+17809753682,"Brendan Michalczyk",lead_hangup,67,"",2026-03-18T20:44:35.408Z
+17807291331,"No No",lead_hangup,31,"",2026-03-18T20:44:30.902Z
+15879215092,"Kris Mcilwraith",lead_hangup,45,"",2026-03-18T20:44:23.393Z
+17809999360,"Brandon Niehaus",lead_hangup,29,"",2026-03-18T20:44:09.880Z
+17809948599,"Morgan G",lead_hangup,29,"",2026-03-18T20:44:08.379Z
+15875989505,"Jennifer Bibles Jenn",lead_hangup,32,"",2026-03-18T20:44:03.873Z
+17803607045,"Kelsey Iwaniuk",lead_hangup,26,"",2026-03-18T20:43:57.866Z
+17807841212,"Bob Smith",lead_hangup,36,"",2026-03-18T20:43:42.849Z
+17805662675,"Huss Dem",lead_hangup,21,"",2026-03-18T20:43:30.836Z
+17808840142,"Liz Van Wyk",lead_hangup,76,"",2026-03-18T20:43:29.335Z
+17809184171,"Christina Penner",lead_hangup,17,"",2026-03-18T20:43:20.326Z
+16399162511,"Daniel Dube",lead_hangup,36,"",2026-03-18T20:43:17.323Z
+15197213458,"Soledad Gonzalez",lead_hangup,23,"",2026-03-18T20:43:06.812Z
+17809675758,"Pam Helm",lead_hangup,20,"",2026-03-18T20:42:59.305Z
+17802575683,"Kaylee Masini",lead_hangup,80,"",2026-03-18T20:42:45.792Z
+17809388898,"Nina J",lead_hangup,68,"",2026-03-18T20:42:42.789Z
+17809341252,"S A",lead_hangup,30,"",2026-03-18T20:42:27.775Z
+15875989221,"Huong Thai",callback,53,"Client requested a callback - not available at this time",2026-03-18T20:42:18.767Z
+17806555851,"Kamala Maganti",lead_hangup,37,"",2026-03-18T20:42:11.262Z
+17803183551,"Val Wong",lead_hangup,56,"",2026-03-18T20:42:06.757Z
+17802675247,"Lorne Jessome",lead_hangup,31,"",2026-03-18T20:42:05.256Z
+17802158809,"Ashlee Adams",lead_hangup,26,"",2026-03-18T20:42:03.755Z
+14036180855,"Robin Mudumo",lead_hangup,43,"",2026-03-18T20:42:00.752Z
+17802970931,"Geraldo Willis",lead_hangup,28,"",2026-03-18T20:41:56.247Z
+17809393392,"Doreen Lesburg",callback,42,"Client stated they are not available now. Agreed to call back at a better time.",2026-03-18T20:41:38.231Z
+17806866363,"Steven Gallant",lead_hangup,46,"",2026-03-18T20:41:36.729Z
+17807186820,"Amie Spate",lead_hangup,19,"",2026-03-18T20:41:30.723Z
+17809990909,"N Guhkjk Gtyhuj",lead_hangup,39,"",2026-03-18T20:41:29.222Z
+17802716566,"Amarjit Kaur",lead_hangup,21,"",2026-03-18T20:41:27.720Z
+15879366769,"Maria Hayle Floro Falsis",lead_hangup,17,"",2026-03-18T20:41:14.204Z
+17809066740,"Dawn Clark",lead_hangup,40,"",2026-03-18T20:41:00.688Z
+17807098719,"Melpomeny Karavidas",lead_hangup,42,"",2026-03-18T20:40:38.163Z
+17809631212,"Bob Smith",lead_hangup,21,"",2026-03-18T20:40:14.136Z
+17807097397,"Holly Rose",callback,77,"Gatekeeper answered, client not available. Left voicemail message. Will attempt callback later.",2026-03-18T20:40:12.635Z
+17809132538,"Deborah Aube",lead_hangup,31,"",2026-03-18T20:40:09.632Z
+17802647049,"Ms Hazel Sears",callback,71,"Reached gatekeeper/voicemail system. Person not available. Left message to call back at better time.",2026-03-18T20:40:08.130Z
+17802642526,"Soroush Abolhasani",lead_hangup,45,"",2026-03-18T20:39:57.615Z
+17806046289,"Ryan Scott",lead_hangup,51,"",2026-03-18T20:39:45.602Z
+17802925699,"Claire Toews",callback,71,"Receptionist/screener answered. Claire Toews not available. Left voicemail message. Will attempt callback later.",2026-03-18T20:39:42.599Z
+17809772727,"Matt Maron",lead_hangup,26,"",2026-03-18T20:39:36.590Z
+14379999802,"Shaz Davy",lead_hangup,48,"",2026-03-18T20:39:11.063Z
+17809551245,"Sarah Kai",lead_hangup,59,"",2026-03-18T20:39:09.562Z
+16398402774,"Ohs7eeper Fortnite",lead_hangup,34,"",2026-03-18T20:38:50.043Z
+17809373706,"Brooklyn Dell",lead_hangup,69,"",2026-03-18T20:38:39.532Z
+17809854276,"Joe J",lead_hangup,47,"",2026-03-18T20:38:36.528Z
+17788398793,"Wes Leath-watson",lead_hangup,42,"",2026-03-18T20:38:00.488Z
+17808074895,"Bob Murray",lead_hangup,28,"",2026-03-18T20:37:42.467Z
+17802008765,"Davinder Brar",lead_hangup,43,"",2026-03-18T20:37:31.955Z
+17806552830,"Elliott Herbers",lead_hangup,39,"",2026-03-18T20:37:27.450Z
+17807007962,"Rowell De Jesus Dalusung",callback,75,"Gatekeeper answered. Client not available. Left message to call back at better time.",2026-03-18T20:37:13.937Z
+17809825212,"Miranda K",lead_hangup,25,"",2026-03-18T20:36:52.912Z
+17809159565,"Ely Malbago",lead_hangup,16,"",2026-03-18T20:36:34.893Z
+17809012012,"Alpha Romeo",lead_hangup,26,"",2026-03-18T20:36:25.884Z
+17806806654,"Michelle Tabangcura",lead_hangup,27,"",2026-03-18T20:36:09.366Z
+17809842498,"Bonnie Powers",lead_hangup,31,"",2026-03-18T20:35:34.828Z
+17809656716,"Nishi Sharma",lead_hangup,40,"",2026-03-18T20:35:31.825Z
+17802653138,"Kealy Anderson",lead_hangup,57,"",2026-03-18T20:35:10.803Z
+17783442068,"Caitlin Fleming",lead_hangup,52,"",2026-03-18T20:35:09.301Z
+17809053421,"Sanish Kaipuzha",callback,72,"Receptionist/gatekeeper answered. Sanish Kaipuzha not available. Left voicemail message. Will attempt callback later.",2026-03-18T20:35:07.799Z
+17806217848,"Kevin Young",lead_hangup,27,"",2026-03-18T20:35:00.291Z
+14039734691,"Andi Nugent",lead_hangup,34,"",2026-03-18T20:34:43.775Z
+14033920944,"Cindy Messaros",lead_hangup,48,"",2026-03-18T20:34:40.771Z
+17802716246,"Chelsea Strasdin",lead_hangup,54,"",2026-03-18T20:34:31.760Z
+17809383842,"Roger Medal",lead_hangup,65,"",2026-03-18T20:34:25.754Z
+17803990623,"Arvind Chandrasekaran",lead_hangup,55,"",2026-03-18T20:34:13.741Z
+17809033436,"Rink Grewal",lead_hangup,32,"",2026-03-18T20:34:04.729Z
+17802679383,"Almira Foco",do_not_call,110,"Client did not recall requesting information. Asked to be removed from list. Stated not interested twice. Respectfully ended call and confirmed removal.",2026-03-18T20:33:42.205Z
+16043182135,"Ron Dehawn",lead_hangup,37,"",2026-03-18T20:33:34.697Z
+17809095855,"Linda Liu",lead_hangup,24,"",2026-03-18T20:33:30.192Z
+17804196633,"Sara K.",lead_hangup,69,"",2026-03-18T20:33:19.679Z
+17802466666,"Ali K",lead_hangup,26,"",2026-03-18T20:33:12.174Z
+17803994672,"Adina Lorraine",lead_hangup,57,"",2026-03-18T20:33:03.165Z
+17808128064,"Chloe Muller",lead_hangup,30,"",2026-03-18T20:32:54.153Z
+13064214324,"Alexandra Gilmore",lead_hangup,36,"",2026-03-18T20:32:36.135Z
+15877789393,"Semhar Gebrit Abraham",callback,75,"Gatekeeper answered, client not available. Left voicemail message for callback.",2026-03-18T20:32:34.634Z
+17809030711,"Nicole Smolcic",lead_hangup,37,"",2026-03-18T20:32:28.628Z
+17804620239,"Terence Harding",lead_hangup,34,"",2026-03-18T20:32:15.112Z
+17802788628,"Sam Cheung",lead_hangup,56,"",2026-03-18T20:32:12.109Z
+17808720108,"Taryn Tracinski",lead_hangup,32,"",2026-03-18T20:32:07.605Z
+17809999998,"Mmmm Bbbbbb",lead_hangup,64,"",2026-03-18T20:31:55.591Z
+17802222222,"Edtcfcf Fffx",lead_hangup,47,"",2026-03-18T20:31:51.087Z
+17806182154,"Suja Thomas",lead_hangup,54,"",2026-03-18T20:31:30.053Z
+12502154606,"Lenasia Ned",lead_hangup,22,"",2026-03-18T20:31:19.544Z
+17803601258,"Addison Cameron",not_interested,77,"Wrong number. Spoke with Richard, not Addison Cameron. Richard confirmed he did not request info and Addison is not available at this number.",2026-03-18T20:31:12.035Z
+17809841379,"Bobi Tolentino",lead_hangup,47,"",2026-03-18T20:31:10.534Z
+15879214976,"Kathy Turnock",lead_hangup,59,"",2026-03-18T20:31:03.024Z
+17803948470,"Sara Kamran",lead_hangup,37,"",2026-03-18T20:30:45.007Z
+17802222222,"Hh Smith",lead_hangup,23,"",2026-03-18T20:30:05.964Z
+15874367590,"Munami Poddar",lead_hangup,27,"",2026-03-18T20:30:04.462Z
+17802375810,"Benjamin Endara-gillis",lead_hangup,94,"",2026-03-18T20:30:02.959Z
+17802239495,"Haris Khan",lead_hangup,17,"",2026-03-18T20:30:01.458Z
+14168240942,"Abdullahi Mayam",lead_hangup,21,"",2026-03-18T20:29:55.450Z
+12269276414,"Galeann Kelly",lead_hangup,23,"",2026-03-18T20:29:52.446Z
+17809052564,"Nathalie Hajek",callback,75,"Nathalie Hajek not available. Spoke with gatekeeper who took message. Left callback message with name, company, and reason for call. Will attempt to reach again later.",2026-03-18T20:29:50.945Z
+17803121084,"Berit Larsen",lead_hangup,28,"",2026-03-18T20:29:31.427Z
+17808037648,"Abrianna Mills",lead_hangup,28,"",2026-03-18T20:29:07.403Z
+17802384103,"Alexandra Noseworthy",lead_hangup,30,"",2026-03-18T20:29:04.399Z
+14037639361,"Lami Rob",lead_hangup,22,"",2026-03-18T20:29:02.898Z
+17806604182,"Bobbie Jo",lead_hangup,31,"",2026-03-18T20:28:50.883Z
+17807282096,"John Lizotte",lead_hangup,23,"",2026-03-18T20:28:44.877Z
+12048701118,"Naomi Kitchen",lead_hangup,45,"",2026-03-18T20:28:41.873Z
+17802206736,"Raffat Shefa",lead_hangup,60,"",2026-03-18T20:28:32.853Z
+17809107401,"Victoria Corrigan",lead_hangup,43,"",2026-03-18T20:28:19.338Z
+17789954357,"David Malterer",lead_hangup,25,"",2026-03-18T20:27:52.310Z
+17807189091,"Canadianice .",callback,78,"Gatekeeper answered, client not available. Left message to call back at another time.",2026-03-18T20:27:44.802Z
+17809197672,"Jewell Hansen",lead_hangup,75,"",2026-03-18T20:27:40.298Z
+14168453942,"Henry Chau",lead_hangup,23,"",2026-03-18T20:27:38.795Z
+17809037442,"Taylor Shukalak",lead_hangup,43,"",2026-03-18T20:27:20.769Z
+15877091023,"Umair Ali",callback,73,"Reached screener/gatekeeper. Umair Ali not available. Left message with name, company, and reason for call. Will attempt callback later.",2026-03-18T20:27:19.268Z
+15873344182,"Sarah Booth",lead_hangup,49,"",2026-03-18T20:27:05.752Z
+17809083456,"Gsfgdfgsdfgd Hujgg",lead_hangup,31,"",2026-03-18T20:26:59.746Z
+14035971916,"Charlene Belan",lead_hangup,105,"",2026-03-18T20:26:58.245Z
+17809087645,"Tylr Lingley",lead_hangup,22,"",2026-03-18T20:26:52.238Z
+17802571846,"Navneet Sandhar",lead_hangup,18,"",2026-03-18T20:26:50.737Z
+17807778381,"Angela Chia",lead_hangup,55,"",2026-03-18T20:26:38.723Z
+17802376969,"Rebecca Fartly",lead_hangup,31,"",2026-03-18T20:26:35.719Z
+17805541245,"Robert Buff",lead_hangup,76,"",2026-03-18T20:26:32.716Z
+17802662733,"Angie Elise Cameron",lead_hangup,69,"",2026-03-18T20:26:23.709Z
+17789082778,"Gurwinder Johal",lead_hangup,26,"",2026-03-18T20:26:20.704Z
+17807777777,"Corina Foster",lead_hangup,40,"",2026-03-18T20:26:17.702Z
+17059297399,"Cheryl Miller",lead_hangup,55,"",2026-03-18T20:26:10.194Z
+13068076205,"Halee Dixon",not_interested,32,"Wrong number - person confirmed not Halee Dixon and refused to identify themselves. Ended call politely.",2026-03-18T20:26:08.692Z
+17808865509,"Taylor Mildenberger",not_interested,73,"Client does not remember filling out form and declined to continue conversation after one objection attempt. Not interested in proceeding.",2026-03-18T20:25:56.682Z
+17809348933,"Dan H",lead_hangup,23,"",2026-03-18T20:25:47.669Z
+17809680048,"Karyn Cox",lead_hangup,20,"",2026-03-18T20:25:43.164Z
+17806919268,"Shae Stewart",lead_hangup,23,"",2026-03-18T20:25:40.161Z
+12265002362,"Catherine Pacey",lead_hangup,57,"",2026-03-18T20:25:34.156Z
+17807070700,"Carrie. Ghost",lead_hangup,21,"",2026-03-18T20:25:17.638Z
+17802189680,"Brandon-james F.",lead_hangup,13,"",2026-03-18T20:25:11.630Z
+12046984121,"Nykolai Dolginov",lead_hangup,26,"",2026-03-18T20:25:08.627Z
+17809839944,"Gjnem Ghaiujk",lead_hangup,26,"",2026-03-18T20:24:58.116Z
+17809958892,"Lisa Helman Huber",lead_hangup,48,"",2026-03-18T20:24:50.609Z
+17808505410,"Deborah Latour",lead_hangup,35,"",2026-03-18T20:24:49.107Z
+17809874563,"Hffd Hdj",lead_hangup,21,"",2026-03-18T20:24:40.098Z
+17802134469,"Alyssa Verschoor",lead_hangup,29,"",2026-03-18T20:24:31.092Z
+17802222222,"Ne Sa",lead_hangup,55,"",2026-03-18T20:24:05.565Z
+17805045673,"Brennan Ferguson",lead_hangup,23,"",2026-03-18T20:23:50.548Z
+17809636396,"John Did",lead_hangup,85,"",2026-03-18T20:23:38.537Z
+17809169396,"Brett Purdy",not_interested,95,"Client stated they never filled out any forms or submitted information online. Denied any interest or prior contact. Ended call politely due to likely data error.",2026-03-18T20:23:25.023Z
+17803071705,"Daneel Lategan",lead_hangup,44,"",2026-03-18T20:23:22.019Z
+16476227726,"Sanjeev Loomba",lead_hangup,38,"",2026-03-18T20:23:08.504Z
+17806687262,"Dawn Ruzage",lead_hangup,39,"",2026-03-18T20:22:59.495Z
+17809200333,"Tarek Gamra",lead_hangup,35,"",2026-03-18T20:22:21.957Z
+17809638569,"Hshdhdhdh Dhdh",lead_hangup,41,"",2026-03-18T20:22:05.441Z
+17058456057,"David Moore",lead_hangup,39,"",2026-03-18T20:21:50.418Z
+17809658139,"Yuan Song",lead_hangup,65,"",2026-03-18T20:21:47.415Z
+17807795136,"Joe Blow",lead_hangup,20,"",2026-03-18T20:21:21.888Z
+15879370029,"Dominika Dombajovà",lead_hangup,24,"",2026-03-18T20:21:20.386Z
+17807895890,"Y7jh Huung",lead_hangup,46,"",2026-03-18T20:20:20.316Z
+15875666266,"Mark Jones",lead_hangup,49,"",2026-03-18T20:17:12.590Z
+17809870000,"Kj Fatti",lead_hangup,39,"",2026-03-18T20:16:59.073Z
+14038013078,"Tyler Campbell",lead_hangup,28,"",2026-03-18T20:15:12.436Z
+17805236598,"Jdjd Hrhd",lead_hangup,28,"",2026-03-18T20:12:09.208Z
+17098675309,"Trevor Piercey",lead_hangup,27,"",2026-03-18T19:55:06.387Z
+17807000136,"Rami Kosha",lead_hangup,16,"",2026-03-18T19:54:59.380Z
+13068076205,"Halee Dixon",lead_hangup,20,"",2026-03-18T19:54:23.840Z
+17803780644,"Jamie Mulder",lead_hangup,48,"",2026-03-18T19:54:17.832Z
+19028353232,"Maria Akban",lead_hangup,43,"",2026-03-18T19:54:14.827Z
+17809638569,"Rfrff Trr",lead_hangup,21,"",2026-03-18T19:53:25.271Z
+17807292914,"Lazar Radosavljevic",lead_hangup,59,"",2026-03-18T19:53:23.769Z
+17809996666,"Ham Burger",lead_hangup,18,"",2026-03-18T19:53:16.264Z
+17809956575,"Sdsds Sdsds",lead_hangup,27,"",2026-03-18T19:53:07.757Z
+15874525558,"G Hh",lead_hangup,129,"",2026-03-18T19:53:06.255Z
+15879384240,"Adriel Ivan Dimaunahan",lead_hangup,31,"",2026-03-18T19:53:04.754Z
+17808509926,"M Klettke",lead_hangup,44,"",2026-03-18T19:53:00.748Z
+17802177165,"Darcy Murdoch",lead_hangup,33,"",2026-03-18T19:52:44.229Z
+4915737500386,Andrzej,lead_hangup,27,"",2026-03-18T19:52:41.829Z
+4915734749076,Elvis,lead_hangup,50,"",2026-03-18T19:52:23.305Z
+4917672611876,Sebastian,lead_hangup,75,"",2026-03-18T19:51:56.783Z
+4917632966235,Pavel,lead_hangup,52,"",2026-03-18T19:51:48.277Z
+17809909089,"Asklmf Klaskfdj",not_interested,70,"Client declined immediately after hearing introduction. Politely declined after one objection handling attempt.",2026-03-18T19:51:41.676Z
+4917664240721,Mathias,lead_hangup,45,"",2026-03-18T19:51:32.761Z
+4915116514120,Oliver,lead_hangup,29,"",2026-03-18T19:51:31.260Z
+19053916285,"Jason Mell",not_interested,34,"Wrong number - reached Aaron Crutchman instead of Jason Mell",2026-03-18T19:51:23.661Z
+4915755713887,Jamal,lead_hangup,68,"",2026-03-18T19:51:21.753Z
+17802315386,"Maria Exposito",lead_hangup,53,"",2026-03-18T19:50:53.625Z
+17802662774,"Alex Jap",lead_hangup,35,"",2026-03-18T19:50:28.093Z
+4915167108242,Thomas,lead_hangup,38,"",2026-03-18T19:50:25.703Z
+4915785920373,Enrico,lead_hangup,75,"",2026-03-18T19:50:14.684Z
+4915773605623,Andreas,lead_hangup,13,"",2026-03-18T19:50:09.681Z
+17804520007,"Betty Jean",lead_hangup,58,"",2026-03-18T19:50:06.079Z
+17807777777,"Dfdfd Gtf",lead_hangup,45,"",2026-03-18T19:49:57.576Z
+4917644436386,Sebastian,lead_hangup,46,"",2026-03-18T19:49:55.664Z
+17805421545,"Hahaha Hahaha",lead_hangup,64,"",2026-03-18T19:49:48.065Z
+17808859977,"Nour Haymour",lead_hangup,52,"",2026-03-18T19:49:41.555Z
+17808867028,"Erin Mcclean",lead_hangup,54,"",2026-03-18T19:49:35.053Z
+4915779530213,Paul,lead_hangup,55,"",2026-03-18T19:49:22.634Z
+4915782098083,Mahmod,lead_hangup,51,"",2026-03-18T19:49:21.123Z
+17807852933,"Natasha Gatewn",lead_hangup,59,"",2026-03-18T19:49:13.000Z
+4917629729483,Horst,lead_hangup,66,"",2026-03-18T19:49:06.110Z
+4915111665281,Maik,lead_hangup,46,"",2026-03-18T19:49:01.606Z
+4915751291090,Robin,lead_hangup,55,"",2026-03-18T19:48:57.603Z
+4915124193033,Jens,lead_hangup,21,"",2026-03-18T19:48:53.098Z
+17809556655,"Merv Merv",lead_hangup,40,"",2026-03-18T19:48:48.974Z
+4915208530455,Reiner,lead_hangup,20,"",2026-03-18T19:48:45.591Z
+4917683308486,Go,do_not_call,14,"Die gewünschte Gesprächsperson ist nicht zu erreichen.",2026-03-18T19:48:39.080Z
+4915255332813,Achim,lead_hangup,12,"",2026-03-18T19:48:33.073Z
+16475379167,"Preet K",lead_hangup,22,"",2026-03-18T19:48:21.953Z
+4915221503833,Bernd,lead_hangup,24,"",2026-03-18T19:48:14.552Z
+4917635813316,Wolfgang,lead_hangup,82,"",2026-03-18T19:48:05.044Z
+4915222848786,Edgar,lead_hangup,24,"",2026-03-18T19:48:00.540Z
+17807897565,"Ff Yiggh",lead_hangup,46,"",2026-03-18T19:47:53.927Z
+17809996666,"Billy Do",lead_hangup,20,"",2026-03-18T19:47:50.422Z
+17809374745,"Crystal Warwick",lead_hangup,26,"",2026-03-18T19:47:42.912Z
+4917638207145,Jacek,lead_hangup,51,"",2026-03-18T19:47:40.022Z
+14033282427,"Irene Chan",lead_hangup,50,"",2026-03-18T19:47:24.383Z
+4915233635366,Michael,lead_hangup,35,"",2026-03-18T19:47:21.993Z
+17809650748,"Dana Nguyen",lead_hangup,37,"",2026-03-18T19:47:17.876Z
+4915152436692,Mirko,lead_hangup,22,"",2026-03-18T19:47:09.478Z
+4915201748385,Rene,lead_hangup,25,"",2026-03-18T19:47:01.954Z
+17809646113,Mandeep,lead_hangup,40,"",2026-03-18T19:46:59.355Z
+4915734844040,Peter,lead_hangup,12,"",2026-03-18T19:46:54.445Z
+4915227511391,Tom,lead_hangup,39,"",2026-03-18T19:46:43.435Z
+16472059902,"Dsfsdf Bhbfb",lead_hangup,87,"",2026-03-18T19:46:39.331Z
+17809027875,"Levi Z",lead_hangup,34,"",2026-03-18T19:46:22.820Z
+4915254767409,Casey,lead_hangup,63,"",2026-03-18T19:46:13.406Z
+4915167510863,Michael,lead_hangup,28,"",2026-03-18T19:45:53.883Z
+4915757959725,Tobias,lead_hangup,51,"",2026-03-18T19:45:50.880Z
+17804051665,"Stephanie Ziesman",lead_hangup,65,"",2026-03-18T19:45:42.261Z
+17806809857,"Christian Pearson",lead_hangup,12,"",2026-03-18T19:45:37.757Z
+19058655010,"Carolyn Marchis",lead_hangup,30,"",2026-03-18T19:45:33.251Z
+4915161659226,Dennis,lead_hangup,28,"",2026-03-18T19:45:28.357Z
+17809654576,"Sam Smith",lead_hangup,15,"",2026-03-18T19:45:25.744Z
+4915756152713,Ralph,lead_hangup,48,"",2026-03-18T19:45:22.350Z
+4915232003169,Johann,lead_hangup,21,"",2026-03-18T19:45:20.848Z
+4915733189044,Marco,lead_hangup,40,"",2026-03-18T19:45:11.839Z
+4915781213283,Omar,lead_hangup,49,"",2026-03-18T19:45:08.837Z
+12502155028,"Jessica Piotrowski",lead_hangup,31,"",2026-03-18T19:45:08.724Z
+17804211111,"T. T.",lead_hangup,41,"",2026-03-18T19:44:57.214Z
+4915755150841,Luca,lead_hangup,14,"",2026-03-18T19:44:55.828Z
+4915783136194,Pier,lead_hangup,51,"",2026-03-18T19:44:34.309Z
+15877127774,"Liyo Sudeshika",lead_hangup,37,"",2026-03-18T19:44:26.689Z
+17802718153,"Maria Guadalupe",lead_hangup,74,"",2026-03-18T19:44:10.169Z
+17807076485,"Daniel Yemane",lead_hangup,42,"",2026-03-18T19:43:50.642Z
+16476560661,"Sharon Choto",lead_hangup,26,"",2026-03-18T19:43:47.638Z
+17808849447,"Hamza Maita",lead_hangup,42,"",2026-03-18T19:43:31.117Z
+17808436490,"Ronaldo Enriquez",callback,72,"Reached gatekeeper/voicemail system. Left message for Ronaldo Enriquez to call back. Will attempt callback later.",2026-03-18T19:43:26.613Z
+19022934450,"San Mathew",not_interested,48,"Client stated not interested at introduction. Attempted one objection response, client confirmed not interested with ""Yep"". Ending call respectfully.",2026-03-18T19:43:17.601Z
+17807777777,"No No",lead_hangup,37,"",2026-03-18T19:43:13.096Z
+4917663735448,Martin,lead_hangup,42,"",2026-03-18T19:43:09.241Z
+4917621852019,Thomas,lead_hangup,45,"",2026-03-18T19:43:06.239Z
+4915221649835,Michael,lead_hangup,49,"",2026-03-18T19:43:04.738Z
+4915121003667,Eric,lead_hangup,30,"",2026-03-18T19:42:54.222Z
+17805523685,"How John",lead_hangup,35,"",2026-03-18T19:42:43.068Z
+14037970603,"Cath Esteves",lead_hangup,60,"",2026-03-18T19:42:40.064Z
+4915120035793,Constantin,lead_hangup,43,"",2026-03-18T19:42:38.191Z
+4916099240181,Mathias,lead_hangup,27,"",2026-03-18T19:42:36.690Z
+4915255925897,Max,lead_hangup,25,"",2026-03-18T19:42:24.679Z
+17807777777,"Corina Foster",lead_hangup,55,"",2026-03-18T19:42:11.518Z
+17809876453,"Babla Hadina",lead_hangup,20,"",2026-03-18T19:42:05.509Z
+17802188184,"Natasha Narayan",lead_hangup,67,"",2026-03-18T19:41:56.496Z
+4917632739054,Michael,lead_hangup,69,"",2026-03-18T19:41:53.145Z
+4915167609853,Steffen,lead_hangup,52,"",2026-03-18T19:41:45.642Z
+4915152572153,Stephan,lead_hangup,43,"",2026-03-18T19:41:44.141Z
+17807229742,"Meredith Neale",lead_hangup,48,"",2026-03-18T19:41:41.484Z
+17808933288,"Jaclyn Panylyk",lead_hangup,37,"",2026-03-18T19:41:27.968Z
+17807486855,"Sasi Kumar",lead_hangup,58,"",2026-03-18T19:41:13.453Z
+4917693252600,Wolfgang,lead_hangup,11,"",2026-03-18T19:41:10.606Z
+4915756302089,Rinaldo,lead_hangup,47,"",2026-03-18T19:40:51.092Z
+12503172579,"Teresa De Alba",lead_hangup,27,"",2026-03-18T19:40:40.422Z
+4915222833274,Adrian,lead_hangup,20,"",2026-03-18T19:40:19.056Z
+17802438032,"Rose Calosa",lead_hangup,29,"",2026-03-18T19:40:08.884Z
+17802664013,"Manveer Aujla",not_interested,94,"Wrong number - person confirmed this number previously belonged to Manveer Aujla but was switched years ago. Current holder has no connection to the lead.",2026-03-18T19:40:07.381Z
+17809722452,"Andres Tenias",lead_hangup,26,"",2026-03-18T19:39:52.360Z
+17802329404,"Mckena B",lead_hangup,38,"",2026-03-18T19:39:41.352Z
+4915786756905,Jan,lead_hangup,47,"",2026-03-18T19:39:40.016Z
+4916099685440,Ralf,lead_hangup,41,"",2026-03-18T19:39:34.010Z
+15818883385,"Yannick Plante",lead_hangup,35,"",2026-03-18T19:39:18.831Z
+4917638270821,Heiko,lead_hangup,40,"",2026-03-18T19:39:13.496Z
+4916090355282,Patric,lead_hangup,29,"",2026-03-18T19:39:08.991Z
+4915778636886,Emin,lead_hangup,68,"",2026-03-18T19:39:02.975Z
+4917676868689,Thanh,lead_hangup,32,"",2026-03-18T19:39:01.472Z
+17808680804,"Ariellyn Mae",lead_hangup,34,"",2026-03-18T19:38:34.784Z
+4917624490810,Thomas,lead_hangup,81,"",2026-03-18T19:38:31.440Z
+4917695881108,Dieter,lead_hangup,69,"",2026-03-18T19:38:26.938Z
+15879839189,"Kayla P",lead_hangup,25,"",2026-03-18T19:38:24.273Z
+4915123522092,Friedrich,lead_hangup,46,"",2026-03-18T19:38:21.434Z
+17805249570,"Karen Hayes",lead_hangup,57,"",2026-03-18T19:38:12.769Z
+4915219191010,Yasser,lead_hangup,80,"",2026-03-18T19:38:10.423Z
+17809103659,"Jimbo Obies",lead_hangup,28,"",2026-03-18T19:38:09.765Z
+4915210315235,Werner,do_not_call,94,"Maximale Anzahl der Versuche überschritten.",2026-03-18T19:38:03.415Z
+4917666876179,Timofey,lead_hangup,14,"",2026-03-18T19:38:01.914Z
+4917650390519,Hartmut,lead_hangup,31,"",2026-03-18T19:37:54.407Z
+4915202311122,Phung,lead_hangup,23,"",2026-03-18T19:37:38.871Z
+4915153248033,Frank,lead_hangup,21,"",2026-03-18T19:37:16.851Z
+17809355533,"Karl Mackinnon",lead_hangup,21,"",2026-03-18T19:37:16.213Z
+4917643440990,Anton,lead_hangup,26,"",2026-03-18T19:37:10.849Z
+17809014576,"Anna H",lead_hangup,32,"",2026-03-18T19:36:42.680Z
+4917631096459,Peter,lead_hangup,46,"",2026-03-18T19:36:41.807Z
+4915140707647,Tim,lead_hangup,43,"",2026-03-18T19:36:34.801Z
+15878762900,"Katherine Ranger",lead_hangup,49,"",2026-03-18T19:36:29.164Z
+4915153725382,Wolfgang,lead_hangup,27,"",2026-03-18T19:36:14.283Z
+4915254684831,Steffen,lead_hangup,25,"",2026-03-18T19:35:52.265Z
+16479042476,"Krystine Lian Pakingan",lead_hangup,25,"",2026-03-18T19:35:47.619Z
+4917632139838,Sebastian,lead_hangup,26,"",2026-03-18T19:35:47.263Z
+4917621130503,Andreas,lead_hangup,55,"",2026-03-18T19:35:40.261Z
+17807616159,"Selamawit -",lead_hangup,55,"",2026-03-18T19:35:39.609Z
+4917661957074,Alexander,lead_hangup,30,"",2026-03-18T19:35:29.752Z
+4916090958083,Marcus,lead_hangup,27,"",2026-03-18T19:35:20.243Z
+4915237987920,Robert,lead_hangup,24,"",2026-03-18T19:35:00.722Z
+15879380773,"Quang Nguyen",lead_hangup,67,"",2026-03-18T19:34:51.562Z
+4917663895187,Thomas,lead_hangup,45,"",2026-03-18T19:34:32.703Z
+4915902263779,David,lead_hangup,47,"",2026-03-18T19:34:21.198Z
+17805660299,"Alisha N",lead_hangup,17,"",2026-03-18T19:34:13.026Z
+4915161543291,Justin,lead_hangup,43,"",2026-03-18T19:34:02.685Z
+4917622614565,Dennis,lead_hangup,67,"",2026-03-18T19:33:59.682Z
+4915158819176,Thomas,lead_hangup,54,"",2026-03-18T19:33:58.181Z
+4917662715509,Christopher,lead_hangup,66,"",2026-03-18T19:33:53.175Z
+15879382908,"Khalid Yusef Proctor",lead_hangup,49,"",2026-03-18T19:33:33.983Z
+17802388832,"Rajesh Angral",lead_hangup,44,"",2026-03-18T19:33:32.481Z
+4915734512724,Sven,lead_hangup,71,"",2026-03-18T19:33:29.155Z
+4915158774292,Attila,lead_hangup,46,"",2026-03-18T19:33:21.144Z
+17806867335,"Amey Stahl",lead_hangup,35,"",2026-03-18T19:33:15.967Z
+4917661841941,Thomas,lead_hangup,47,"",2026-03-18T19:33:09.635Z
+4915126107196,Timo,lead_hangup,43,"",2026-03-18T19:33:04.134Z
+4915119390119,Georg,lead_hangup,52,"",2026-03-18T19:32:51.620Z
+15879741828,"Melissa A",lead_hangup,62,"",2026-03-18T19:32:50.442Z
+4917622726755,Stefan,lead_hangup,46,"",2026-03-18T19:32:42.113Z
+4915223497615,Kelvin,lead_hangup,20,"",2026-03-18T19:32:37.608Z
+17807129751,"Ray Bussey",lead_hangup,48,"",2026-03-18T19:32:36.926Z
+18253434420,"David Woof",lead_hangup,39,"",2026-03-18T19:32:29.417Z
+4917648792795,Karlheinz,lead_hangup,30,"",2026-03-18T19:32:27.596Z
+4915115581809,Armin,lead_hangup,43,"",2026-03-18T19:32:23.091Z
+17809159918,"Lee Kiernan",lead_hangup,47,"",2026-03-18T19:32:15.394Z
+15875680372,"Ayan Mizan",not_interested,52,"Client does not speak English - language barrier prevents communication",2026-03-18T19:32:12.389Z
+4917673930248,Mohamed,lead_hangup,99,"",2026-03-18T19:32:11.087Z
+4915114659165,Thomas,lead_hangup,28,"",2026-03-18T19:32:08.084Z
+17802710398,"Michael Quav",lead_hangup,22,"",2026-03-18T19:31:44.851Z
+4915753444216,Youssef,lead_hangup,50,"",2026-03-18T19:31:31.538Z
+17808888888,"Huny Guyl",lead_hangup,15,"",2026-03-18T19:31:24.835Z
+17809098989,"Fjlghlsd Slhlghd",callback,74,"Reached voicemail system with screener. Left message. Will attempt callback later.",2026-03-18T19:31:15.327Z
+4915775283912,Mo,lead_hangup,94,"",2026-03-18T19:31:12.028Z
+4915253407466,Sven,lead_hangup,62,"",2026-03-18T19:31:07.027Z
+4915753363825,Gustav,lead_hangup,48,"",2026-03-18T19:30:55.518Z
+15877084176,"Derek Mckenzie",lead_hangup,34,"",2026-03-18T19:30:54.301Z
+15879878217,"Tyler Foran",lead_hangup,43,"",2026-03-18T19:30:24.278Z
+4917641602815,Fredrik,lead_hangup,54,"",2026-03-18T19:30:17.487Z
+4917699676386,Marcus,lead_hangup,49,"",2026-03-18T19:30:02.978Z
+4916095240131,Thomas,lead_hangup,41,"",2026-03-18T19:29:58.473Z
+4915752054093,Achilleas,lead_hangup,29,"",2026-03-18T19:29:56.972Z
+4915753568309,Zakaria,lead_hangup,68,"",2026-03-18T19:29:47.465Z
+15877100331,"Helen Fetur",lead_hangup,15,"",2026-03-18T19:29:43.726Z
+17809154196,"Jaymie Retzler",lead_hangup,37,"",2026-03-18T19:29:36.720Z
+4917638371099,Sven,lead_hangup,43,"",2026-03-18T19:29:34.456Z
+4915786573860,Ralf,lead_hangup,47,"",2026-03-18T19:29:24.949Z
+4915758584038,Al,lead_hangup,70,"",2026-03-18T19:29:15.939Z
+15873361920,"Payton Williams",do_not_call,42,"Wrong number. Phone now belongs to Angel McKenzie, caseworker at Morning Star Home Terrace Heights/Boyle Street Community Services. Previously Michelle Gamble's number. Remove from call list.",2026-03-18T19:29:11.696Z
+17808026416,"Noor Saleh",lead_hangup,68,"",2026-03-18T19:29:08.194Z
+4915155135944,Thomas,lead_hangup,51,"",2026-03-18T19:29:06.931Z
+17804596654,"Sdfsdf Sdsdf",lead_hangup,46,"",2026-03-18T19:28:53.178Z
+17802998684,"Isaiah Gleddie",lead_hangup,34,"",2026-03-18T19:28:46.172Z
+4916095190658,Hermann,lead_hangup,27,"",2026-03-18T19:28:41.913Z
+15875979717,"Muna Wijesundera",lead_hangup,121,"",2026-03-18T19:28:39.664Z
+4915784795815,Hendrik,lead_hangup,36,"",2026-03-18T19:28:38.909Z
+17808027496,"Melody Guo",lead_hangup,103,"",2026-03-18T19:28:38.164Z
+4917663659624,Norman,lead_hangup,49,"",2026-03-18T19:28:37.408Z
+4915753692016,Rami,lead_hangup,78,"",2026-03-18T19:28:35.906Z
+17808933839,"Darlene Hayes",lead_hangup,22,"",2026-03-18T19:28:33.160Z
+4915256568509,Dirk,lead_hangup,149,"",2026-03-18T19:28:29.901Z
+4915257281796,Roman,lead_hangup,24,"",2026-03-18T19:28:25.898Z
+15875167888,"Jovey Knight",lead_hangup,58,"",2026-03-18T19:28:25.651Z
+16138988993,"Mohamud Omar",not_interested,24,"Client ended call immediately at greeting with ""take care"" - no engagement",2026-03-18T19:28:22.647Z
+16474533291,"Ayesha Husaine",lead_hangup,24,"",2026-03-18T19:28:19.643Z
+17809652323,"Bon Bob",not_interested,46,"Wrong number - person confirmed they are not Bon Bob, declined to provide their name",2026-03-18T19:28:12.639Z
+17806917736,"Bryton Mills",lead_hangup,55,"",2026-03-18T19:28:06.635Z
+12502319556,"Joan Mock",lead_hangup,38,"",2026-03-18T19:28:05.134Z
+18676893215,"Prince Plays Roblox",lead_hangup,17,"",2026-03-18T19:27:58.128Z
+4917637733478,Matthias,lead_hangup,24,"",2026-03-18T19:27:46.368Z
+17807294343,"Ramya Manasa",lead_hangup,35,"",2026-03-18T19:27:41.611Z
+15875683044,"Grandma Dizak",lead_hangup,30,"",2026-03-18T19:27:38.607Z
+15873350802,"Rochelle L Park",lead_hangup,71,"",2026-03-18T19:27:34.101Z
+4915735460218,Marius,lead_hangup,88,"",2026-03-18T19:27:19.325Z
+4915255387939,Gary,lead_hangup,24,"",2026-03-18T19:27:17.824Z
+17808187997,"Melinda Hiller",lead_hangup,40,"",2026-03-18T19:27:08.566Z
+4915903054401,Hans,lead_hangup,44,"",2026-03-18T19:27:07.303Z
+15875887863,"Giselle Blair",lead_hangup,42,"",2026-03-18T19:27:04.062Z
+4915253205517,Manfred,lead_hangup,24,"",2026-03-18T19:27:02.796Z
+17809827732,"Trinity Shaw",lead_hangup,29,"",2026-03-18T19:26:41.536Z
+17808502148,"Olivia Gellert",lead_hangup,37,"",2026-03-18T19:26:16.515Z
+12508515165,"Michelle Mcleod",lead_hangup,26,"",2026-03-18T19:26:15.014Z
+4915119104972,Ralph,lead_hangup,20,"",2026-03-18T19:26:14.758Z
+4915146151617,Ralf,lead_hangup,39,"",2026-03-18T19:26:10.249Z
+17802219284,"Curtis Gillies",lead_hangup,31,"",2026-03-18T19:25:58.499Z
+4915168614917,George,lead_hangup,51,"",2026-03-18T19:25:55.232Z
+4915122367653,Peter,lead_hangup,27,"",2026-03-18T19:25:43.215Z
+15879174956,"Shiza Faisal",callback,76,"Shiza Faisal not available, spoke with gatekeeper, left message to call back",2026-03-18T19:25:35.955Z
+4917677379209,Andrej,lead_hangup,36,"",2026-03-18T19:25:34.204Z
+4917621384220,Michael,lead_hangup,71,"",2026-03-18T19:25:25.201Z
+17802427357,"Richard Bryant",lead_hangup,45,"",2026-03-18T19:24:48.907Z
+4915222896464,Hermann,lead_hangup,20,"",2026-03-18T19:24:42.664Z
+17808506261,"Charlotte Tilbury",lead_hangup,18,"",2026-03-18T19:24:40.896Z
+17807777777,"Paul Cumby",lead_hangup,61,"",2026-03-18T19:24:25.885Z
+4915123593425,Manfred,lead_hangup,47,"",2026-03-18T19:24:21.651Z
+17802234204,"Richard P Blais",lead_hangup,41,"",2026-03-18T19:24:14.380Z
+15879874389,"Kimberlee Hodgson",lead_hangup,77,"",2026-03-18T19:24:08.377Z
+17807773194,"Daniel Vanderveen",lead_hangup,21,"",2026-03-18T19:23:51.865Z
+4915777144966,Christos,lead_hangup,78,"",2026-03-18T19:23:51.116Z
+4917643551686,Dennis,lead_hangup,94,"",2026-03-18T19:23:40.605Z
+4917695704574,Ricardo,lead_hangup,13,"",2026-03-18T19:23:34.600Z
+15875684967,"Megha George",lead_hangup,72,"",2026-03-18T19:23:32.342Z
+14033835703,"Aimee Sibal Dionisio",lead_hangup,83,"",2026-03-18T19:23:17.324Z
+4915739041020,Abu,lead_hangup,50,"",2026-03-18T19:23:08.585Z
+4915256702560,Jakub,lead_hangup,20,"",2026-03-18T19:23:05.582Z
+4915755574797,Eugen,lead_hangup,44,"",2026-03-18T19:23:00.572Z
+4915119419731,Oliver,lead_hangup,40,"",2026-03-18T19:22:55.569Z
+4915226169821,Jens,lead_hangup,25,"",2026-03-18T19:22:37.049Z
+17806809642,"Jen Martin",lead_hangup,40,"",2026-03-18T19:22:35.268Z
+17807777771,"Bob Bob",lead_hangup,17,"",2026-03-18T19:22:28.256Z
+4915144532420,Alexander,lead_hangup,44,"",2026-03-18T19:22:25.035Z
+4915753018622,Mathias,lead_hangup,24,"",2026-03-18T19:22:15.026Z
+4917667780489,Denis,lead_hangup,28,"",2026-03-18T19:22:12.023Z
+17877511234,"Dmnfjdkd Rifnd",lead_hangup,47,"",2026-03-18T19:22:07.226Z
+17807862557,"No Ha",lead_hangup,21,"",2026-03-18T19:21:48.205Z
+4915730114251,Christian,lead_hangup,27,"",2026-03-18T19:21:44.497Z
+4915118658720,Tizian,lead_hangup,43,"",2026-03-18T19:21:38.488Z
+4915737800008,Aras,lead_hangup,48,"",2026-03-18T19:21:33.982Z
+4915174336970,Alexander,lead_hangup,24,"",2026-03-18T19:21:30.978Z
+16398403107,"Jelena Parr",lead_hangup,40,"",2026-03-18T19:21:15.673Z
+17809746813,"Dillon Mcconaghie",lead_hangup,66,"",2026-03-18T19:21:11.168Z
+17808031824,"Reese Kermode",callback,53,"Reached voicemail/auto-response for business line. Client is aesthetics professional, currently with client. Should callback during business hours or send text message.",2026-03-18T19:21:06.664Z
+4915257805335,Richard,lead_hangup,16,"",2026-03-18T19:20:59.952Z
+4915733236895,Arash,lead_hangup,48,"",2026-03-18T19:20:56.948Z
+4915751046970,Viktor,lead_hangup,31,"",2026-03-18T19:20:49.943Z
+17806603450,"Chantell Latta",lead_hangup,27,"",2026-03-18T19:20:39.628Z
+4915756320085,Ammar,lead_hangup,32,"",2026-03-18T19:20:37.928Z
+15062822838,"Paul Ouellette",lead_hangup,31,"",2026-03-18T19:20:24.107Z
+4917639113977,Rene,lead_hangup,76,"",2026-03-18T19:20:14.901Z
+4917684784269,Werner,lead_hangup,16,"",2026-03-18T19:20:06.897Z
+4915736405425,Valerij,lead_hangup,79,"",2026-03-18T19:19:33.866Z
+17808862481,"Sandy Park",lead_hangup,62,"",2026-03-18T19:19:33.013Z
+15874120008,"Benne Rbej",lead_hangup,34,"",2026-03-18T19:19:28.505Z
+4915730036911,Dominik,lead_hangup,12,"",2026-03-18T19:19:24.841Z
+17802215185,"Bianca Houle",lead_hangup,22,"",2026-03-18T19:19:23.999Z
+4917672600566,William,lead_hangup,47,"",2026-03-18T19:19:17.325Z
+17807222658,"Sawyer Martin",callback,78,"Spoke with gatekeeper/assistant. Sawyer Martin not available. Left message to call back.",2026-03-18T19:19:16.473Z
+4915155579161,Ronny,lead_hangup,82,"",2026-03-18T19:19:15.823Z
+4916092596850,Florian,lead_hangup,85,"",2026-03-18T19:19:11.319Z
+4915786068974,Guido,lead_hangup,79,"",2026-03-18T19:19:06.314Z
+17806906955,"Nathan Haley",lead_hangup,35,"",2026-03-18T19:18:52.436Z
+4915112708344,Andreas,lead_hangup,70,"",2026-03-18T19:18:51.301Z
+4915234113851,Joachim,lead_hangup,27,"",2026-03-18T19:18:43.793Z
+4915110241486,Ronny,lead_hangup,34,"",2026-03-18T19:18:42.292Z
+4915117659050,Dieter,lead_hangup,25,"",2026-03-18T19:18:23.267Z
+4915224127037,Oliver,lead_hangup,38,"",2026-03-18T19:18:18.761Z
+4915785586527,Dirk,lead_hangup,48,"",2026-03-18T19:18:14.256Z
+4915254852953,Frank,lead_hangup,42,"",2026-03-18T19:18:09.753Z
+4917624544287,Dimos,lead_hangup,28,"",2026-03-18T19:18:02.239Z
+4915202833593,Sebastian,lead_hangup,20,"",2026-03-18T19:18:00.737Z
+4915257093247,Maurice,lead_hangup,20,"",2026-03-18T19:17:56.229Z
+4915736600464,Konstantinos,lead_hangup,53,"",2026-03-18T19:17:50.221Z
+17802391650,"Lili Solis",lead_hangup,64,"",2026-03-18T19:17:40.863Z
+17808937576,"Rory Gordon",lead_hangup,38,"",2026-03-18T19:17:34.857Z
+4915254961400,Marvin,lead_hangup,15,"",2026-03-18T19:16:33.132Z
+4915201999191,Niklas,lead_hangup,81,"",2026-03-18T19:15:39.055Z
+14033911044,"Nic Kay",lead_hangup,35,"",2026-03-18T19:15:01.653Z
+4915126383202,Mario,lead_hangup,68,"",2026-03-18T19:14:32.742Z
+17807099811,"Tom J",not_interested,111,"Client stated it was the wrong number, did not request information, appears to be a mix-up with housemate giving info",2026-03-18T19:14:00.072Z
+4915237174696,Thorsten,lead_hangup,25,"",2026-03-18T19:13:32.182Z
+4915146151468,Dieter,lead_hangup,36,"",2026-03-18T19:13:30.680Z
+4915739277885,Ralph,lead_hangup,71,"",2026-03-18T19:13:23.673Z
+4915753385503,Renatus,lead_hangup,70,"",2026-03-18T19:13:04.155Z
+4917666383406,Oleg,lead_hangup,12,"",2026-03-18T19:12:58.653Z
+4917692254402,David,lead_hangup,67,"",2026-03-18T19:12:51.145Z
+4917628779213,Mike,lead_hangup,54,"",2026-03-18T19:12:30.122Z
+4915142475148,Markus,lead_hangup,44,"",2026-03-18T19:11:52.587Z
+4915750129635,Maurizio,lead_hangup,69,"",2026-03-18T19:11:47.577Z
+4915160144220,Christian,lead_hangup,44,"",2026-03-18T19:11:46.074Z
+4917656940775,Sharif,lead_hangup,61,"",2026-03-18T19:11:26.053Z
+4917655516837,Manuel,lead_hangup,51,"",2026-03-18T19:10:57.509Z
+4915735984576,Matthias,lead_hangup,32,"",2026-03-18T19:10:56.007Z
+4917661852837,Fabian,lead_hangup,42,"",2026-03-18T19:10:51.500Z
+16043661001,"Sukhpreet Lalli",lead_hangup,27,"",2026-03-18T19:06:19.139Z
+12509862019,"Olu B",not_interested,95,"Client (Alexandra, not Olu B) did not recall requesting info and declined immediately. No interest in proceeding.",2026-03-18T19:05:52.107Z
+17802571756,"Prabh Gill",lead_hangup,25,"",2026-03-18T19:05:50.607Z
+17809533170,"Jason Pagee",lead_hangup,59,"",2026-03-18T19:05:35.587Z
+17809372717,"Kevin Nguyen",lead_hangup,32,"",2026-03-18T19:05:34.084Z
+13066306010,"Aaron Devost",not_interested,132,"Client stated not interested immediately after clarifying what the call was about. Did not want to proceed with conversation.",2026-03-18T19:05:28.080Z
+12506196363,"Elizabeth Stearn",lead_hangup,21,"",2026-03-18T19:05:17.570Z
+17807996767,"******baby Lips",lead_hangup,40,"",2026-03-18T19:05:11.564Z
+17809089518,"Sandy Tang",callback,76,"Gatekeeper answered, Sandy Tang not available at this time. Will attempt callback later.",2026-03-18T19:05:02.554Z
+17809371109,"Joanna Elise",lead_hangup,44,"",2026-03-18T19:04:58.048Z
+15873376123,"Shannon Westervelt",lead_hangup,41,"",2026-03-18T19:04:56.547Z
+19056449194,"Barb Lawson",lead_hangup,43,"",2026-03-18T19:04:40.026Z
+17803406198,"Kim Oakey",lead_hangup,33,"",2026-03-18T19:04:25.009Z
+17809748888,"Perp Perk",lead_hangup,26,"",2026-03-18T19:04:22.006Z
+15879898886,"Austin Hwang",callback,77,"Person not available, left voicemail message. Will attempt callback later.",2026-03-18T19:04:08.494Z
+17806187509,"Karin B",lead_hangup,34,"",2026-03-18T19:03:47.470Z
+16479828282,"Juju Juice",lead_hangup,45,"",2026-03-18T19:03:32.453Z
+17806193019,"Emma Scott",lead_hangup,58,"",2026-03-18T19:03:17.433Z
+17802322072,"Gianna Marques",callback,75,"Reached gatekeeper/voicemail system. Left message for Gianna Marques to call back. Will attempt to reconnect at a later time.",2026-03-18T19:02:54.906Z
+12267492293,"Ego Uchendu",callback,27,"Reached voicemail/auto-response. Client requested callback at another time.",2026-03-18T19:02:44.392Z
+17808624893,"Colin Christenson",lead_hangup,33,"",2026-03-18T19:02:39.887Z
+19053254271,"Jenn Erm",lead_hangup,35,"",2026-03-18T19:02:35.380Z
+17789946944,"Vimal Varghese",do_not_call,59,"Wrong number - current owner has had the number for 2+ years, Vimal Varghese no longer owns this number. Requested to update records.",2026-03-18T19:02:30.875Z
+17808934007,"Joyce Ebrahimi",lead_hangup,47,"",2026-03-18T19:02:29.374Z
+15872523365,"Jtyuu Nhgbji",lead_hangup,31,"",2026-03-18T19:02:26.370Z
+17809827461,"Avniel Chand",lead_hangup,19,"",2026-03-18T19:02:12.853Z
+17807080725,"Aileen Ogoy",lead_hangup,53,"",2026-03-18T19:01:48.827Z
+17809012287,"Ash Les",lead_hangup,36,"",2026-03-18T19:01:45.825Z
+16138834252,"Dave Lee",lead_hangup,24,"",2026-03-18T19:01:27.807Z
+17095894904,"Brittany Sullivan",callback,73,"Gatekeeper answered, Brittany Sullivan not available. Left message to call back at another time.",2026-03-18T19:01:20.301Z
+17808936796,"Susan Shebansky",lead_hangup,31,"",2026-03-18T19:00:53.272Z
+18254399869,"Senglott Nhkai",lead_hangup,54,"",2026-03-18T19:00:38.255Z
+15875667700,"Saria Ab",lead_hangup,53,"",2026-03-18T19:00:21.738Z
+13067689386,"Matthew Malbon",lead_hangup,46,"",2026-03-18T19:00:18.734Z
+17806045653,"Anna Borelli",callback,75,"Gatekeeper answered - Anna Borelli not available. Left message with person who answered to have her call back. Will attempt to reach again later.",2026-03-18T19:00:14.229Z
+16045612500,"Vimi Guriah",callback,78,"Spoke with gatekeeper/assistant. Vimi Guriah not available. Left message to call back at another time.",2026-03-18T18:59:51.702Z
+17809243368,"Sherry Kegler",lead_hangup,25,"",2026-03-18T18:59:47.196Z
+17808684468,"Tom Sanderson",lead_hangup,78,"",2026-03-18T18:59:39.689Z
+15879376913,"Fatima M",lead_hangup,18,"",2026-03-18T18:59:27.675Z
+17803883058,"Tiffany Michaud",lead_hangup,22,"",2026-03-18T18:58:42.627Z
+15148637720,"Louis Puma",lead_hangup,19,"",2026-03-18T18:58:38.122Z
+17783442190,"Alfaz Azhar Ali",lead_hangup,41,"",2026-03-18T18:58:30.611Z
+17787086367,"Tenzing Lama",lead_hangup,39,"",2026-03-18T18:58:26.104Z
+17802971899,"Celina Callihoo",lead_hangup,66,"",2026-03-18T18:57:38.045Z
+18259257059,"Afroz Mohammed",lead_hangup,33,"",2026-03-18T18:57:36.543Z
+17807161836,"Jessica Aparicio",lead_hangup,26,"",2026-03-18T18:57:30.535Z
+14164599330,"Sandeep Saggu",lead_hangup,36,"",2026-03-18T18:57:14.017Z
+16475107909,"Jaibir Randhawa",lead_hangup,41,"",2026-03-18T18:56:48.492Z
+17806607541,"Spencer Runkvist",lead_hangup,11,"",2026-03-18T18:56:46.990Z
+15875014061,"Isabelle Ines",lead_hangup,74,"",2026-03-18T18:56:28.967Z
+16476376410,"Kimone Clarke",lead_hangup,27,"",2026-03-18T18:56:25.964Z
+17802571099,"Rachelle Lautischer",lead_hangup,37,"",2026-03-18T18:56:16.959Z
+17809343330,"Abdikadir Abdi",lead_hangup,43,"",2026-03-18T18:55:54.433Z
+17809199016,"Kimberly Biss",do_not_call,54,"Client requested to be removed from contact list via Google screening service",2026-03-18T18:55:31.905Z
+17802880783,"Joyce 7802880783",lead_hangup,56,"",2026-03-18T18:55:13.882Z
+17808020462,"Luisa Pellettieri",lead_hangup,22,"",2026-03-18T18:55:12.380Z
+17802222446,"Cassandra Oates",lead_hangup,50,"",2026-03-18T18:55:04.873Z
+15873419941,"Greg Harrison",lead_hangup,17,"",2026-03-18T18:54:37.831Z
+17809829919,"Zak Kad",lead_hangup,29,"",2026-03-18T18:54:36.328Z
+17806321549,"Amanda Kremic",lead_hangup,32,"",2026-03-18T18:54:31.822Z
+17802760202,"Chloe Scoville",lead_hangup,30,"",2026-03-18T18:53:48.276Z
+12507326228,"Kai Muth",lead_hangup,53,"",2026-03-18T18:53:40.768Z
+15875688878,"Souzan El Khalil",lead_hangup,31,"",2026-03-18T18:53:19.744Z
+18676881566,"Brandt Smith",lead_hangup,38,"",2026-03-18T18:52:52.714Z
+17802640138,"Rylee Hauger",lead_hangup,38,"",2026-03-18T18:52:43.703Z
+15878898162,"Shokria Adel",not_interested,96,"Client (Sofia) did not recall requesting information and declined immediately when clarified. Polite but not interested in discussing further.",2026-03-18T18:52:31.686Z
+17806554010,"Cathrin Aarshat",lead_hangup,107,"",2026-03-18T18:52:15.168Z
+19055643670,"Bernadette Shanahan",lead_hangup,28,"",2026-03-18T18:51:49.640Z
+17806163825,"A Rodriguez",callback,77,"Reached gatekeeper/voicemail system. A Rodriguez not available. Left message to call back later.",2026-03-18T18:51:27.115Z
+17805045884,"Julie Vans",lead_hangup,35,"",2026-03-18T18:51:18.106Z
+15145469752,"Palwinder Kaur",lead_hangup,40,"",2026-03-18T18:50:55.581Z
+15873404425,"Kelly Mclachlan",callback,72,"Reached gatekeeper/voicemail system. Left message for Kelly Mclachlan to call back. Will attempt callback later.",2026-03-18T18:50:49.575Z
+15878799027,"Ma Opao",lead_hangup,41,"",2026-03-18T18:50:39.062Z
+17809944606,"Vienna Kyle",lead_hangup,36,"",2026-03-18T18:50:18.038Z
+17808686175,"Kyle Gueutal",lead_hangup,27,"",2026-03-18T18:50:12.030Z
+17809402099,"Brooke Carrier",lead_hangup,55,"",2026-03-18T18:50:09.028Z
+15873363995,"Finn Frazer",not_interested,77,"Client politely declined after initial objection handling attempt. Not interested in proceeding with any information or scheduling.",2026-03-18T18:50:01.518Z
+14374247722,"Prabhnoor Saggu",lead_hangup,31,"",2026-03-18T18:49:58.514Z
+16476731927,"Manpreet Singh",lead_hangup,26,"",2026-03-18T18:46:17.484Z
+16136067596,"Max Ma",lead_hangup,30,"",2026-03-18T18:46:08.976Z
+14037049633,"Kimberly Melin",lead_hangup,30,"",2026-03-18T18:45:41.943Z
+14037968277,"Maggie Abbott",lead_hangup,40,"",2026-03-18T18:45:12.420Z
+17804076655,"Kristy Jay",lead_hangup,16,"",2026-03-18T18:44:57.905Z
+17806550291,Habu,lead_hangup,25,"",2026-03-18T18:44:56.404Z
+12898344193,"Virn Jison",callback,71,"Gatekeeper answered, Virn Jison not available. Left message to call back later.",2026-03-18T18:44:32.384Z
+16133049489,"Mercedez Auger",lead_hangup,30,"",2026-03-18T18:43:54.347Z
+17806174454,"Brice Bowling",lead_hangup,20,"",2026-03-18T18:43:50.843Z
+17809048614,"James Kissane",callback,74,"Receptionist/gatekeeper answered. James Kissane not available. Left message to call back at better time.",2026-03-18T18:43:49.340Z
+17808930680,"Raymundo Bernardez",lead_hangup,52,"",2026-03-18T18:43:43.333Z
+18674443437,"Liam Mckay",lead_hangup,48,"",2026-03-18T18:43:33.325Z
+17808073595,"Mirela Dukic",lead_hangup,32,"",2026-03-18T18:42:57.285Z

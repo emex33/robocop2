@@ -1038,7 +1038,7 @@ function LiveLogsTab({ events, connected, onClear }) {
       case 'sip_dialing':
       case 'sip_connected':
       case 'sip_hangup': return <PhoneCall className="w-3.5 h-3.5" />;
-      case 'deepgram': return <Bot className="w-3.5 h-3.5" />;
+      case 'deepgram': return <Radio className="w-3.5 h-3.5" />;
       case 'audio_bridge': return <Mic className="w-3.5 h-3.5" />;
       case 'function_call': return <Zap className="w-3.5 h-3.5" />;
       case 'barge_in': return <User className="w-3.5 h-3.5" />;
@@ -1061,7 +1061,7 @@ function LiveLogsTab({ events, connected, onClear }) {
       case 'call_complete': return 'text-green-600 bg-green-50';
       case 'sip_dialing': return 'text-blue-600 bg-blue-50';
       case 'sip_connected':
-      case 'deepgram': return 'text-purple-600 bg-purple-50';
+      case 'deepgram': return 'text-blue-600 bg-blue-50';
       default: return 'text-gray-600 bg-gray-50';
     }
   };
@@ -1082,7 +1082,7 @@ function LiveLogsTab({ events, connected, onClear }) {
       case 'sip_hangup':
         return `📴 Call ended (${data.by} hung up)`;
       case 'deepgram':
-        return `🤖 Deepgram ${data.status}`;
+        return `🔗 Voice engine ${data.status}`;
       case 'barge_in':
         return `🗣️ User interrupted (barge-in)`;
       case 'function_call':

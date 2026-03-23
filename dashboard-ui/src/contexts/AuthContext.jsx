@@ -43,8 +43,10 @@ export function AuthProvider({ children }) {
     setCreditBalance(null);
   };
 
+  const isSuperAdmin = !!(user?.isSuperAdmin || user?.is_super_admin);
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, creditBalance, refreshBalance }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, creditBalance, refreshBalance, isSuperAdmin }}>
       {children}
     </AuthContext.Provider>
   );

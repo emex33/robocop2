@@ -7,15 +7,13 @@ import { cn } from '../lib/cn';
 import { useState } from 'react';
 
 export default function Layout() {
-  const { user, logout, creditBalance } = useAuth();
+  const { user, logout, creditBalance, isSuperAdmin } = useAuth();
   const navigate = useNavigate();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
-  const isSuperAdmin = user?.isSuperAdmin || user?.is_super_admin;
-
   const navItems = [
     { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
-    { to: '/agents', icon: Bot, label: 'AI Agents' },
+    ...(isSuperAdmin ? [{ to: '/agents', icon: Bot, label: 'AI Agents' }] : []),
     { to: '/campaigns', icon: Megaphone, label: 'Campaigns' },
     { to: '/lists', icon: List, label: 'Lists' },
     { to: '/calls', icon: PhoneCall, label: 'Calls' },
