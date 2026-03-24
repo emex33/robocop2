@@ -235,6 +235,16 @@ export const api = {
   adminGetUserAgents: (userId) => request(`/admin/users/${userId}/agents`),
   adminGetSettings: () => request('/admin/settings'),
   adminUpdateSettings: (data) => request('/admin/settings', { method: 'PUT', body: JSON.stringify(data) }),
+  // Admin Google Sheets per user
+  adminGetUserGoogleSheets: (userId) => request(`/admin/users/${userId}/google-sheets`),
+  adminUpdateUserGoogleSheets: (userId, credentials) => request(`/admin/users/${userId}/google-sheets`, { method: 'PUT', body: JSON.stringify({ credentials }) }),
+  adminDeleteUserGoogleSheets: (userId) => request(`/admin/users/${userId}/google-sheets`, { method: 'DELETE' }),
+  // Admin Deepgram keys per user
+  adminGetUserDeepgram: (userId) => request(`/admin/users/${userId}/deepgram`),
+  adminAddUserDeepgramKey: (userId, api_key, label) => request(`/admin/users/${userId}/deepgram/keys`, { method: 'POST', body: JSON.stringify({ api_key, label }) }),
+  adminDeleteUserDeepgramKey: (userId, keyId) => request(`/admin/users/${userId}/deepgram/keys/${keyId}`, { method: 'DELETE' }),
+  adminSetCurrentUserDeepgramKey: (userId, keyId) => request(`/admin/users/${userId}/deepgram/keys/${keyId}/set-current`, { method: 'POST' }),
+  adminTestUserDeepgramKey: (userId, keyId) => request(`/admin/users/${userId}/deepgram/keys/${keyId}/test`, { method: 'POST' }),
   adminGetTransactions: (params = {}) => {
     const q = new URLSearchParams();
     Object.entries(params).forEach(([k, v]) => { if (v !== undefined && v !== '') q.set(k, v); });

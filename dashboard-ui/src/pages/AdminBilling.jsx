@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { api } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
-import { Users, DollarSign, Phone, Clock, X, Plus, ChevronRight, Shield, Settings, Save, Play, RefreshCw, CheckCircle2, XCircle, AlertTriangle, Info, Sliders } from 'lucide-react';
+import { Users, DollarSign, Phone, Clock, X, Plus, ChevronRight, Shield, Settings, Save, Play, RefreshCw, CheckCircle2, XCircle, AlertTriangle, Info, Sliders, Key, Trash2, FileText, Star } from 'lucide-react';
 
 function fmt$(v) { return '$' + (v || 0).toFixed(2); }
 function fmtMin(s) { return ((s || 0) / 60).toFixed(1) + ' min'; }
@@ -327,6 +327,8 @@ function UserDetailModal({ data, onClose }) {
           {[
             { id: 'overview', label: 'Overview' },
             { id: 'sip', label: 'SIP Settings' },
+            { id: 'deepgram', label: 'Deepgram' },
+            { id: 'gsheets', label: 'Google Sheets' },
           ].map(t => (
             <button key={t.id}
               onClick={() => { setTab(t.id); if (t.id === 'sip' && !sip) loadSip(); }}
@@ -515,8 +517,192 @@ function UserDetailModal({ data, onClose }) {
               )}
             </div>
           )}
+          {tab === 'deepgram' && <DeepgramTab userId={user.id} />}
+          {tab === 'gsheets' && <GoogleSheetsTab userId={user.id} />}
         </div>
       </div>
+    </div>
+  );
+}
+
+function DeepgramTab({ userId }) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [newKey, setNewKey] = useState('');
+  const [newLabel, setNewLabel] = useState('');
+  const [adding, setAdding] = useState(false);
+  const [msg, setMsg] = useState('');
+  const inputCls = "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500";
+
+  const load = () => {
+    setLoading(true);
+    api.adminGetUserDeepgram(userId).then(setData).catch(() => {}).finally(() => setLoading(false));
+  };
+  useEffect(load, [userId]);
+
+  const handleAdd = async () => {
+    if (!newKey.trim()) return;
+    setAdding(true); setMsg('');
+    try {
+      const res = await api.adminAddUserDeepgramKey(userId, newKey.trim(), newLabel.trim());
+      setData(res); setNewKey(''); setNewLabel(''); setMsg(res.message || 'Added');
+    } catch (e) { setMsg('Error: ' + e.message); }
+    setAdding(false);
+  };
+
+  const handleDelete = async (keyId) => {
+    if (!confirm('Remove this key?')) return;
+    try {
+      const res = await api.adminDeleteUserDeepgramKey(userId, keyId);
+      setData(res);
+    } catch (e) { setMsg('Error: ' + e.message); }
+  };
+
+  const handleSetCurrent = async (keyId) => {
+    try {
+      const res = await api.adminSetCurrentUserDeepgramKey(userId, keyId);
+      setData(res);
+    } catch (e) { setMsg('Error: ' + e.message); }
+  };
+
+  const handleTest = async (keyId) => {
+    setMsg('Testing...');
+    try {
+      const res = await api.adminTestUserDeepgramKey(userId, keyId);
+      setMsg(res.success ? `Key valid (project: ${res.project})` : `Key failed: ${res.error || res.status}`);
+    } catch (e) { setMsg('Error: ' + e.message); }
+  };
+
+  if (loading) return <div className="flex justify-center py-12"><div className="animate-spin w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full" /></div>;
+
+  const keys = data?.keys || [];
+
+  return (
+    <div className="p-6 space-y-4">
+      <div className="flex items-center gap-2 mb-2">
+        <Key className="w-4 h-4 text-purple-600" />
+        <h4 className="text-sm font-semibold text-gray-700">Deepgram API Keys</h4>
+        <span className="text-xs text-gray-400">({keys.length} key{keys.length !== 1 ? 's' : ''})</span>
+      </div>
+
+      {keys.length > 0 && (
+        <div className="space-y-2">
+          {keys.map(k => (
+            <div key={k.id} className="flex items-center justify-between py-2 px-3 rounded-lg border border-gray-200 bg-gray-50">
+              <div className="flex items-center gap-2 min-w-0">
+                {k.is_current ? <Star className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" /> : <Key className="w-3.5 h-3.5 text-gray-300 flex-shrink-0" />}
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-gray-900 truncate">{k.label || 'Unnamed'}</p>
+                  <p className="text-xs text-gray-400 font-mono truncate">{k.api_key?.slice(0, 12)}...{k.api_key?.slice(-4)}</p>
+                </div>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${k.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>{k.status}</span>
+              </div>
+              <div className="flex items-center gap-1 flex-shrink-0">
+                {!k.is_current && <button onClick={() => handleSetCurrent(k.id)} className="p-1 text-amber-500 hover:bg-amber-50 rounded" title="Set as current"><Star className="w-3.5 h-3.5" /></button>}
+                <button onClick={() => handleTest(k.id)} className="p-1 text-indigo-500 hover:bg-indigo-50 rounded" title="Test key"><Play className="w-3.5 h-3.5" /></button>
+                <button onClick={() => handleDelete(k.id)} className="p-1 text-red-400 hover:bg-red-50 rounded" title="Remove"><Trash2 className="w-3.5 h-3.5" /></button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="border-t border-gray-100 pt-4">
+        <p className="text-xs font-medium text-gray-500 mb-2">Add New Key</p>
+        <div className="grid grid-cols-2 gap-3">
+          <input type="text" value={newKey} onChange={e => setNewKey(e.target.value)} className={inputCls} placeholder="Deepgram API key" />
+          <input type="text" value={newLabel} onChange={e => setNewLabel(e.target.value)} className={inputCls} placeholder="Label (optional)" />
+        </div>
+        <button onClick={handleAdd} disabled={adding || !newKey.trim()}
+          className="mt-3 flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-semibold hover:bg-purple-700 transition disabled:opacity-50">
+          {adding ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+          {adding ? 'Adding...' : 'Add Key'}
+        </button>
+      </div>
+
+      {msg && <p className={`text-sm ${msg.startsWith('Error') ? 'text-red-600' : 'text-green-600'}`}>{msg}</p>}
+    </div>
+  );
+}
+
+function GoogleSheetsTab({ userId }) {
+  const [info, setInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [credentials, setCredentials] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState('');
+  const inputCls = "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500";
+
+  const load = () => {
+    setLoading(true);
+    api.adminGetUserGoogleSheets(userId).then(setInfo).catch(() => {}).finally(() => setLoading(false));
+  };
+  useEffect(load, [userId]);
+
+  const handleSave = async () => {
+    if (!credentials.trim()) return;
+    setSaving(true); setMsg('');
+    try {
+      const res = await api.adminUpdateUserGoogleSheets(userId, credentials.trim());
+      setMsg(res.message || 'Saved');
+      setInfo({ configured: true, client_email: res.client_email });
+      setCredentials('');
+    } catch (e) { setMsg('Error: ' + e.message); }
+    setSaving(false);
+  };
+
+  const handleRemove = async () => {
+    if (!confirm('Remove Google Sheets credentials for this user?')) return;
+    try {
+      await api.adminDeleteUserGoogleSheets(userId);
+      setInfo({ configured: false, client_email: '' });
+      setMsg('Credentials removed');
+    } catch (e) { setMsg('Error: ' + e.message); }
+  };
+
+  if (loading) return <div className="flex justify-center py-12"><div className="animate-spin w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full" /></div>;
+
+  return (
+    <div className="p-6 space-y-4">
+      <div className="flex items-center gap-2 mb-2">
+        <FileText className="w-4 h-4 text-green-600" />
+        <h4 className="text-sm font-semibold text-gray-700">Google Sheets Integration</h4>
+      </div>
+
+      {info?.configured ? (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-green-800">Credentials configured</p>
+              <p className="text-xs text-green-600 mt-0.5">{info.client_email}</p>
+            </div>
+            <button onClick={handleRemove} className="p-1.5 text-red-400 hover:bg-red-50 rounded" title="Remove credentials">
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+          <p className="text-sm text-gray-500">No Google Sheets credentials configured for this user.</p>
+        </div>
+      )}
+
+      <div className="border-t border-gray-100 pt-4">
+        <p className="text-xs font-medium text-gray-500 mb-2">{info?.configured ? 'Replace' : 'Upload'} Service Account JSON</p>
+        <textarea
+          value={credentials}
+          onChange={e => setCredentials(e.target.value)}
+          className={inputCls + ' h-32 font-mono text-xs'}
+          placeholder='{"type": "service_account", "client_email": "...", "private_key": "...", ...}'
+        />
+        <button onClick={handleSave} disabled={saving || !credentials.trim()}
+          className="mt-3 flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-semibold hover:bg-green-700 transition disabled:opacity-50">
+          {saving ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+          {saving ? 'Saving...' : 'Save Credentials'}
+        </button>
+      </div>
+
+      {msg && <p className={`text-sm ${msg.startsWith('Error') ? 'text-red-600' : 'text-green-600'}`}>{msg}</p>}
     </div>
   );
 }

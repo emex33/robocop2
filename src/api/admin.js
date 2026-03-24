@@ -5,8 +5,9 @@
 import { Router } from "express";
 import crypto from "crypto";
 import dgram from "dgram";
-import { getDb } from "../db/schema.js";
+import { getDb, generateId } from "../db/schema.js";
 import { addCredits, getAllPlatformSettings, setPlatformSetting } from "../db/helpers.js";
+import { deepgramKeyManager } from "../deepgram/key-manager.js";
 import { getSipConfig } from "../../config/sip.js";
 
 const router = Router();
@@ -354,6 +355,103 @@ router.put("/settings", (req, res) => {
   }
   if (count === 0) return res.status(400).json({ error: "No valid settings provided" });
   res.json({ message: `${count} setting(s) updated`, settings: getAllPlatformSettings() });
+});
+
+// ===== Google Sheets per user =====
+
+// GET /api/admin/users/:id/google-sheets — check if user has credentials
+router.get("/users/:id/google-sheets", (req, res) => {
+  const db = getDb();
+  const row = db.prepare("SELECT google_sheets_credentials FROM users WHERE id = ?").get(req.params.id);
+  if (!row) return res.status(404).json({ error: "User not found" });
+  let clientEmail = "";
+  if (row.google_sheets_credentials) {
+    try { clientEmail = JSON.parse(row.google_sheets_credentials).client_email || ""; } catch {}
+  }
+  res.json({ configured: !!row.google_sheets_credentials, client_email: clientEmail });
+});
+
+// PUT /api/admin/users/:id/google-sheets — save credentials for user
+router.put("/users/:id/google-sheets", (req, res) => {
+  const db = getDb();
+  const user = db.prepare("SELECT id FROM users WHERE id = ?").get(req.params.id);
+  if (!user) return res.status(404).json({ error: "User not found" });
+  const { credentials } = req.body;
+  if (!credentials) return res.status(400).json({ error: "credentials JSON is required" });
+  try {
+    const parsed = typeof credentials === "string" ? JSON.parse(credentials) : credentials;
+    if (!parsed.client_email || !parsed.private_key) return res.status(400).json({ error: "Invalid service account JSON: missing client_email or private_key" });
+    const jsonStr = typeof credentials === "string" ? credentials : JSON.stringify(credentials);
+    db.prepare("UPDATE users SET google_sheets_credentials = ? WHERE id = ?").run(jsonStr, req.params.id);
+    res.json({ message: "Google Sheets credentials saved", client_email: parsed.client_email });
+  } catch (e) {
+    return res.status(400).json({ error: `Invalid JSON: ${e.message}` });
+  }
+});
+
+// DELETE /api/admin/users/:id/google-sheets — remove credentials
+router.delete("/users/:id/google-sheets", (req, res) => {
+  const db = getDb();
+  db.prepare("UPDATE users SET google_sheets_credentials = '' WHERE id = ?").run(req.params.id);
+  res.json({ message: "Google Sheets credentials removed" });
+});
+
+// ===== Deepgram Keys per user =====
+
+// GET /api/admin/users/:id/deepgram — list keys for a user
+router.get("/users/:id/deepgram", (req, res) => {
+  const status = deepgramKeyManager.getStatus(req.params.id);
+  const keys = deepgramKeyManager.getAllKeys(req.params.id);
+  res.json({ ...status, keys });
+});
+
+// POST /api/admin/users/:id/deepgram/keys — add a key for a user
+router.post("/users/:id/deepgram/keys", (req, res) => {
+  const db = getDb();
+  const userId = req.params.id;
+  const { api_key, label } = req.body;
+  if (!api_key) return res.status(400).json({ error: "api_key is required" });
+  const existing = db.prepare("SELECT id FROM deepgram_keys WHERE user_id = ? AND api_key = ?").get(userId, api_key);
+  if (existing) return res.status(400).json({ error: "This key is already in the pool" });
+  const id = generateId();
+  const hasKeys = db.prepare("SELECT COUNT(*) as cnt FROM deepgram_keys WHERE user_id = ?").get(userId).cnt;
+  db.prepare("INSERT INTO deepgram_keys (id, user_id, api_key, label, status, is_current) VALUES (?, ?, ?, ?, 'active', ?)").run(id, userId, api_key, label || "", hasKeys === 0 ? 1 : 0);
+  const keys = deepgramKeyManager.getAllKeys(userId);
+  const status = deepgramKeyManager.getStatus(userId);
+  res.status(201).json({ message: "Key added", ...status, keys });
+});
+
+// DELETE /api/admin/users/:id/deepgram/keys/:keyId — remove a key
+router.delete("/users/:id/deepgram/keys/:keyId", (req, res) => {
+  const db = getDb();
+  const result = db.prepare("DELETE FROM deepgram_keys WHERE id = ? AND user_id = ?").run(req.params.keyId, req.params.id);
+  if (result.changes === 0) return res.status(404).json({ error: "Key not found" });
+  const keys = deepgramKeyManager.getAllKeys(req.params.id);
+  const status = deepgramKeyManager.getStatus(req.params.id);
+  res.json({ message: "Key removed", ...status, keys });
+});
+
+// POST /api/admin/users/:id/deepgram/keys/:keyId/set-current — set active key
+router.post("/users/:id/deepgram/keys/:keyId/set-current", (req, res) => {
+  const db = getDb();
+  db.prepare("UPDATE deepgram_keys SET is_current = 0 WHERE user_id = ?").run(req.params.id);
+  db.prepare("UPDATE deepgram_keys SET is_current = 1 WHERE id = ? AND user_id = ?").run(req.params.keyId, req.params.id);
+  const keys = deepgramKeyManager.getAllKeys(req.params.id);
+  const status = deepgramKeyManager.getStatus(req.params.id);
+  res.json({ message: "Current key updated", ...status, keys });
+});
+
+// POST /api/admin/users/:id/deepgram/keys/:keyId/test — test a key
+router.post("/users/:id/deepgram/keys/:keyId/test", async (req, res) => {
+  const db = getDb();
+  const row = db.prepare("SELECT api_key FROM deepgram_keys WHERE id = ? AND user_id = ?").get(req.params.keyId, req.params.id);
+  if (!row) return res.status(404).json({ error: "Key not found" });
+  try {
+    const r = await fetch("https://api.deepgram.com/v1/projects", { headers: { Authorization: `Token ${row.api_key}` } });
+    const data = await r.json();
+    if (r.ok) res.json({ success: true, status: r.status, project: data.projects?.[0]?.name || "Unknown" });
+    else res.json({ success: false, status: r.status, error: data.details || data.message || r.statusText });
+  } catch (e) { res.json({ success: false, error: e.message }); }
 });
 
 // GET /api/admin/users/:id/agents — get agents for a user
