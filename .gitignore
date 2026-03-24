@@ -8,6 +8,7 @@ logs/
 
 # Data directories (recordings, database, per-instance)
 data/
+data2/
 data-*/
 logs-*/
 
