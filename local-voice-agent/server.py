@@ -23,14 +23,35 @@ import asyncio
 import json
 import logging
 import os
+os.environ["COQUI_TOS_AGREED"] = "1"
+os.environ["TORCHAUDIO_USE_BACKEND_DISPATCHER"] = "1"
+import re
 import struct
 import sys
 import time
 import uuid
+
 from collections import deque
 from io import BytesIO
+from math import gcd
 
 import numpy as np
+import soundfile as sf
+from scipy.signal import resample_poly
+import torch
+import torchaudio
+
+def _sf_load(filepath, **kwargs):
+    """Load audio using soundfile, bypassing torchcodec entirely."""
+    data, sr = sf.read(filepath, dtype="float32")
+    if data.ndim == 1:
+        data = data[np.newaxis, :]
+    else:
+        data = data.T
+    return torch.from_numpy(data), sr
+
+torchaudio.load = _sf_load
+
 import websockets
 
 logging.basicConfig(
@@ -40,7 +61,6 @@ logging.basicConfig(
 )
 log = logging.getLogger("voice-agent")
 
-# Lazy-loaded models
 _whisper_model = None
 _tts_model = None
 _tts_lock = asyncio.Lock()
@@ -50,15 +70,16 @@ WHISPER_DEVICE = os.environ.get("WHISPER_DEVICE", "cpu")
 WHISPER_COMPUTE_TYPE = os.environ.get("WHISPER_COMPUTE", "int8")
 TTS_MODEL_NAME = os.environ.get("TTS_MODEL", "tts_models/multilingual/multi-dataset/xtts_v2")
 TTS_SPEAKER_WAV = os.environ.get("TTS_SPEAKER_WAV", "")
-LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://api.openai.com/v1")
-LLM_API_KEY = os.environ.get("LLM_API_KEY", os.environ.get("OPENAI_API_KEY", ""))
-LLM_MODEL = os.environ.get("LLM_MODEL", "gpt-4o-mini")
+LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://generativelanguage.googleapis.com/v1beta/openai")
+LLM_API_KEY = os.environ.get("LLM_API_KEY", os.environ.get("GEMINI_API_KEY", os.environ.get("OPENAI_API_KEY", "")))
+LLM_MODEL = os.environ.get("LLM_MODEL", "gemini-2.5-flash")
 SERVER_PORT = int(os.environ.get("VOICE_AGENT_PORT", "8765"))
 
 INPUT_SAMPLE_RATE = 16000
 OUTPUT_SAMPLE_RATE = 24000
-VAD_THRESHOLD = 0.3
-SILENCE_DURATION_MS = 800
+SILENCE_DURATION_MS = 500
+
+SPEAKER_WAVS_DIR = "/app/speaker_wavs"
 
 
 def get_whisper():
@@ -88,20 +109,66 @@ def get_tts():
 
 
 def pcm_to_float(pcm_bytes: bytes) -> np.ndarray:
-    """Convert linear16 PCM bytes to float32 numpy array."""
     return np.frombuffer(pcm_bytes, dtype=np.int16).astype(np.float32) / 32768.0
 
 
+def high_quality_resample(audio: np.ndarray, source_sr: int, target_sr: int) -> np.ndarray:
+    """Resample using polyphase filtering (scipy) for clean, artifact-free audio."""
+    if source_sr == target_sr:
+        return audio
+    g = gcd(source_sr, target_sr)
+    up = target_sr // g
+    down = source_sr // g
+    return resample_poly(audio, up, down).astype(np.float32)
+
+
 def float_to_pcm(audio: np.ndarray, target_sr: int, source_sr: int) -> bytes:
-    """Convert float32 audio to linear16 PCM bytes, resampling if needed."""
-    if source_sr != target_sr:
-        ratio = target_sr / source_sr
-        n_samples = int(len(audio) * ratio)
-        indices = np.arange(n_samples) / ratio
-        indices = np.clip(indices.astype(int), 0, len(audio) - 1)
-        audio = audio[indices]
+    audio = high_quality_resample(audio, source_sr, target_sr)
     audio = np.clip(audio * 32768.0, -32768, 32767).astype(np.int16)
     return audio.tobytes()
+
+
+def clean_text_for_tts(text: str) -> str:
+    """Strip markdown, emojis, and formatting that makes TTS sound robotic."""
+    text = re.sub(r'\*+', '', text)
+    text = re.sub(r'#+\s*', '', text)
+    text = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', text)
+    text = re.sub(r'`[^`]*`', '', text)
+    text = re.sub(r'[\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F1E0-\U0001F1FF\U00002702-\U000027B0\U000024C2-\U0001F251]+', '', text)
+    text = re.sub(r'\n+', '. ', text)
+    text = re.sub(r'\s+', ' ', text)
+    text = re.sub(r'\.{2,}', '.', text)
+    return text.strip()
+
+
+def split_into_sentences(text: str) -> list[str]:
+    """Split text into natural sentence chunks for streaming TTS."""
+    parts = re.split(r'(?<=[.!?])\s+', text)
+    sentences = []
+    current = ""
+    for part in parts:
+        if len(current) + len(part) < 120:
+            current = (current + " " + part).strip()
+        else:
+            if current:
+                sentences.append(current)
+            current = part
+    if current:
+        sentences.append(current)
+    return sentences if sentences else [text]
+
+
+def find_speaker_wav() -> str | None:
+    """Find a speaker WAV file from env var or the speaker_wavs directory."""
+    if TTS_SPEAKER_WAV and os.path.exists(TTS_SPEAKER_WAV):
+        return TTS_SPEAKER_WAV
+    if os.path.isdir(SPEAKER_WAVS_DIR):
+        for f in sorted(os.listdir(SPEAKER_WAVS_DIR)):
+            if f.lower().endswith((".wav", ".mp3", ".flac", ".ogg")):
+                path = os.path.join(SPEAKER_WAVS_DIR, f)
+                log.info(f"Using speaker reference: {path}")
+                return path
+    return None
 
 
 class SimpleVAD:
@@ -148,8 +215,8 @@ class VoiceSession:
         self.is_speaking = False
         self.agent_speaking = False
         self.closed = False
-        self._audio_task = None
-        self._pending_transcription = False
+        self._cancel_speech = False
+        self._speaker_wav = find_speaker_wav()
 
     async def send_json(self, data: dict):
         if not self.closed:
@@ -199,7 +266,7 @@ class VoiceSession:
         self.greeting = agent.get("greeting", "")
         self.language = agent.get("language", "en")
 
-        log.info(f"[{self.session_id}] Settings applied - lang={self.language}, greeting={bool(self.greeting)}")
+        log.info(f"[{self.session_id}] Settings applied - lang={self.language}, greeting={bool(self.greeting)}, speaker_wav={bool(self._speaker_wav)}")
 
         await self.send_json({"type": "Welcome"})
         await self.send_json({"type": "SettingsApplied"})
@@ -215,6 +282,16 @@ class VoiceSession:
 
     async def _handle_audio(self, audio_data: bytes):
         if self.agent_speaking:
+            pcm_float = pcm_to_float(audio_data)
+            energy = np.sqrt(np.mean(pcm_float ** 2))
+            if energy > 0.04:
+                log.info(f"[{self.session_id}] Barge-in detected — cancelling agent speech")
+                self._cancel_speech = True
+                self.agent_speaking = False
+                await self.send_json({"type": "UserStartedSpeaking"})
+                self.is_speaking = True
+                self.audio_buffer.clear()
+                self.audio_buffer.extend(audio_data)
             return
 
         self.audio_buffer.extend(audio_data)
@@ -357,9 +434,12 @@ class VoiceSession:
 
     async def _synthesize_and_send(self, text: str):
         self.agent_speaking = True
+        self._cancel_speech = False
         await self.send_json({"type": "AgentStartedSpeaking"})
 
         try:
+            cleaned = clean_text_for_tts(text)
+            sentences = split_into_sentences(cleaned)
             loop = asyncio.get_event_loop()
             tts = get_tts()
 
@@ -368,33 +448,42 @@ class VoiceSession:
             if supported_langs and lang_code not in supported_langs:
                 lang_code = "en"
 
-            kwargs = {"text": text, "language": lang_code}
-            if TTS_SPEAKER_WAV and os.path.exists(TTS_SPEAKER_WAV):
-                kwargs["speaker_wav"] = TTS_SPEAKER_WAV
-            elif hasattr(tts.synthesizer, "tts_model") and hasattr(tts.synthesizer.tts_model, "speaker_manager"):
-                speakers = tts.synthesizer.tts_model.speaker_manager
-                if speakers and hasattr(speakers, "speaker_names") and speakers.speaker_names:
-                    kwargs["speaker"] = speakers.speaker_names[0]
-
-            async with _tts_lock:
-                audio_np = await loop.run_in_executor(None, lambda: np.array(tts.tts(**kwargs)))
-
             tts_sr = tts.synthesizer.output_sample_rate if hasattr(tts, "synthesizer") else 22050
-            pcm_bytes = float_to_pcm(audio_np, OUTPUT_SAMPLE_RATE, tts_sr)
 
-            chunk_size = OUTPUT_SAMPLE_RATE * 2 * 20 // 1000  # 20ms chunks
-            for i in range(0, len(pcm_bytes), chunk_size):
-                if self.closed:
+            for sentence in sentences:
+                if self.closed or self._cancel_speech:
                     break
-                chunk = pcm_bytes[i:i + chunk_size]
-                await self.send_binary(chunk)
-                await asyncio.sleep(0.015)
+
+                if not sentence.strip():
+                    continue
+
+                kwargs = {"text": sentence, "language": lang_code}
+                if self._speaker_wav:
+                    kwargs["speaker_wav"] = self._speaker_wav
+                elif hasattr(tts.synthesizer, "tts_model") and hasattr(tts.synthesizer.tts_model, "speaker_manager"):
+                    speakers = tts.synthesizer.tts_model.speaker_manager
+                    if speakers and hasattr(speakers, "speaker_names") and speakers.speaker_names:
+                        kwargs["speaker"] = speakers.speaker_names[0]
+
+                async with _tts_lock:
+                    audio_np = await loop.run_in_executor(None, lambda: np.array(tts.tts(**kwargs)))
+
+                pcm_bytes = float_to_pcm(audio_np, OUTPUT_SAMPLE_RATE, tts_sr)
+
+                chunk_size = OUTPUT_SAMPLE_RATE * 2 * 20 // 1000  # 20ms chunks
+                for i in range(0, len(pcm_bytes), chunk_size):
+                    if self.closed or self._cancel_speech:
+                        break
+                    chunk = pcm_bytes[i:i + chunk_size]
+                    await self.send_binary(chunk)
+                    await asyncio.sleep(0.018)
 
         except Exception as e:
             log.error(f"[{self.session_id}] TTS error: {e}")
             await self.send_json({"type": "Error", "message": f"TTS error: {str(e)}"})
 
         self.agent_speaking = False
+        self._cancel_speech = False
         await self.send_json({"type": "AgentAudioDone"})
 
 
@@ -421,9 +510,15 @@ async def main():
     log.info(f"  TTS: Coqui ({TTS_MODEL_NAME})")
     log.info(f"  LLM: {LLM_MODEL} via {LLM_BASE_URL}")
     log.info(f"  Port: {SERVER_PORT}")
+
+    speaker = find_speaker_wav()
+    if speaker:
+        log.info(f"  Voice clone: {speaker}")
+    else:
+        log.info("  Voice clone: none (add a WAV to /app/speaker_wavs/ or set TTS_SPEAKER_WAV)")
+
     log.info("=" * 50)
 
-    # Pre-load models
     log.info("Pre-loading models...")
     loop = asyncio.get_event_loop()
     await loop.run_in_executor(None, get_whisper)

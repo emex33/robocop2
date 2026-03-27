@@ -1,15 +1,20 @@
-FROM python:3.11-slim
+FROM nvidia/cuda:12.4.1-runtime-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3.11 python3.11-venv python3.11-dev \
+    build-essential ffmpeg libsndfile1 curl \
+    && ln -sf /usr/bin/python3.11 /usr/bin/python \
+    && curl -sS https://bootstrap.pypa.io/get-pip.py | python \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    ffmpeg \
-    libsndfile1 \
-    && rm -rf /var/lib/apt/lists/*
-
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install -r requirements.txt && \
+    pip install "transformers>=4.46.0,<4.52.0"
 
 COPY server.py .
 

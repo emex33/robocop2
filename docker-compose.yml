@@ -24,19 +24,28 @@ services:
   voice-agent:
     build: ./local-voice-agent
     restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
     environment:
-      - WHISPER_MODEL=base
-      - WHISPER_DEVICE=cpu
-      - WHISPER_COMPUTE=int8
+      - WHISPER_MODEL=tiny
+      - WHISPER_DEVICE=cuda
+      - WHISPER_COMPUTE=float16
       - TTS_MODEL=tts_models/multilingual/multi-dataset/xtts_v2
-      - LLM_BASE_URL=${LLM_BASE_URL:-https://api.openai.com/v1}
-      - LLM_API_KEY=${LLM_API_KEY:-}
-      - LLM_MODEL=${LLM_MODEL:-gpt-4o-mini}
+      - LLM_BASE_URL=${LLM_BASE_URL:-https://generativelanguage.googleapis.com/v1beta/openai}
+      - LLM_API_KEY=${LLM_API_KEY:-${GEMINI_API_KEY:-}}
+      - LLM_MODEL=${LLM_MODEL:-gemini-2.5-flash}
       - VOICE_AGENT_PORT=8765
+      - NVIDIA_VISIBLE_DEVICES=all
     ports:
       - "8765:8765"
     volumes:
       - voice-agent-models:/root/.local/share
+      - ./local-voice-agent/speaker_wavs:/app/speaker_wavs
     networks:
       - robocop
 
