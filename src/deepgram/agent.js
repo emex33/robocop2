@@ -40,25 +40,29 @@ export class DeepgramAgent {
   }
 
   /**
-   * Connect to Deepgram Voice Agent API and configure the agent.
+   * Connect to Voice Agent API (Deepgram cloud or local server).
+   * @param {string} overrideApiKey - Deepgram API key (ignored for local engine)
+   * @param {object} engineConfig - { engine: "deepgram"|"local", localUrl: "ws://..." }
    */
-  connect(overrideApiKey) {
+  connect(overrideApiKey, engineConfig) {
     return new Promise((resolve, reject) => {
-      const url = process.env.DEEPGRAM_VOICE_AGENT_URL || "wss://agent.deepgram.com/v1/agent/converse";
+      const isLocal = engineConfig?.engine === "local";
+      const url = isLocal
+        ? (engineConfig.localUrl || process.env.LOCAL_VOICE_AGENT_URL || "ws://localhost:8765")
+        : (process.env.DEEPGRAM_VOICE_AGENT_URL || "wss://agent.deepgram.com/v1/agent/converse");
       const apiKey = overrideApiKey || process.env.DEEPGRAM_API_KEY;
 
-      if (!apiKey) {
+      if (!isLocal && !apiKey) {
         return reject(new Error("No Deepgram API key configured. Set it in Settings or .env"));
       }
 
-      logger.info("Connecting to Deepgram Voice Agent API...", { callId: this.callId });
+      logger.info(`Connecting to ${isLocal ? "Local" : "Deepgram"} Voice Agent at ${url}...`, { callId: this.callId });
 
       this._settingsResolve = resolve;
       this._settingsReject = reject;
 
-      this.ws = new WebSocket(url, {
-        headers: { authorization: `token ${apiKey}` },
-      });
+      const wsOptions = isLocal ? {} : { headers: { authorization: `token ${apiKey}` } };
+      this.ws = new WebSocket(url, wsOptions);
 
       this.ws.on("open", () => {
         logger.info("Deepgram WebSocket connected", { callId: this.callId });

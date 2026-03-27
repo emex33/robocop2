@@ -342,14 +342,24 @@ router.get("/settings", (req, res) => {
 
 // PUT /api/admin/settings — update platform settings
 router.put("/settings", (req, res) => {
-  const allowed = ["voip_cost_per_min", "ai_cost_per_min"];
+  const numericKeys = ["voip_cost_per_min", "ai_cost_per_min"];
+  const stringKeys = ["voice_engine", "local_voice_agent_url"];
   const updates = req.body;
   let count = 0;
-  for (const key of allowed) {
+  for (const key of numericKeys) {
     if (updates[key] !== undefined) {
       const val = parseFloat(updates[key]);
       if (isNaN(val) || val < 0) return res.status(400).json({ error: `Invalid value for ${key}` });
       setPlatformSetting(key, val.toString());
+      count++;
+    }
+  }
+  for (const key of stringKeys) {
+    if (updates[key] !== undefined) {
+      if (key === "voice_engine" && !["deepgram", "local"].includes(updates[key])) {
+        return res.status(400).json({ error: `voice_engine must be "deepgram" or "local"` });
+      }
+      setPlatformSetting(key, updates[key]);
       count++;
     }
   }

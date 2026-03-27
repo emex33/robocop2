@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { api } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
-import { Users, DollarSign, Phone, Clock, X, Plus, ChevronRight, Shield, Settings, Save, Play, RefreshCw, CheckCircle2, XCircle, AlertTriangle, Info, Sliders, Key, Trash2, FileText, Star } from 'lucide-react';
+import { Users, DollarSign, Phone, Clock, X, Plus, ChevronRight, Shield, Settings, Save, Play, RefreshCw, CheckCircle2, XCircle, AlertTriangle, Info, Sliders, Key, Trash2, FileText, Star, Cpu, Cloud } from 'lucide-react';
 
 function fmt$(v) { return '$' + (v || 0).toFixed(2); }
 function fmtMin(s) { return ((s || 0) / 60).toFixed(1) + ' min'; }
@@ -58,7 +58,8 @@ export default function AdminBilling() {
         ))}
       </div>
 
-      {/* Cost Settings */}
+      {/* Voice Engine + Cost Settings */}
+      <VoiceEnginePanel />
       <CostSettingsPanel />
 
       {/* Users table */}
@@ -193,6 +194,97 @@ function AddCreditsModal({ user, onClose, onDone }) {
           </button>
         </form>
       </div>
+    </div>
+  );
+}
+
+function VoiceEnginePanel() {
+  const [engine, setEngine] = useState('deepgram');
+  const [localUrl, setLocalUrl] = useState('ws://voice-agent:8765');
+  const [loaded, setLoaded] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState('');
+
+  useEffect(() => {
+    api.adminGetSettings()
+      .then(s => {
+        setEngine(s.voice_engine || 'deepgram');
+        setLocalUrl(s.local_voice_agent_url || 'ws://voice-agent:8765');
+        setLoaded(true);
+      })
+      .catch(() => setLoaded(true));
+  }, []);
+
+  const handleSave = async () => {
+    setSaving(true); setMsg('');
+    try {
+      const res = await api.adminUpdateSettings({ voice_engine: engine, local_voice_agent_url: localUrl });
+      setMsg(res.message || 'Saved');
+    } catch (e) { setMsg('Error: ' + e.message); }
+    setSaving(false);
+  };
+
+  if (!loaded) return null;
+
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+      <div className="flex items-center gap-2 mb-4">
+        <Cpu className="w-4 h-4 text-violet-600" />
+        <h2 className="font-semibold text-gray-900">Voice Engine</h2>
+        <span className="text-xs text-gray-400 ml-1">Choose between cloud or local STT/TTS</span>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 max-w-lg mb-4">
+        <button onClick={() => setEngine('deepgram')}
+          className={`flex items-center gap-3 px-4 py-3 rounded-lg border-2 text-left transition ${
+            engine === 'deepgram' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'
+          }`}>
+          <Cloud className={`w-5 h-5 ${engine === 'deepgram' ? 'text-indigo-600' : 'text-gray-400'}`} />
+          <div>
+            <p className="text-sm font-semibold text-gray-800">Deepgram (Cloud)</p>
+            <p className="text-xs text-gray-500">API-based, requires API key</p>
+          </div>
+        </button>
+        <button onClick={() => setEngine('local')}
+          className={`flex items-center gap-3 px-4 py-3 rounded-lg border-2 text-left transition ${
+            engine === 'local' ? 'border-violet-500 bg-violet-50' : 'border-gray-200 hover:border-gray-300'
+          }`}>
+          <Cpu className={`w-5 h-5 ${engine === 'local' ? 'text-violet-600' : 'text-gray-400'}`} />
+          <div>
+            <p className="text-sm font-semibold text-gray-800">Local (Self-hosted)</p>
+            <p className="text-xs text-gray-500">faster-whisper + Coqui TTS</p>
+          </div>
+        </button>
+      </div>
+
+      {engine === 'local' && (
+        <div className="max-w-lg mb-4">
+          <label className="block text-xs font-medium text-gray-600 mb-1">Local Voice Agent WebSocket URL</label>
+          <input type="text" value={localUrl} onChange={e => setLocalUrl(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-violet-500 font-mono"
+            placeholder="ws://voice-agent:8765" />
+          <p className="text-xs text-gray-400 mt-1">In Docker: ws://voice-agent:8765 — Local dev: ws://localhost:8765</p>
+        </div>
+      )}
+
+      <div className="flex items-center gap-3">
+        <button onClick={handleSave} disabled={saving}
+          className="flex items-center gap-2 px-4 py-2 bg-violet-600 text-white rounded-lg text-sm font-semibold hover:bg-violet-700 transition disabled:opacity-50">
+          {saving ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+          {saving ? 'Saving...' : 'Save Engine'}
+        </button>
+        {msg && <span className={`text-sm ${msg.startsWith('Error') ? 'text-red-600' : 'text-green-600'}`}>{msg}</span>}
+      </div>
+
+      {engine === 'local' && (
+        <div className="mt-4 p-3 bg-violet-50 rounded-lg text-xs text-violet-700 space-y-1">
+          <p><strong>Local engine uses:</strong></p>
+          <p>STT: faster-whisper (Whisper model running locally)</p>
+          <p>TTS: Coqui XTTSv2 (multi-language, voice cloning)</p>
+          <p>LLM: Uses the same OpenAI-compatible API configured in .env (LLM_API_KEY, LLM_MODEL)</p>
+          <p className="mt-1 text-violet-600 font-medium">The local voice-agent Docker service must be running.</p>
+        </div>
+      )}
     </div>
   );
 }

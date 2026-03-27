@@ -470,6 +470,8 @@ function initSchema() {
   const seedSetting = db.prepare("INSERT OR IGNORE INTO platform_settings (key, value) VALUES (?, ?)");
   seedSetting.run("voip_cost_per_min", "0.02");
   seedSetting.run("ai_cost_per_min", "0.40");
+  seedSetting.run("voice_engine", "deepgram");
+  seedSetting.run("local_voice_agent_url", "ws://voice-agent:8765");
 
   // Seed admin user if not exists
   const admin = db.prepare("SELECT id FROM users WHERE email = 'admin'").get();

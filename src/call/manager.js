@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import logger from "../utils/logger.js";
 import { DeepgramAgent } from "../deepgram/agent.js";
 import { AudioBridge } from "../audio/bridge.js";
+import { getPlatformSetting } from "../db/helpers.js";
 
 // Lazy-load configStore only for legacy/fallback usage
 let _configStore = null;
@@ -249,8 +250,11 @@ export class CallManager {
         },
       });
 
-      await deepgramAgent.connect(options.deepgramApiKey);
-      emit("deepgram", { status: "connected" });
+      const voiceEngine = getPlatformSetting("voice_engine", "deepgram");
+      const localVoiceUrl = getPlatformSetting("local_voice_agent_url", process.env.LOCAL_VOICE_AGENT_URL || "ws://voice-agent:8765");
+      const engineConfig = { engine: voiceEngine, localUrl: localVoiceUrl };
+      await deepgramAgent.connect(options.deepgramApiKey, engineConfig);
+      emit("deepgram", { status: "connected", engine: voiceEngine });
 
       // Step 4: Wire lead audio -> Deepgram
       audioBridge.onAudioFromLead = (pcmData) => {

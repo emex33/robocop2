@@ -21,6 +21,25 @@ services:
     networks:
       - robocop
 
+  voice-agent:
+    build: ./local-voice-agent
+    restart: unless-stopped
+    environment:
+      - WHISPER_MODEL=base
+      - WHISPER_DEVICE=cpu
+      - WHISPER_COMPUTE=int8
+      - TTS_MODEL=tts_models/multilingual/multi-dataset/xtts_v2
+      - LLM_BASE_URL=${LLM_BASE_URL:-https://api.openai.com/v1}
+      - LLM_API_KEY=${LLM_API_KEY:-}
+      - LLM_MODEL=${LLM_MODEL:-gpt-4o-mini}
+      - VOICE_AGENT_PORT=8765
+    ports:
+      - "8765:8765"
+    volumes:
+      - voice-agent-models:/root/.local/share
+    networks:
+      - robocop
+
   app:
     build: .
     restart: unless-stopped
@@ -36,6 +55,7 @@ services:
       - RTP_PORT_MIN=20000
       - RTP_PORT_MAX=20100
       - DRACHTIO_HOST=172.18.0.1
+      - LOCAL_VOICE_AGENT_URL=ws://voice-agent:8765
     volumes:
       - ./src:/app/src
       - ./config:/app/config
@@ -43,6 +63,9 @@ services:
       - ./logs:/app/logs
     networks:
       - robocop
+
+volumes:
+  voice-agent-models:
 
 networks:
   robocop:
