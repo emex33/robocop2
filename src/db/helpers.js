@@ -15,6 +15,15 @@ function toTitleCase(str) {
 const NAME_FIELDS = new Set(["name", "first_name", "last_name", "full_name", "lead_name"]);
 
 export function buildAgentSettingsFromDb(agent, lead = {}) {
+  // Dynamic time-of-day greeting (Spanish/English)
+  const hour = new Date().getHours();
+  const agentLang = agent.language || "en";
+  if (agentLang === "es") {
+    lead.saludo = hour < 13 ? "buenos días" : hour < 20 ? "buenas tardes" : "buenas noches";
+  } else {
+    lead.saludo = hour < 12 ? "good morning" : hour < 18 ? "good afternoon" : "good evening";
+  }
+
   const interpolate = (str) => {
     if (!str) return str;
     return str.replace(/\{\{(\w+)\}\}/g, (match, key) => {

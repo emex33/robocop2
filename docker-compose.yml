@@ -32,13 +32,49 @@ services:
               count: 1
               capabilities: [gpu]
     environment:
-      - WHISPER_MODEL=tiny
+      # ── STT (faster-whisper) ──
+      - WHISPER_MODEL=large-v3-turbo
       - WHISPER_DEVICE=cuda
       - WHISPER_COMPUTE=float16
+      - STT_BEAM_SIZE=5
+      - STT_BEST_OF=1
+      - STT_VAD_MIN_SILENCE_MS=300
+      - STT_NO_SPEECH_THRESHOLD=0.6
+      - STT_COMPRESSION_RATIO_THRESHOLD=2.4
+      - STT_LOG_PROB_THRESHOLD=-0.5
+      # ── VAD & Barge-in (Silero neural VAD) ──
+      - VAD_THRESHOLD=0.35
+      - BARGE_IN_THRESHOLD=0.45
+      - BARGE_IN_MIN_FRAMES=5
+      - SILENCE_DURATION_MS=700
+      - POST_TTS_IGNORE_MS=350
+      # ── TTS (XTTS v2 direct inference) ──
       - TTS_MODEL=tts_models/multilingual/multi-dataset/xtts_v2
+      - TTS_SPEAKER_WAV=/app/speaker_wavs/cloner_premium.wav
+      - TTS_TEMPERATURE=0.85
+      - TTS_TOP_P=0.85
+      - TTS_TOP_K=50
+      - TTS_REPETITION_PENALTY=1.5
+      - TTS_LENGTH_PENALTY=1.0
+      - TTS_SPEED=1.1
+      - TTS_STREAM_CHUNK_MS=20
+      - TTS_STREAM_SLEEP_MS=0.015
+      # ── LLM ──
       - LLM_BASE_URL=${LLM_BASE_URL:-https://generativelanguage.googleapis.com/v1beta/openai}
       - LLM_API_KEY=${LLM_API_KEY:-${GEMINI_API_KEY:-}}
-      - LLM_MODEL=${LLM_MODEL:-gemini-2.5-flash}
+      - LLM_MODEL=${LLM_MODEL:-gemini-2.5-pro}
+      - LLM_MAX_TOKENS=180
+      - LLM_TEMPERATURE=0.2
+      - MAX_HISTORY_MESSAGES=16
+      # ── Response shaping ──
+      - MAX_RESPONSE_SENTENCES=3
+      - MAX_RESPONSE_CHARS=280
+      # ── GPU concurrency (20-call target) ──
+      - GPU_STT_CONCURRENCY=3
+      - GPU_TTS_CONCURRENCY=2
+      # ── WebSocket ──
+      - WS_PING_INTERVAL=20
+      - WS_PING_TIMEOUT=60
       - VOICE_AGENT_PORT=8765
       - NVIDIA_VISIBLE_DEVICES=all
     ports:
@@ -58,11 +94,11 @@ services:
       - rtpengine
     ports:
       - "3000:3000"
-      - "20000-20100:20000-20100/udp"
+      - "20000-20200:20000-20200/udp"
     environment:
       - EXTERNAL_RTP_IP=45.87.212.182
       - RTP_PORT_MIN=20000
-      - RTP_PORT_MAX=20100
+      - RTP_PORT_MAX=20200
       - DRACHTIO_HOST=172.18.0.1
       - LOCAL_VOICE_AGENT_URL=ws://voice-agent:8765
     volumes:

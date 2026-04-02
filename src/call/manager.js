@@ -324,6 +324,13 @@ export class CallManager {
         const origOnClose = deepgramAgent.onClose;
         deepgramAgent.onClose = (code, reason) => {
           if (origOnClose) origOnClose(code, reason);
+          if (callResult.outcome === "unknown") {
+            callResult.outcome = "error";
+            callResult.notes = `Voice engine closed unexpectedly (${code}${reason ? `: ${reason}` : ""})`;
+            try {
+              if (sipDialog) this.sipDialer.hangup(sipDialog).catch(() => {});
+            } catch (e) { /* ignore */ }
+          }
           safeResolve();
         };
 

@@ -292,6 +292,13 @@ class ConfigStore {
    */
   buildAgentSettings(lead = {}) {
     const cfg = this._config;
+    const lang = cfg.agent?.language || "es";
+    const hour = new Date().getHours();
+    if (lang === "es") {
+      lead.saludo = hour < 13 ? "buenos días" : hour < 20 ? "buenas tardes" : "buenas noches";
+    } else {
+      lead.saludo = hour < 12 ? "good morning" : hour < 18 ? "good afternoon" : "good evening";
+    }
 
     const interpolate = (str) => {
       if (!str) return str;
