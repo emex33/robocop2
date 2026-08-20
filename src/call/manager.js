@@ -91,6 +91,9 @@ export class CallManager {
       emit("sip_dialing", { status: "dialing" });
       logger.info(`[${callId}] Dialing ${lead.phone}...`);
       sipDialog = await this.sipDialer.makeCall(lead.phone, localSdp, options.sipConfig);
+      // makeCall only resolves on SIP 200 OK, so this is the true answer moment.
+      // Anything before it is ring/reject time that the carrier does not bill.
+      callResult.answeredAt = new Date().toISOString();
       emit("sip_connected", { status: "connected" });
 
       // Parse the remote SDP to get rtpengine/provider RTP endpoint

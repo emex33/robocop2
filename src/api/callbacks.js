@@ -168,30 +168,77 @@ router.get("/export/csv", (req, res) => {
 
   const where = conditions.join(" AND ");
   const records = db.prepare(`
-    SELECT cr.*, c.name AS campaign_name, a.name AS agent_name
+    SELECT cr.*, c.name AS campaign_name, a.name AS agent_name,
+      l.first_name, l.last_name, l.email, l.company, l.country,
+      l.notes AS lead_notes, l.status AS lead_status, l.attempts,
+      li.name AS list_name
     FROM call_records cr
     LEFT JOIN campaigns c ON cr.campaign_id = c.id
     LEFT JOIN agents a ON cr.agent_id = a.id
+    LEFT JOIN leads l ON cr.lead_id = l.id
+    LEFT JOIN lists li ON l.list_id = li.id
     WHERE ${where}
     ORDER BY cr.started_at DESC
   `).all(...params);
 
-  const headers = ["Date", "Time", "Name", "Phone", "Campaign", "Duration (s)", "Summary", "Status", "Notes"];
-  const rows = records.map(r => [
-    r.started_at?.slice(0, 10) || "",
-    r.started_at?.slice(11, 19) || "",
-    (r.lead_name || "").replace(/"/g, '""'),
-    r.phone,
-    (r.campaign_name || "").replace(/"/g, '""'),
-    r.duration_seconds,
-    (r.call_summary || "").replace(/"/g, '""'),
-    r.callback_status || "pending",
-    (r.callback_notes || "").replace(/"/g, '""'),
-  ].map(v => `"${v}"`).join(","));
+  const titleCase = (s) =>
+    String(s || "").trim().toLowerCase().replace(/(^|[\s'-])\S/g, (ch) => ch.toUpperCase());
 
-  res.setHeader("Content-Type", "text/csv");
+  const renderConversation = (json) => {
+    let turns = [];
+    try { turns = JSON.parse(json || "[]"); } catch { return ""; }
+    return turns
+      .map(t => `${t.role === "user" ? "Client" : "Robot"}: ${String(t.text || "").replace(/\s+/g, " ").trim()}`)
+      .filter(line => !line.endsWith(": "))
+      .join("\n");
+  };
+
+  const headers = [
+    "First Name", "Last Name", "Phone", "Email", "Company", "Country",
+    "Source (List)", "Campaign", "Agent",
+    "Callback Date", "Callback Time", "Duration (s)", "Turns",
+    "Callback Status", "Callback Notes", "Followed Up At",
+    "Lead Status", "Attempts", "Lead Notes", "Call Summary",
+    "Conversation", "Recording", "Call ID", "Lead ID",
+  ];
+
+  const cell = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+
+  const rows = records.map(r => {
+    let turns = 0;
+    try { turns = JSON.parse(r.transcript_json || "[]").length; } catch {}
+    return [
+      titleCase(r.first_name || (r.lead_name || "").split(" ")[0] || ""),
+      titleCase(r.last_name || ""),
+      r.phone,
+      r.email || "",
+      r.company || "",
+      r.country || "",
+      r.list_name || "",
+      r.campaign_name || "",
+      r.agent_name || "",
+      r.started_at?.slice(0, 10) || "",
+      r.started_at?.slice(11, 19) || "",
+      r.duration_seconds ?? "",
+      turns,
+      r.callback_status || "pending",
+      r.callback_notes || "",
+      r.callback_at || "",
+      r.lead_status || "",
+      r.attempts ?? "",
+      r.lead_notes || "",
+      (r.call_summary || "").replace(/\s+/g, " ").trim(),
+      renderConversation(r.transcript_json),
+      r.recording_url || (r.recording_path ? r.recording_path.split("/").pop() : ""),
+      r.call_id || "",
+      r.lead_id || "",
+    ].map(cell).join(",");
+  });
+
+  res.setHeader("Content-Type", "text/csv; charset=utf-8");
   res.setHeader("Content-Disposition", "attachment; filename=callbacks.csv");
-  res.send([headers.join(","), ...rows].join("\n"));
+  // BOM + CRLF so Excel opens the UTF-8 transcript and multi-line cells correctly.
+  res.send("\uFEFF" + [headers.join(","), ...rows].join("\r\n"));
 });
 
 export default router;

@@ -6,9 +6,18 @@ services:
     command: >
       drachtio
       --contact "sip:*:5060;transport=udp"
-      --external-ip 45.87.212.182
+      --external-ip 84.32.97.51
       --loglevel info
       --secret cymru
+    healthcheck:
+      # The drachtio image has no `ss`/`netstat`, so the old check always failed
+      # and marked the container "unhealthy". Read the listening UDP sockets
+      # straight from /proc instead (5060 == hex 13C4).
+      test: ["CMD-SHELL", "grep -qi ':13C4 ' /proc/net/udp || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
   rtpengine:
     image: drachtio/rtpengine:latest
@@ -96,7 +105,7 @@ services:
       - "3000:3000"
       - "20000-20200:20000-20200/udp"
     environment:
-      - EXTERNAL_RTP_IP=45.87.212.182
+      - EXTERNAL_RTP_IP=84.32.97.51
       - RTP_PORT_MIN=20000
       - RTP_PORT_MAX=20200
       - DRACHTIO_HOST=172.18.0.1
@@ -104,8 +113,33 @@ services:
     volumes:
       - ./src:/app/src
       - ./config:/app/config
-      - ./data2:/app/data
+      - ./data:/app/data
       - ./logs:/app/logs
+    networks:
+      - robocop
+
+  app2:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - drachtio
+      - rtpengine
+    ports:
+      - "3001:3001"
+      - "20201-20400:20201-20400/udp"
+    environment:
+      - DASHBOARD_PORT=3001
+      - EXTERNAL_RTP_IP=84.32.97.51
+      - RTP_PORT_MIN=20201
+      - RTP_PORT_MAX=20400
+      - DRACHTIO_HOST=172.18.0.1
+      - LOCAL_VOICE_AGENT_URL=ws://voice-agent:8765
+    volumes:
+      - ./src:/app/src
+      - ./config:/app/config
+      - ./data2:/app/data
+      - ./logs2:/app/logs
     networks:
       - robocop
 

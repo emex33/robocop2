@@ -21,7 +21,21 @@ export function getDb() {
     db = new Database(DB_PATH);
     db.pragma("journal_mode = WAL");
     db.pragma("foreign_keys = ON");
+    db.pragma("wal_autocheckpoint = 1000");
+    // This database is large and lives on a OneDrive-synced bind mount, where
+    // checkpoints and index builds routinely take longer than a few seconds.
+    // A short timeout surfaces as "database is locked" and crash-loops startup.
+    db.pragma("busy_timeout = 60000");
+    db.pragma("cache_size = -8000"); // 8 MB cache
     initSchema();
+
+    // Checkpoint WAL on startup to merge pending writes
+    try { db.pragma("wal_checkpoint(TRUNCATE)"); } catch (_) {}
+
+    // Periodic WAL checkpoint every 5 minutes to prevent WAL bloat
+    setInterval(() => {
+      try { db.pragma("wal_checkpoint(PASSIVE)"); } catch (_) {}
+    }, 5 * 60 * 1000).unref();
   }
   return db;
 }
@@ -254,9 +268,17 @@ function initSchema() {
     CREATE INDEX IF NOT EXISTS idx_lists_user ON lists(user_id);
     CREATE INDEX IF NOT EXISTS idx_leads_list ON leads(list_id);
     CREATE INDEX IF NOT EXISTS idx_leads_phone ON leads(phone);
+    CREATE INDEX IF NOT EXISTS idx_leads_list_status ON leads(list_id, status, do_not_call);
+    CREATE INDEX IF NOT EXISTS idx_leads_list_created ON leads(list_id, created_at);
     CREATE INDEX IF NOT EXISTS idx_call_records_user ON call_records(user_id);
     CREATE INDEX IF NOT EXISTS idx_call_records_campaign ON call_records(campaign_id);
     CREATE INDEX IF NOT EXISTS idx_call_records_outcome ON call_records(outcome);
+    CREATE INDEX IF NOT EXISTS idx_call_records_campaign_outcome ON call_records(campaign_id, outcome);
+    CREATE INDEX IF NOT EXISTS idx_call_records_created ON call_records(created_at);
+    CREATE INDEX IF NOT EXISTS idx_call_records_user_started ON call_records(user_id, started_at);
+    CREATE INDEX IF NOT EXISTS idx_call_records_user_outcome ON call_records(user_id, outcome);
+    CREATE INDEX IF NOT EXISTS idx_call_records_campaign_created ON call_records(campaign_id, created_at);
+    CREATE INDEX IF NOT EXISTS idx_campaign_lists_list ON campaign_lists(list_id);
     CREATE INDEX IF NOT EXISTS idx_sip_agents_user ON sip_agents(user_id);
     CREATE INDEX IF NOT EXISTS idx_sip_agents_status ON sip_agents(status);
     CREATE INDEX IF NOT EXISTS idx_agent_call_records_agent ON agent_call_records(sip_agent_id);
@@ -458,6 +480,18 @@ function initSchema() {
     db.exec("ALTER TABLE call_records ADD COLUMN callback_at TEXT DEFAULT ''");
   }
 
+  // Migration: track dial attempts per lead so numbers that permanently fail
+  // (disconnected, carrier-rejected) get retired instead of being re-dialed on
+  // every campaign restart.
+  const leadCols = db.prepare("PRAGMA table_info(leads)").all().map(c => c.name);
+  if (!leadCols.includes("attempts")) {
+    db.exec("ALTER TABLE leads ADD COLUMN attempts INTEGER DEFAULT 0");
+  }
+  if (!leadCols.includes("last_error")) {
+    db.exec("ALTER TABLE leads ADD COLUMN last_error TEXT DEFAULT ''");
+  }
+  db.exec("CREATE INDEX IF NOT EXISTS idx_leads_list_attempts ON leads(list_id, attempts)");
+
   // Migration: platform_settings table for dynamic cost rates
   db.exec(`
     CREATE TABLE IF NOT EXISTS platform_settings (
@@ -472,6 +506,17 @@ function initSchema() {
   seedSetting.run("ai_cost_per_min", "0.40");
   seedSetting.run("voice_engine", "deepgram");
   seedSetting.run("local_voice_agent_url", "ws://voice-agent:8765");
+  // Balance guard: pause dialing when a provider account runs dry, resume on top-up
+  seedSetting.run("balance_guard_enabled", "true");
+  seedSetting.run("deepgram_min_balance", "5");
+  seedSetting.run("voip_min_balance", "0");
+  seedSetting.run("voip_balance_api_url", "");
+  seedSetting.run("voip_balance_api_key", "");
+  seedSetting.run("voip_balance_json_path", "balance");
+  seedSetting.run("voip_balance_manual", "");
+
+  // Floor for retiring a Deepgram key from the pool (was 0; $5 leaves a buffer so calls never start on a dying key)
+  db.prepare("UPDATE platform_settings SET value = '5' WHERE key = 'deepgram_min_balance' AND CAST(value AS REAL) < 3").run();
 
   // Seed admin user if not exists
   const admin = db.prepare("SELECT id FROM users WHERE email = 'admin'").get();

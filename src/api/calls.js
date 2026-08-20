@@ -8,6 +8,26 @@ import { getDb } from "../db/schema.js";
 
 const router = Router();
 
+// Short-lived cache for the expensive COUNT(*) on call_records. Counting the
+// full (500k+ row) table takes ~1s and, because better-sqlite3 is synchronous,
+// blocks the whole event loop on every Calls-page load. The total only feeds
+// pagination, so a few seconds of staleness is harmless.
+const countCache = new Map();
+const COUNT_TTL_MS = 15_000;
+
+function getCachedCount(key, compute) {
+  const hit = countCache.get(key);
+  if (hit && Date.now() - hit.ts < COUNT_TTL_MS) return hit.value;
+  const value = compute();
+  countCache.set(key, { ts: Date.now(), value });
+  // Prevent unbounded growth from many distinct filter combinations.
+  if (countCache.size > 500) {
+    const cutoff = Date.now() - COUNT_TTL_MS;
+    for (const [k, v] of countCache) if (v.ts < cutoff) countCache.delete(k);
+  }
+  return value;
+}
+
 // GET /api/calls - paginated call logs with filters
 router.get("/", (req, res) => {
   const db = getDb();
@@ -85,10 +105,12 @@ router.get("/", (req, res) => {
   const sortCol = sortCols[sort] || "cr.started_at";
   const sortOrder = order === "asc" ? "ASC" : "DESC";
 
-  // Total count
-  const total = db
-    .prepare(`SELECT COUNT(*) as cnt FROM call_records cr WHERE ${where}`)
-    .get(...params).cnt;
+  // Total count (cached — see countCache above). Keyed by the filter shape so
+  // different filters/searches get their own cached total.
+  const countKey = `${userId}|${where}|${JSON.stringify(params)}`;
+  const total = getCachedCount(countKey, () =>
+    db.prepare(`SELECT COUNT(*) as cnt FROM call_records cr WHERE ${where}`).get(...params).cnt
+  );
 
   // Fetch records
   const dataParams = [...params, limit, offset];
@@ -143,37 +165,15 @@ router.get("/", (req, res) => {
     transcript: JSON.parse(r.transcript_json || "[]"),
   }));
 
-  // Aggregate stats for current filter
-  const statsParams = [...params]; // same filter params, no limit/offset
-  const stats = db
-    .prepare(
-      `SELECT
-        COUNT(*) AS total_calls,
-        SUM(CASE WHEN cr.outcome = 'transferred' THEN 1 ELSE 0 END) AS transfers,
-        SUM(CASE WHEN cr.outcome = 'appointment_set' THEN 1 ELSE 0 END) AS appointments,
-        SUM(CASE WHEN cr.outcome = 'interested' THEN 1 ELSE 0 END) AS interested,
-        SUM(CASE WHEN cr.outcome = 'not_interested' THEN 1 ELSE 0 END) AS not_interested,
-        SUM(CASE WHEN cr.outcome = 'no_answer' THEN 1 ELSE 0 END) AS no_answer,
-        SUM(CASE WHEN cr.outcome = 'voicemail' THEN 1 ELSE 0 END) AS voicemail,
-        SUM(CASE WHEN cr.outcome = 'callback' THEN 1 ELSE 0 END) AS callbacks,
-        SUM(CASE WHEN cr.outcome = 'error' THEN 1 ELSE 0 END) AS errors,
-        AVG(cr.duration_seconds) AS avg_duration,
-        SUM(cr.duration_seconds) AS total_duration,
-        SUM(cr.call_cost) AS total_cost
-      FROM call_records cr
-      WHERE ${where}`
-    )
-    .get(...statsParams);
+  // Compute lightweight stats from the total count (skip full table scan)
+  const stats = { total_calls: total };
 
   res.json({
     calls,
     total,
     page,
     pages: Math.ceil(total / limit),
-    stats: {
-      ...stats,
-      avg_duration: stats.avg_duration ? Math.round(stats.avg_duration) : 0,
-    },
+    stats,
   });
 });
 

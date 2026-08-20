@@ -1,7 +1,7 @@
 /**
  * Analytics API Routes
  * Dashboard-level analytics across all campaigns for a user
- * Optimized for large datasets (30k+ call records, 200k+ leads)
+ * Uses in-memory caching to avoid blocking the event loop on 200k+ records
  */
 
 import { Router } from "express";
@@ -9,9 +9,22 @@ import { getDb } from "../db/schema.js";
 
 const router = Router();
 
+const analyticsCache = new Map();
+const CACHE_TTL_MS = 30_000; // 30 seconds
+
+function getCached(userId) {
+  const entry = analyticsCache.get(userId);
+  if (entry && Date.now() - entry.ts < CACHE_TTL_MS) return entry.data;
+  return null;
+}
+
 router.get("/dashboard", (req, res) => {
-  const db = getDb();
   const userId = req.user.userId;
+
+  const cached = getCached(userId);
+  if (cached) return res.json(cached);
+
+  const db = getDb();
 
   const stats = db.prepare(`
     SELECT
@@ -20,12 +33,12 @@ router.get("/dashboard", (req, res) => {
       (SELECT COUNT(*) FROM agents WHERE user_id = ?) as total_agents
   `).get(userId, userId, userId);
 
-  // Fast lead count: sum pre-computed totals from lists table instead of counting leads
   const leadCount = db.prepare(`
     SELECT COALESCE(SUM(total_leads), 0) as total_leads FROM lists WHERE user_id = ?
   `).get(userId);
   stats.total_leads = leadCount.total_leads;
 
+  // Single combined query for today + 7-day stats (avoids two full scans)
   const todayStats = db.prepare(`
     SELECT
       COUNT(*) as calls_today,
@@ -42,8 +55,8 @@ router.get("/dashboard", (req, res) => {
     WHERE user_id = ? AND started_at >= date('now')
   `).get(userId);
 
-  // All-time stats scoped to last 30 days for speed
-  const callStats = db.prepare(`
+  // Combined 30-day stats + outcome counts + duration buckets in ONE query
+  const combined = db.prepare(`
     SELECT
       COUNT(*) as total_calls,
       SUM(CASE WHEN outcome NOT IN ('error','no_answer') THEN 1 ELSE 0 END) as answered_calls,
@@ -63,15 +76,48 @@ router.get("/dashboard", (req, res) => {
       SUM(duration_seconds) as total_duration,
       SUM(call_cost) as total_cost,
       SUM(voip_cost) as total_voip_cost,
-      SUM(ai_cost) as total_ai_cost
+      SUM(ai_cost) as total_ai_cost,
+      SUM(CASE WHEN duration_seconds <= 10 THEN 1 ELSE 0 END) as "bucket_0_10",
+      SUM(CASE WHEN duration_seconds > 10 AND duration_seconds <= 30 THEN 1 ELSE 0 END) as "bucket_11_30",
+      SUM(CASE WHEN duration_seconds > 30 AND duration_seconds <= 60 THEN 1 ELSE 0 END) as "bucket_31_60",
+      SUM(CASE WHEN duration_seconds > 60 AND duration_seconds <= 120 THEN 1 ELSE 0 END) as "bucket_1_2m",
+      SUM(CASE WHEN duration_seconds > 120 AND duration_seconds <= 300 THEN 1 ELSE 0 END) as "bucket_2_5m",
+      SUM(CASE WHEN duration_seconds > 300 THEN 1 ELSE 0 END) as "bucket_5m_plus"
     FROM call_records WHERE user_id = ? AND started_at >= datetime('now', '-30 days')
   `).get(userId);
 
-  // Compute rates from counts
+  const callStats = { ...combined };
+  delete callStats.bucket_0_10; delete callStats.bucket_11_30; delete callStats.bucket_31_60;
+  delete callStats.bucket_1_2m; delete callStats.bucket_2_5m; delete callStats.bucket_5m_plus;
+
   const total = callStats.total_calls || 1;
   callStats.transfer_rate = (callStats.total_transfers / total * 100);
   callStats.appointment_rate = (callStats.total_appointments / total * 100);
   callStats.answer_rate = (callStats.answered_calls / total * 100);
+
+  const durationBuckets = {
+    "0-10s": combined.bucket_0_10,
+    "11-30s": combined.bucket_11_30,
+    "31-60s": combined.bucket_31_60,
+    "1-2m": combined.bucket_1_2m,
+    "2-5m": combined.bucket_2_5m,
+    "5m+": combined.bucket_5m_plus,
+  };
+
+  // Build outcomes from the combined counts instead of a separate query
+  const outcomes = [
+    { outcome: "error", count: combined.total_errors },
+    { outcome: "voicemail", count: combined.total_voicemail },
+    { outcome: "transferred", count: combined.total_transfers },
+    { outcome: "not_interested", count: combined.total_not_interested },
+    { outcome: "lead_hangup", count: combined.total_hangups },
+    { outcome: "no_answer", count: combined.total_no_answer },
+    { outcome: "interested", count: combined.total_interested },
+    { outcome: "callback", count: combined.total_callbacks },
+    { outcome: "appointment_set", count: combined.total_appointments },
+    { outcome: "timeout", count: combined.total_timeouts },
+    { outcome: "do_not_call", count: combined.total_dnc },
+  ].filter(o => o.count > 0).sort((a, b) => b.count - a.count);
 
   const callsByDay = db.prepare(`
     SELECT date(started_at) as day, COUNT(*) as calls,
@@ -91,12 +137,6 @@ router.get("/dashboard", (req, res) => {
     FROM call_records
     WHERE user_id = ? AND started_at >= date('now')
     GROUP BY hour ORDER BY hour
-  `).all(userId);
-
-  const outcomes = db.prepare(`
-    SELECT outcome, COUNT(*) as count
-    FROM call_records WHERE user_id = ? AND started_at >= datetime('now', '-30 days')
-    GROUP BY outcome ORDER BY count DESC
   `).all(userId);
 
   const errorBreakdown = db.prepare(`
@@ -138,18 +178,7 @@ router.get("/dashboard", (req, res) => {
     FROM appointments WHERE user_id = ?
   `).get(userId);
 
-  const durationBuckets = db.prepare(`
-    SELECT
-      SUM(CASE WHEN duration_seconds <= 10 THEN 1 ELSE 0 END) as "0-10s",
-      SUM(CASE WHEN duration_seconds > 10 AND duration_seconds <= 30 THEN 1 ELSE 0 END) as "11-30s",
-      SUM(CASE WHEN duration_seconds > 30 AND duration_seconds <= 60 THEN 1 ELSE 0 END) as "31-60s",
-      SUM(CASE WHEN duration_seconds > 60 AND duration_seconds <= 120 THEN 1 ELSE 0 END) as "1-2m",
-      SUM(CASE WHEN duration_seconds > 120 AND duration_seconds <= 300 THEN 1 ELSE 0 END) as "2-5m",
-      SUM(CASE WHEN duration_seconds > 300 THEN 1 ELSE 0 END) as "5m+"
-    FROM call_records WHERE user_id = ? AND started_at >= datetime('now', '-30 days')
-  `).get(userId);
-
-  res.json({
+  const result = {
     stats,
     callStats,
     callsByDay,
@@ -161,7 +190,10 @@ router.get("/dashboard", (req, res) => {
     todayStats,
     appointmentStats,
     durationBuckets,
-  });
+  };
+
+  analyticsCache.set(userId, { ts: Date.now(), data: result });
+  res.json(result);
 });
 
 export default router;

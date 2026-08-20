@@ -50,6 +50,8 @@ export class CallQueue {
     this.results = [];
     this.onCall = null; // callback: async (lead) => result
     this.stopped = false; // Flag to stop processing
+    this.refill = null; // optional () => lead[]
+    this.seenIds = new Set(leads.map(l => l.id).filter(Boolean));
   }
 
   /**
@@ -66,7 +68,12 @@ export class CallQueue {
     this.stopped = false;
     logger.info(`Starting call queue: ${this.leads.length} leads, max ${this.maxConcurrent} concurrent, delay ${this.delayMs}ms between dials`);
 
-    while (this.leads.length > 0 && !this.stopped) {
+    while (!this.stopped) {
+      if (this.leads.length === 0) {
+        this._refillQueue();
+        if (this.leads.length === 0) break;
+      }
+
       // Wait for a free slot
       while (this.activeCalls >= this.maxConcurrent && !this.stopped) {
         await this._sleep(500);
@@ -79,12 +86,18 @@ export class CallQueue {
 
       this._processCall(lead).finally(() => {
         this.activeCalls--;
+        // seenIds tracks leads that are queued or in-flight. Once the call is
+        // done (and the lead wasn't re-queued for an immediate retry), release
+        // the id so a later refill can pick it up again if it's still callable
+        // in the DB (e.g. voicemail / no_answer awaiting another attempt).
+        if (lead?.id && !this.leads.some(l => l.id === lead.id)) {
+          this.seenIds.delete(lead.id);
+        }
       });
 
-      // Small stagger between dials to avoid SIP bursts, but NOT the full delay
-      // Full delay only applies when we're at max concurrency (handled by the wait loop above)
-      const stagger = Math.min(this.delayMs, 1500);
-      if (this.leads.length > 0 && !this.stopped) {
+      // Small stagger between dials to avoid SIP bursts, but keep pipeline full
+      const stagger = Math.min(this.delayMs, 800);
+      if ((this.leads.length > 0 || this.refill) && !this.stopped) {
         await this._sleep(stagger);
       }
     }
@@ -114,6 +127,25 @@ export class CallQueue {
       logger.error(`Call to ${lead.phone} failed: ${err.message}`);
       this.results.push({ lead, error: err.message, status: "failed" });
     }
+  }
+
+  _refillQueue() {
+    if (!this.refill || this.stopped) return;
+    let more = [];
+    try {
+      more = this.refill() || [];
+    } catch (e) {
+      logger.error(`Queue refill failed: ${e.message}`);
+      return;
+    }
+    let added = 0;
+    for (const lead of more) {
+      if (lead?.id && this.seenIds.has(lead.id)) continue;
+      if (lead?.id) this.seenIds.add(lead.id);
+      this.leads.push(lead);
+      added++;
+    }
+    if (added > 0) logger.info(`Queue refilled: +${added} leads (${this.leads.length} waiting)`);
   }
 
   _sleep(ms) {

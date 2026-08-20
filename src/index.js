@@ -9,6 +9,7 @@ import {
   buildAgentSettingsFromDb,
   getCampaignExtensions,
   getCampaignCallableLeads,
+  getCampaignCallableLeadCount,
   recordCall,
   updateLeadStatus,
   createAppointment,
@@ -20,6 +21,7 @@ import { getUserSipSettings, getUserDeepgramKey, getUserDeepgramKeyInfo } from "
 import { deepgramKeyManager } from "./deepgram/key-manager.js";
 import { getSipConfig } from "../config/sip.js";
 import { sipAgentManager } from "./sip-agent/manager.js";
+import { evaluateBalances, describeBalances } from "./billing/balance-guard.js";
 
 /**
  * ROBOCOP - AI Robot Caller (Enterprise Edition)
@@ -32,6 +34,42 @@ let dashboard;
 let sipDialer;
 let callManager;
 const campaignRunners = new Map(); // campaignId -> { queue, running, userId }
+
+const dialTimeoutTracker = {
+  timestamps: [],
+  isReconnecting: false,
+  THRESHOLD: 5,
+  WINDOW_MS: 120_000,
+
+  record() {
+    const now = Date.now();
+    this.timestamps.push(now);
+    this.timestamps = this.timestamps.filter(t => now - t < this.WINDOW_MS);
+    if (this.timestamps.length >= this.THRESHOLD && !this.isReconnecting) {
+      this.triggerReconnect();
+    }
+  },
+
+  async triggerReconnect() {
+    this.isReconnecting = true;
+    this.timestamps = [];
+    logger.warn(`⚠️ ${this.THRESHOLD}+ dial timeouts in ${this.WINDOW_MS / 1000}s — drachtio may be stuck, reconnecting...`);
+    try {
+      sipDialer.srf.disconnect();
+      await new Promise(r => setTimeout(r, 3000));
+      await sipDialer.connect();
+      await sipAgentManager.init(sipDialer.srf);
+      logger.info("Drachtio reconnected successfully after timeout cascade");
+    } catch (err) {
+      logger.error(`Drachtio reconnect failed: ${err.message}`);
+    }
+    this.isReconnecting = false;
+  },
+
+  reset() {
+    this.timestamps = [];
+  }
+};
 
 async function main() {
   logger.info("=== ROBOCOP AI Robot Caller v2 ===");
@@ -78,7 +116,229 @@ async function main() {
     }
   };
 
+  // Enforce each campaign's calling window: automatically start campaigns when
+  // their window opens and pause them when it closes. Runs every minute, plus
+  // once now so any campaign left "running" across a restart is re-evaluated.
+  // The same tick enforces provider balances (Deepgram / VoIP).
+  setInterval(() => { tickScheduler().catch(e => logger.error(`Scheduler tick error: ${e.message}`)); }, 60_000);
+  tickScheduler().catch(e => logger.error(`Scheduler tick error: ${e.message}`));
+  logger.info("Campaign scheduler started (checks calling windows + provider balances every 60s)");
+
   logger.info("ROBOCOP ready. Use the dashboard to start calling.");
+}
+
+/* ----------------------------------------------------------------------------
+ * Campaign scheduling
+ *
+ * Each campaign carries a calling window (days_of_week + daily_start_time /
+ * daily_end_time in a timezone, optionally bounded by start_date / end_date).
+ * The engine previously ignored all of this. The helpers below enforce it: a
+ * campaign the user marked "running" only dials while inside its window and is
+ * automatically paused/resumed as the window closes/opens. Overnight windows
+ * (start > end, e.g. 18:00–12:00) are supported for calling other continents.
+ * -------------------------------------------------------------------------- */
+
+function parseHM(value) {
+  const m = /^(\d{1,2}):(\d{2})$/.exec((value || "").trim());
+  if (!m) return null;
+  const h = parseInt(m[1], 10);
+  const min = parseInt(m[2], 10);
+  if (h > 23 || min > 59) return null;
+  return h * 60 + min;
+}
+
+function getZonedParts(date, timeZone) {
+  const fmt = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    weekday: "long",
+    year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", hour12: false,
+  });
+  const out = {};
+  for (const p of fmt.formatToParts(date)) out[p.type] = p.value;
+  return out;
+}
+
+/** True if `now` falls inside the campaign's calling window. */
+function isWithinSchedule(campaign, now = new Date()) {
+  const tz = campaign.timezone || "Europe/London";
+  let parts;
+  try {
+    parts = getZonedParts(now, tz);
+  } catch {
+    parts = getZonedParts(now, "UTC");
+  }
+
+  let hour = parseInt(parts.hour, 10);
+  if (hour === 24 || Number.isNaN(hour)) hour = 0;
+  const minute = parseInt(parts.minute, 10) || 0;
+  const nowMinutes = hour * 60 + minute;
+  const dateStr = `${parts.year}-${parts.month}-${parts.day}`;
+
+  // Optional overall date range (inclusive, YYYY-MM-DD string comparison)
+  if (campaign.start_date && dateStr < campaign.start_date) return false;
+  if (campaign.end_date && dateStr > campaign.end_date) return false;
+
+  // Days of week (empty list = every day allowed)
+  let days = [];
+  try { days = JSON.parse(campaign.days_of_week || "[]"); } catch { days = []; }
+  if (Array.isArray(days) && days.length > 0 && !days.includes(parts.weekday)) {
+    return false;
+  }
+
+  // Daily time window. Equal/blank start & end => run 24h.
+  const start = parseHM(campaign.daily_start_time);
+  const end = parseHM(campaign.daily_end_time);
+  if (start === null || end === null || start === end) return true;
+  if (start < end) return nowMinutes >= start && nowMinutes < end;
+  // Overnight window (e.g. 18:00–12:00 next day)
+  return nowMinutes >= start || nowMinutes < end;
+}
+
+/** Human-readable window description for logs. */
+function describeWindow(campaign) {
+  let days = [];
+  try { days = JSON.parse(campaign.days_of_week || "[]"); } catch { days = []; }
+  const dayStr = Array.isArray(days) && days.length
+    ? days.map(d => d.slice(0, 3)).join("/")
+    : "every day";
+  return `${campaign.daily_start_time || "00:00"}–${campaign.daily_end_time || "24:00"} ${campaign.timezone || "Europe/London"} (${dayStr})`;
+}
+
+/**
+ * Pause a running campaign because it fell outside its schedule window.
+ * Unlike a user stop this KEEPS status = 'running' (the user's intent), so the
+ * scheduler resumes it when the window re-opens. Active calls finish naturally.
+ */
+function pauseForSchedule(campaignId, runnerArg) {
+  // Prefer the caller's runner reference: the registry lookup can miss (e.g.
+  // the entry was clobbered), and silently skipping the pause here is what
+  // caused campaigns to end up mis-marked as finished at window close.
+  const runner = runnerArg || campaignRunners.get(campaignId);
+  if (!runner || runner.pausedForSchedule) return;
+  runner.pausedForSchedule = true;
+  runner.running = false;
+  if (runner.queue) {
+    runner.queue.leads = [];
+    runner.queue.stop();
+  }
+  dashboard.pushCampaignLog(campaignId, runner.userId, "info",
+    "Outside calling hours — pausing. Active calls will finish; will auto-resume at next window.");
+  logger.info(`[scheduler] Campaign ${campaignId} paused for schedule`);
+}
+
+/**
+ * Pause a running campaign because a provider (Deepgram / VoIP) ran out of
+ * balance. Like pauseForSchedule this KEEPS status = 'running', so the scheduler
+ * resumes dialing automatically once the balance is topped up.
+ */
+function pauseForBalance(campaignId, reasons) {
+  const runner = campaignRunners.get(campaignId);
+  if (!runner || runner.pausedForBalance) return;
+  runner.pausedForBalance = true;
+  runner.running = false;
+  if (runner.queue) {
+    runner.queue.leads = [];
+    runner.queue.stop();
+  }
+  dashboard.pushCampaignLog(campaignId, runner.userId, "error",
+    `Out of balance — pausing. ${reasons.join("; ")}. Active calls will finish; will auto-resume once topped up.`);
+  logger.warn(`[balance-guard] Campaign ${campaignId} paused: ${reasons.join("; ")}`);
+}
+
+// Throttle the "out of balance" log so it isn't emitted every single minute.
+let lastBalanceWarnAt = 0;
+
+/**
+ * Runs every minute: starts campaigns whose window just opened and pauses those
+ * whose window just closed. Only touches campaigns the user marked 'running'
+ * (i.e. actively wants dialing) — manually paused campaigns are left alone.
+ *
+ * Also enforces provider balances: when Deepgram keys or the VoIP account run
+ * dry, running campaigns are paused and no new ones are started until funded.
+ */
+/** Reject if `promise` outlives `ms`, so one slow dependency can't stall the tick. */
+function withDeadline(promise, ms) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error(`timed out after ${ms}ms`)), ms)),
+  ]);
+}
+
+async function tickScheduler() {
+  let campaigns;
+  try {
+    const db = getDb();
+    campaigns = db.prepare("SELECT * FROM campaigns WHERE status = 'running'").all();
+  } catch (e) {
+    logger.error(`Scheduler tick failed: ${e.message}`);
+    return;
+  }
+
+  // STEP 1 — Enforce calling hours FIRST, with no awaits before it.
+  //
+  // This used to run after the provider-balance lookup. A single stalled HTTP
+  // request to a provider then hung the whole tick, so the window was never
+  // enforced and campaigns dialed 24/7. Closing the window must never depend
+  // on a third party being reachable.
+  const inWindowCampaigns = [];
+  for (const c of campaigns) {
+    let inWindow;
+    try {
+      inWindow = isWithinSchedule(c);
+    } catch (e) {
+      logger.error(`[scheduler] schedule check failed for ${c.id}: ${e.message} — treating as OUT of window`);
+      inWindow = false;
+    }
+
+    const runner = campaignRunners.get(c.id);
+    if (!inWindow) {
+      if (runner && !runner.pausedForSchedule) {
+        logger.info(`[scheduler] Window closed for "${c.name}" — pausing`);
+        pauseForSchedule(c.id);
+      }
+      continue;
+    }
+    inWindowCampaigns.push(c);
+  }
+
+  if (inWindowCampaigns.length === 0) return;
+
+  // STEP 2 — Provider balances (per user, once per tick). Bounded so a slow
+  // provider degrades to "unknown" instead of freezing the scheduler.
+  const balanceByUser = new Map();
+  for (const userId of new Set(inWindowCampaigns.map(c => c.user_id))) {
+    try {
+      balanceByUser.set(userId, await withDeadline(evaluateBalances(userId), 20_000));
+    } catch (e) {
+      logger.warn(`[balance-guard] evaluation failed for user ${userId}: ${e.message}`);
+    }
+  }
+
+  for (const c of inWindowCampaigns) {
+    const balance = balanceByUser.get(c.user_id);
+
+    if (balance && !balance.ok) {
+      const runner = campaignRunners.get(c.id);
+      if (runner && !runner.pausedForBalance) {
+        pauseForBalance(c.id, balance.reasons);
+      } else if (!runner && Date.now() - lastBalanceWarnAt > 5 * 60 * 1000) {
+        lastBalanceWarnAt = Date.now();
+        logger.warn(`[balance-guard] Holding "${c.name}" — ${balance.reasons.join("; ")}`);
+        // Surface it in the dashboard too. Otherwise the campaign just sits there
+        // looking "running" with no calls and no visible explanation.
+        dashboard.pushCampaignLog(c.id, c.user_id, "warn",
+          `Dialing on hold — ${balance.reasons.join("; ")}`);
+      }
+      continue; // never start or resume dialing while out of balance
+    }
+
+    if (!campaignRunners.get(c.id)) {
+      logger.info(`[scheduler] Window open for "${c.name}" — starting`);
+      Promise.resolve(startCampaign(c.id, c.user_id)).catch(err =>
+        logger.error(`[scheduler] Failed to start ${c.id}: ${err.message}`));
+    }
+  }
 }
 
 /**
@@ -87,10 +347,37 @@ async function main() {
 async function startCampaign(campaignId, userId) {
   if (campaignRunners.has(campaignId)) return;
 
+  // Register the runner BEFORE any awaits. Registering it only after the SIP /
+  // balance checks left a multi-second window where a second start could slip
+  // past the guard above; the duplicate runners then clobbered each other's
+  // registry entry, schedule pauses were lost, and a window close mis-marked
+  // the campaign as finished (status 'paused').
+  const runner = { running: true, userId, logs: [], activeCalls: [], activeAbortHandles: new Map(), completedCalls: 0, totalLeads: 0 };
+  campaignRunners.set(campaignId, runner);
+  dashboard.campaignRunners.set(campaignId, runner);
+  try {
+    await runCampaign(campaignId, userId, runner);
+  } finally {
+    // Only remove our own registration — never another runner's.
+    if (campaignRunners.get(campaignId) === runner) campaignRunners.delete(campaignId);
+    if (dashboard.campaignRunners.get(campaignId) === runner) dashboard.campaignRunners.delete(campaignId);
+  }
+}
+
+async function runCampaign(campaignId, userId, runner) {
   const db = getDb();
   const campaign = db.prepare("SELECT * FROM campaigns WHERE id = ?").get(campaignId);
   if (!campaign) {
     logger.error(`Campaign ${campaignId} not found`);
+    return;
+  }
+
+  // Respect the calling window. If we're outside it, stay "running" (the user's
+  // intent) but don't dial — the scheduler starts us the moment it opens.
+  if (!isWithinSchedule(campaign)) {
+    dashboard.pushCampaignLog(campaignId, userId, "info",
+      `Outside calling hours ${describeWindow(campaign)}. Waiting — will auto-start when the window opens.`);
+    logger.info(`Campaign ${campaignId} start deferred (outside window ${describeWindow(campaign)})`);
     return;
   }
 
@@ -112,12 +399,30 @@ async function startCampaign(campaignId, userId) {
     return;
   }
 
-  const leads = getCampaignCallableLeads(campaignId);
+  // Check upstream provider balances (Deepgram keys / VoIP). Stay 'running' so the
+  // scheduler resumes automatically once the accounts are topped up.
+  try {
+    const providers = await evaluateBalances(userId);
+    if (!providers.ok) {
+      dashboard.pushCampaignLog(campaignId, userId, "error",
+        `Cannot start — out of balance. ${providers.reasons.join("; ")}. Will auto-start once topped up.`);
+      logger.warn(`Campaign ${campaignId} start blocked: ${providers.reasons.join("; ")}`);
+      return;
+    }
+    logger.info(`[balance-guard] ${describeBalances(providers)}`);
+  } catch (e) {
+    logger.warn(`[balance-guard] check skipped (${e.message}) — proceeding`);
+  }
+
+  const QUEUE_BATCH = 4000;
+  const callableTotal = getCampaignCallableLeadCount(campaignId);
+  const leads = getCampaignCallableLeads(campaignId, QUEUE_BATCH);
   if (leads.length === 0) {
     dashboard.pushCampaignLog(campaignId, userId, "warn", "No callable leads in this campaign");
     db.prepare("UPDATE campaigns SET status = 'paused' WHERE id = ?").run(campaignId);
     return;
   }
+  logger.info(`Loaded ${leads.length} leads to start (callable pool: ${callableTotal})`);
 
   const extensions = getCampaignExtensions(campaignId);
   const maxConcurrent = campaign.max_concurrent_calls || 1;
@@ -143,7 +448,6 @@ async function startCampaign(campaignId, userId) {
     db.prepare("UPDATE campaigns SET status = 'paused' WHERE id = ?").run(campaignId);
     return;
   }
-  let deepgramApiKey = deepgramKeyInfo.key;
   logger.info(`Using Deepgram key: "${deepgramKeyInfo.label}" (source: ${deepgramKeyInfo.source})`);
 
   // Register with SIP provider if account mode (trunk mode skips registration)
@@ -157,19 +461,40 @@ async function startCampaign(campaignId, userId) {
     }
   }
 
-  const runner = { running: true, userId, logs: [], activeCalls: [], activeAbortHandles: new Map(), completedCalls: 0, totalLeads: leads.length };
-  campaignRunners.set(campaignId, runner);
-  dashboard.campaignRunners.set(campaignId, runner);
+  runner.totalLeads = callableTotal;
+
+  // Live "remaining" figure for the dashboard: the real callable count from the
+  // DB (refreshed at most every 30s), not the size of the in-memory dial buffer.
+  let remainingCache = { value: callableTotal, ts: Date.now() };
+  const getRemainingLeads = () => {
+    if (Date.now() - remainingCache.ts > 30_000) {
+      try { remainingCache = { value: getCampaignCallableLeadCount(campaignId), ts: Date.now() }; } catch {}
+    }
+    return remainingCache.value;
+  };
+  runner.getRemainingLeads = getRemainingLeads;
 
   dashboard.pushCampaignLog(campaignId, userId, "info",
-    `Campaign "${campaign.name}" started: ${leads.length} leads, ${extensions.length} extensions`);
+    `Campaign "${campaign.name}" started: ${callableTotal} callable leads, ${extensions.length} extensions — window ${describeWindow(campaign)}`);
 
   // Build lead queue
   const queue = new CallQueue(leads, maxConcurrent, delayMs);
+  queue.refill = () => getCampaignCallableLeads(campaignId, QUEUE_BATCH);
   runner.queue = queue;
 
   const results = await queue.start(async (lead) => {
     if (!runner.running || !lead) return { outcome: "skipped" };
+
+    // Hard stop at the calling window, checked per call. The scheduler also
+    // enforces this, but relying on it alone means any stall in that loop lets
+    // the dialer run through the night. Never dial outside the user's hours.
+    if (!isWithinSchedule(campaign)) {
+      if (!runner.pausedForSchedule) {
+        logger.info(`[scheduler] Window closed mid-run for "${campaign.name}" — stopping dialer`);
+        pauseForSchedule(campaignId, runner);
+      }
+      return { outcome: "skipped" };
+    }
 
     // Per-call credit check
     const currentBalance = getUserBalance(userId);
@@ -184,10 +509,27 @@ async function startCampaign(campaignId, userId) {
     const displayName = rawName.toLowerCase().replace(/(?:^|\s)\S/g, c => c.toUpperCase());
     dashboard.pushCampaignLog(campaignId, userId, "info", `Dialing ${displayName} (${lead.phone})`);
 
+    // Pick the current healthy key at call start (local DB read — no Deepgram HTTP, no delay).
+    // If the pool retired a low-balance key since the last call, this is already the replacement.
+    const liveKey = getUserDeepgramKeyInfo(userId);
+    if (!liveKey) {
+      dashboard.pushCampaignLog(campaignId, userId, "error", "All Deepgram API keys depleted! Add more keys in Settings.");
+      runner.running = false;
+      if (runner.queue) { runner.queue.leads = []; runner.queue.stop(); }
+      return { outcome: "skipped" };
+    }
+    if (!deepgramKeyInfo || liveKey.id !== deepgramKeyInfo.id) {
+      if (deepgramKeyInfo) {
+        dashboard.pushCampaignLog(campaignId, userId, "info", `Switched Deepgram key to "${liveKey.label}" — campaign continues.`);
+      }
+      deepgramKeyInfo = liveKey;
+    }
+    const deepgramApiKey = liveKey.key;
+
     // Track active call
     const activeCall = { leadId: lead.id, phone: lead.phone, name: displayName, startedAt: new Date().toISOString(), status: "dialing" };
     runner.activeCalls.push(activeCall);
-    dashboard.broadcastToUser(userId, "call_started", { campaignId, call: activeCall, activeCalls: runner.activeCalls.length, remainingLeads: queue.leads.length });
+    dashboard.broadcastToUser(userId, "call_started", { campaignId, call: activeCall, activeCalls: runner.activeCalls.length, remainingLeads: getRemainingLeads() });
 
     // Build agent settings interpolated with this lead's data
     const leadData = { ...lead, ...JSON.parse(lead.extra_json || "{}") };
@@ -274,11 +616,11 @@ async function startCampaign(campaignId, userId) {
         if (rotated?.rotated) {
           deepgramKeyInfo = rotated;
           deepgramApiKey = rotated.key;
-          dashboard.pushCampaignLog(campaignId, userId, "warn", `Deepgram key depleted (402). Auto-switched to "${rotated.label}".`);
+          dashboard.pushCampaignLog(campaignId, userId, "warn", `Deepgram key hit low balance. Auto-switched to "${rotated.label}" — campaign continues.`);
         } else if (!rotated) {
           dashboard.pushCampaignLog(campaignId, userId, "error", "All Deepgram API keys depleted! Add more keys in Settings.");
         }
-      } else if (errMsg.includes("401") || errMsg.includes("unauthorized") || errMsg.includes("deactivated")) {
+      } else if ((errMsg.includes("deepgram 401") || errMsg.includes("invalid_auth") || errMsg.includes("deactivated")) && !errMsg.includes("sip")) {
         const rotated = deepgramKeyManager.report401(userId, deepgramKeyInfo.id);
         if (rotated?.rotated) {
           deepgramKeyInfo = rotated;
@@ -292,23 +634,29 @@ async function startCampaign(campaignId, userId) {
     // Report success to reset error counter
     if (result.outcome !== "error" && deepgramKeyInfo.id) {
       deepgramKeyManager.reportSuccess(userId, deepgramKeyInfo.id);
+      dialTimeoutTracker.reset();
     }
 
     // Remove from active calls and abort handles
     runner.activeCalls = runner.activeCalls.filter(c => c.leadId !== lead.id);
     if (result?.callId) runner.activeAbortHandles.delete(result.callId);
     runner.completedCalls++;
-    dashboard.broadcastToUser(userId, "call_ended", { campaignId, leadId: lead.id, phone: lead.phone, name: displayName, outcome: result.outcome, duration: Math.round((new Date(endedAt) - new Date(startedAt)) / 1000), activeCalls: runner.activeCalls.length, completedCalls: runner.completedCalls, remainingLeads: queue.leads.length });
+    dashboard.broadcastToUser(userId, "call_ended", { campaignId, leadId: lead.id, phone: lead.phone, name: displayName, outcome: result.outcome, duration: Math.round((new Date(endedAt) - new Date(startedAt)) / 1000), activeCalls: runner.activeCalls.length, completedCalls: runner.completedCalls, remainingLeads: getRemainingLeads() });
 
     // Calculate duration
     const durationMs = new Date(endedAt) - new Date(startedAt);
     const durationSeconds = Math.round(durationMs / 1000);
 
-    // Calculate costs (dynamic rates from admin settings, both based on total call duration)
+    // Calculate costs from connected time only. Calls the carrier rejected (486/503/404)
+    // never answered, so no VoIP minutes and no AI ran — those must cost nothing.
     const aiDurationSec = result.aiDurationSeconds || 0;
     const rates = getCostRates();
-    const voipCost = (durationSeconds / 60) * rates.voipCostPerMin;
-    const aiCost = (durationSeconds / 60) * rates.aiCostPerMin;
+    let billableSeconds = 0;
+    if (result.answeredAt) {
+      billableSeconds = Math.max(0, Math.round((new Date(endedAt) - new Date(result.answeredAt)) / 1000));
+    }
+    const voipCost = (billableSeconds / 60) * rates.voipCostPerMin;
+    const aiCost = (billableSeconds / 60) * rates.aiCostPerMin;
     const callCost = voipCost + aiCost;
 
     // Record in DB
@@ -379,7 +727,7 @@ async function startCampaign(campaignId, userId) {
     // Deduct credits
     if (callCost > 0) {
       try {
-        const newBalance = deductCredits(userId, callCost, `Call to ${displayName} (${lead.phone}) - ${durationSeconds}s`, result.callId || "");
+        const newBalance = deductCredits(userId, callCost, `Call to ${displayName} (${lead.phone}) - ${billableSeconds}s connected`, result.callId || "");
         logger.info(`Credits deducted: $${callCost.toFixed(4)} (VoIP: $${voipCost.toFixed(4)}, AI: $${aiCost.toFixed(4)}). Balance: $${newBalance.toFixed(2)}`);
       } catch (e) {
         logger.error(`Failed to deduct credits: ${e.message}`);
@@ -388,25 +736,29 @@ async function startCampaign(campaignId, userId) {
 
     // Update lead status based on call outcome
     try {
-      updateLeadStatus(lead.id, result.outcome);
+      updateLeadStatus(lead.id, result.outcome, result.outcome === "error" ? (result.notes || "") : "");
     } catch (e) {
       logger.error(`Failed to update lead status: ${e.message}`);
     }
 
     // Auto-retry: if SIP error is retryable (busy/unavailable/service down),
     // put the lead back at the end of the queue for one more attempt
-    const RETRYABLE_SIP = ["486", "480", "503"];
+    const RETRYABLE_SIP = ["486", "480", "503", "408"];
     const retryMax = 2;
     if (result.outcome === "error" && runner.running) {
-      const sipMatch = (result.notes || "").match(/(\d{3})/);
+      const errNotes = result.notes || "";
+      const sipMatch = errNotes.match(/(\d{3})/);
       const sipCode = sipMatch ? sipMatch[1] : null;
-      if (sipCode && RETRYABLE_SIP.includes(sipCode)) {
+      const isDialTimeout = errNotes.includes("Dial timeout");
+      if (isDialTimeout) dialTimeoutTracker.record();
+      if ((sipCode && RETRYABLE_SIP.includes(sipCode)) || isDialTimeout) {
         lead._retryCount = (lead._retryCount || 0) + 1;
+        const reason = isDialTimeout ? "Dial timeout" : `SIP ${sipCode}`;
         if (lead._retryCount <= retryMax) {
-          logger.info(`[${result.callId}] SIP ${sipCode} — queueing retry ${lead._retryCount}/${retryMax} for ${displayName} (${lead.phone})`);
+          logger.info(`[${result.callId}] ${reason} — queueing retry ${lead._retryCount}/${retryMax} for ${displayName} (${lead.phone})`);
           queue.leads.push(lead);
         } else {
-          logger.info(`[${result.callId}] SIP ${sipCode} — max retries reached for ${displayName} (${lead.phone})`);
+          logger.info(`[${result.callId}] ${reason} — max retries reached for ${displayName} (${lead.phone})`);
         }
       }
     }
@@ -453,18 +805,40 @@ async function startCampaign(campaignId, userId) {
     return result;
   });
 
-  // Campaign finished
-  campaignRunners.delete(campaignId);
-  dashboard.campaignRunners.delete(campaignId);
-
-  db.prepare("UPDATE campaigns SET status = 'paused', updated_at = datetime('now') WHERE id = ?")
-    .run(campaignId);
+  // Campaign loop ended. If the schedule window closed we auto-paused, so keep
+  // status = 'running' (the scheduler will resume it next window). Otherwise the
+  // campaign genuinely finished (leads exhausted) or was stopped by the user —
+  // mark it 'paused'.
+  const wasSchedulePause = runner.pausedForSchedule === true;
+  const wasBalancePause = runner.pausedForBalance === true;
+  const wasShutdownPause = runner.pausedForShutdown === true;
+  // Registry cleanup happens in startCampaign's finally (guarded so it can
+  // never remove another runner's entry).
 
   const completed = results.filter(r => r && r.outcome !== "skipped").length;
-  dashboard.pushCampaignLog(campaignId, userId, "info",
-    `Campaign "${campaign.name}" finished: ${completed} calls completed`);
 
-  dashboard.broadcastToUser(userId, "campaign_finished", { campaignId });
+  if (wasShutdownPause) {
+    // App restart — not a user stop and not "finished". Keep status = 'running'
+    // so the scheduler resumes dialing right after the next boot.
+    db.prepare("UPDATE campaigns SET status = 'running', updated_at = datetime('now') WHERE id = ?")
+      .run(campaignId);
+  } else if (wasBalancePause) {
+    db.prepare("UPDATE campaigns SET status = 'running', updated_at = datetime('now') WHERE id = ?")
+      .run(campaignId);
+    dashboard.pushCampaignLog(campaignId, userId, "info",
+      `Out of balance — paused after ${completed} calls this session. Will auto-resume once the provider balance is topped up.`);
+  } else if (wasSchedulePause) {
+    db.prepare("UPDATE campaigns SET status = 'running', updated_at = datetime('now') WHERE id = ?")
+      .run(campaignId);
+    dashboard.pushCampaignLog(campaignId, userId, "info",
+      `Outside calling hours — paused after ${completed} calls this session. Will auto-resume at next window (${describeWindow(campaign)}).`);
+  } else {
+    db.prepare("UPDATE campaigns SET status = 'paused', updated_at = datetime('now') WHERE id = ?")
+      .run(campaignId);
+    dashboard.pushCampaignLog(campaignId, userId, "info",
+      `Campaign "${campaign.name}" finished: ${completed} calls completed`);
+    dashboard.broadcastToUser(userId, "campaign_finished", { campaignId });
+  }
 }
 
 /**
@@ -540,15 +914,68 @@ function forceStopCampaign(campaignId) {
   logger.info(`Campaign ${campaignId} force-stopped and set to paused`);
 }
 
-// Graceful shutdown
-process.on("SIGINT", () => {
-  logger.info("Received SIGINT, shutting down...");
+/**
+ * Graceful shutdown.
+ *
+ * Every live call MUST be hung up (BYE) before we exit. Exiting without it leaves
+ * the carrier holding those channels open until its own session timers expire, and
+ * while they're held the trunk rejects new calls with 486/503 — so an abrupt
+ * restart mid-campaign takes dialing down for as long as half an hour afterwards.
+ */
+let shuttingDown = false;
+
+async function gracefulShutdown(signal) {
+  if (shuttingDown) return;
+  shuttingDown = true;
+  logger.info(`Received ${signal}, shutting down...`);
+
+  let hungUp = 0;
+  for (const [campaignId, runner] of campaignRunners) {
+    // A restart is not a user stop: flag it so the campaign-finished handler
+    // keeps status = 'running' and the scheduler auto-resumes on next boot.
+    runner.pausedForShutdown = true;
+    runner.running = false;
+    if (runner.queue) {
+      runner.queue.leads = [];
+      runner.queue.stop();
+    }
+    if (runner.activeAbortHandles && runner.activeAbortHandles.size > 0) {
+      logger.info(`Hanging up ${runner.activeAbortHandles.size} active call(s) for campaign ${campaignId}`);
+      for (const [callId, handle] of runner.activeAbortHandles) {
+        try {
+          handle.abort();
+          hungUp++;
+        } catch (e) {
+          logger.error(`Failed to hang up ${callId} during shutdown: ${e.message}`);
+        }
+      }
+      runner.activeAbortHandles.clear();
+    }
+  }
+
+  // Let the BYEs reach the carrier before the socket dies. Docker allows 10s
+  // before SIGKILL, so stay well inside that budget.
+  if (hungUp > 0) {
+    logger.info(`Released ${hungUp} channel(s) — waiting 4s for BYEs to flush`);
+    await new Promise(r => setTimeout(r, 4000));
+  }
+
+  logger.info("Shutdown complete");
   process.exit(0);
+}
+
+process.on("SIGINT", () => {
+  gracefulShutdown("SIGINT").catch(err => {
+    logger.error(`Shutdown error: ${err.message}`);
+    process.exit(1);
+  });
 });
 
 process.on("SIGTERM", () => {
-  logger.info("Received SIGTERM, shutting down...");
-  process.exit(0);
+  gracefulShutdown("SIGTERM").catch(err => {
+    logger.error(`Shutdown error: ${err.message}`);
+    process.exit(1);
+  });
 });
 
 process.on("unhandledRejection", (reason) => {

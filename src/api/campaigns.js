@@ -14,20 +14,43 @@ const router = Router();
 router.get("/", (req, res) => {
   const db = getDb();
   const campaigns = db.prepare(`
-    SELECT c.*, a.name as agent_name, a.script as agent_script, a.mode as agent_mode,
-      (SELECT COUNT(*) FROM campaign_lists cl JOIN leads l ON l.list_id = cl.list_id WHERE cl.campaign_id = c.id) as total_leads,
-      (SELECT COUNT(*) FROM call_records cr WHERE cr.campaign_id = c.id) as total_calls,
-      (SELECT COUNT(*) FROM call_records cr WHERE cr.campaign_id = c.id AND cr.outcome = 'transferred') as answered_leads,
-      (SELECT COUNT(*) FROM call_records cr WHERE cr.campaign_id = c.id AND cr.outcome NOT IN ('unknown','error')) as contacted_leads
+    SELECT c.*, a.name as agent_name, a.script as agent_script, a.mode as agent_mode
     FROM campaigns c
     LEFT JOIN agents a ON c.agent_id = a.id
     WHERE c.user_id = ?
     ORDER BY c.created_at DESC
   `).all(req.user.userId);
 
+  if (campaigns.length === 0) return res.json([]);
+
+  const campaignIds = campaigns.map(c => c.id);
+  const placeholders = campaignIds.map(() => "?").join(",");
+
+  const leadCounts = {};
+  db.prepare(`
+    SELECT cl.campaign_id, COALESCE(SUM(l2.total_leads), 0) as cnt
+    FROM campaign_lists cl JOIN lists l2 ON cl.list_id = l2.id
+    WHERE cl.campaign_id IN (${placeholders})
+    GROUP BY cl.campaign_id
+  `).all(...campaignIds).forEach(r => { leadCounts[r.campaign_id] = r.cnt; });
+
+  const callCounts = {};
+  db.prepare(`
+    SELECT campaign_id,
+      COUNT(*) as total_calls,
+      SUM(CASE WHEN outcome = 'transferred' THEN 1 ELSE 0 END) as answered_leads,
+      SUM(CASE WHEN outcome NOT IN ('unknown','error') THEN 1 ELSE 0 END) as contacted_leads
+    FROM call_records WHERE campaign_id IN (${placeholders})
+    GROUP BY campaign_id
+  `).all(...campaignIds).forEach(r => { callCounts[r.campaign_id] = r; });
+
   const result = campaigns.map(c => ({
     ...c,
     days_of_week: JSON.parse(c.days_of_week || "[]"),
+    total_leads: leadCounts[c.id] || 0,
+    total_calls: (callCounts[c.id] || {}).total_calls || 0,
+    answered_leads: (callCounts[c.id] || {}).answered_leads || 0,
+    contacted_leads: (callCounts[c.id] || {}).contacted_leads || 0,
   }));
   res.json(result);
 });
@@ -36,13 +59,7 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
   const db = getDb();
   const campaign = db.prepare(`
-    SELECT c.*, a.name as agent_name, a.script as agent_script, a.mode as agent_mode,
-      (SELECT COUNT(*) FROM campaign_lists cl JOIN leads l ON l.list_id = cl.list_id WHERE cl.campaign_id = c.id) as total_leads,
-      (SELECT COUNT(*) FROM call_records cr WHERE cr.campaign_id = c.id) as total_calls,
-      (SELECT COUNT(*) FROM call_records cr WHERE cr.campaign_id = c.id AND cr.outcome = 'transferred') as transferred_calls,
-      (SELECT COUNT(*) FROM call_records cr WHERE cr.campaign_id = c.id AND cr.outcome IN ('interested','transferred','appointment_set')) as answered_leads,
-      (SELECT COUNT(*) FROM call_records cr WHERE cr.campaign_id = c.id AND cr.outcome = 'not_interested') as rejected_leads,
-      (SELECT COUNT(*) FROM leads l JOIN campaign_lists cl ON l.list_id = cl.list_id WHERE cl.campaign_id = c.id AND l.do_not_call = 1) as dnc_leads
+    SELECT c.*, a.name as agent_name, a.script as agent_script, a.mode as agent_mode
     FROM campaigns c
     LEFT JOIN agents a ON c.agent_id = a.id
     WHERE c.id = ? AND c.user_id = ?
@@ -50,14 +67,39 @@ router.get("/:id", (req, res) => {
 
   if (!campaign) return res.status(404).json({ error: "Campaign not found" });
 
+  const leadStats = db.prepare(`
+    SELECT COALESCE(SUM(l2.total_leads), 0) as total_leads
+    FROM campaign_lists cl JOIN lists l2 ON cl.list_id = l2.id
+    WHERE cl.campaign_id = ?
+  `).get(req.params.id);
+
+  const callStats = db.prepare(`
+    SELECT
+      COUNT(*) as total_calls,
+      SUM(CASE WHEN outcome = 'transferred' THEN 1 ELSE 0 END) as transferred_calls,
+      SUM(CASE WHEN outcome IN ('interested','transferred','appointment_set') THEN 1 ELSE 0 END) as answered_leads,
+      SUM(CASE WHEN outcome = 'not_interested' THEN 1 ELSE 0 END) as rejected_leads
+    FROM call_records WHERE campaign_id = ?
+  `).get(req.params.id);
+
+  const dncCount = db.prepare(`
+    SELECT COUNT(*) as cnt FROM leads l
+    JOIN campaign_lists cl ON l.list_id = cl.list_id
+    WHERE cl.campaign_id = ? AND l.do_not_call = 1
+  `).get(req.params.id);
+
+  campaign.total_leads = leadStats.total_leads;
+  campaign.total_calls = callStats.total_calls;
+  campaign.transferred_calls = callStats.transferred_calls;
+  campaign.answered_leads = callStats.answered_leads;
+  campaign.rejected_leads = callStats.rejected_leads;
+  campaign.dnc_leads = dncCount.cnt;
   campaign.days_of_week = JSON.parse(campaign.days_of_week || "[]");
 
-  // Get extensions
   campaign.extensions = db.prepare(
     "SELECT * FROM extensions WHERE campaign_id = ? ORDER BY extension"
   ).all(req.params.id);
 
-  // Get assigned lists
   campaign.lists = db.prepare(`
     SELECT l.* FROM lists l
     JOIN campaign_lists cl ON l.id = cl.list_id
@@ -274,9 +316,10 @@ router.get("/:id/leads", (req, res) => {
   const limit = Math.min(parseInt(req.query.limit) || 50, 200);
   const offset = (page - 1) * limit;
 
-  const total = db.prepare(`
-    SELECT COUNT(*) as cnt FROM leads l
-    JOIN campaign_lists cl ON l.list_id = cl.list_id
+  // Use pre-computed total from lists table instead of counting 289K leads
+  const totalRow = db.prepare(`
+    SELECT COALESCE(SUM(l2.total_leads), 0) as cnt
+    FROM campaign_lists cl JOIN lists l2 ON cl.list_id = l2.id
     WHERE cl.campaign_id = ?
   `).get(req.params.id);
 
@@ -291,9 +334,9 @@ router.get("/:id/leads", (req, res) => {
 
   res.json({
     leads,
-    total: total.cnt,
+    total: totalRow.cnt,
     page,
-    pages: Math.ceil(total.cnt / limit),
+    pages: Math.ceil(totalRow.cnt / limit),
   });
 });
 

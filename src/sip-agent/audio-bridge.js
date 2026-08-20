@@ -270,23 +270,41 @@ export class AgentAudioBridge {
   }
 
   stop() {
-    const recordingPath = this._finalizeRecording();
-    
-    if (this.sendInterval) {
-      clearInterval(this.sendInterval);
-      this.sendInterval = null;
+    // Isolated teardown steps so a failure (e.g. disk I/O while finalizing the
+    // recording) can never block the RTP port release below. A leaked port would
+    // permanently shrink the pool until calls fail with "No available RTP ports".
+    let recordingPath = null;
+    try {
+      recordingPath = this._finalizeRecording();
+    } catch (e) {
+      logger.error(`Error finalizing recording: ${e.message}`, { callId: this.callId });
     }
-    if (this.udpSocket) {
-      this.udpSocket.close();
-      this.udpSocket = null;
+
+    try {
+      if (this.sendInterval) {
+        clearInterval(this.sendInterval);
+        this.sendInterval = null;
+      }
+    } catch (e) { /* ignore */ }
+
+    try {
+      if (this.udpSocket) {
+        this.udpSocket.close();
+        this.udpSocket = null;
+      }
+    } catch (e) { /* ignore */ }
+
+    try {
+      if (this.localPort) {
+        releaseRtpPort(this.localPort);
+        this.localPort = 0;
+      }
+      this.sendQueue = [];
+      this.audioOutBuffer = Buffer.alloc(0);
+    } finally {
+      logger.info(`Agent audio bridge stopped`, { callId: this.callId });
     }
-    if (this.localPort) {
-      releaseRtpPort(this.localPort);
-    }
-    this.sendQueue = [];
-    this.audioOutBuffer = Buffer.alloc(0);
-    
-    logger.info(`Agent audio bridge stopped`, { callId: this.callId });
+
     return recordingPath;
   }
 }

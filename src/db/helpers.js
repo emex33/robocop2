@@ -180,9 +180,38 @@ function buildSpeakProvider(agent) {
  * Update a lead's status after a call based on the call outcome.
  * Also sets do_not_call flag if the lead requested it.
  */
-export function updateLeadStatus(leadId, callOutcome) {
+/** A lead is retired after this many failed dial attempts. */
+export const MAX_DIAL_ATTEMPTS = 3;
+
+/**
+ * SIP codes that mean the number will never work — no point retrying at all.
+ * 404 = number not allocated, 604 = does not exist anywhere.
+ */
+const PERMANENT_SIP_CODES = ["404", "604"];
+
+export function updateLeadStatus(leadId, callOutcome, errorMessage = "") {
   if (!leadId) return;
   const db = getDb();
+
+  // Every attempt counts, so a number that always fails eventually gets retired
+  // rather than being re-dialed from the top of the list on each restart.
+  db.prepare("UPDATE leads SET attempts = COALESCE(attempts, 0) + 1 WHERE id = ?").run(leadId);
+
+  if (callOutcome === "error") {
+    const lead = db.prepare("SELECT attempts FROM leads WHERE id = ?").get(leadId);
+    const attempts = lead?.attempts || 1;
+    const permanent = PERMANENT_SIP_CODES.some(code => String(errorMessage).includes(code));
+
+    if (permanent || attempts >= MAX_DIAL_ATTEMPTS) {
+      db.prepare("UPDATE leads SET status = 'failed', last_error = ? WHERE id = ?")
+        .run(String(errorMessage).slice(0, 200), leadId);
+      return;
+    }
+    // Still has attempts left — leave it callable for a later retry.
+    db.prepare("UPDATE leads SET status = 'new', last_error = ? WHERE id = ?")
+      .run(String(errorMessage).slice(0, 200), leadId);
+    return;
+  }
 
   // Map call outcome to lead status
   const statusMap = {
@@ -196,7 +225,6 @@ export function updateLeadStatus(leadId, callOutcome) {
     no_answer: "no_answer",
     voicemail: "voicemail",
     timeout: "no_answer",
-    error: "new",       // keep as new so it gets retried
     unknown: "contacted",
   };
 
@@ -219,17 +247,38 @@ export function getCampaignExtensions(campaignId) {
 }
 
 /**
- * Get all leads for a campaign that are eligible to call.
+ * Get leads for a campaign that are eligible to call.
+ * Loads a bounded batch so a 250k list does not stall startup or OOM the
+ * process. The dialer refills when the queue runs low.
  */
-export function getCampaignCallableLeads(campaignId) {
+export function getCampaignCallableLeads(campaignId, limit = 4000) {
   const db = getDb();
+  const cap = Math.max(1, Math.min(Number(limit) || 4000, 8000));
+  // voicemail / no_answer are NOT terminal: those leads stay callable and get
+  // redialed (fresh attempts-0 leads first) until they hit MAX_DIAL_ATTEMPTS.
   return db.prepare(`
     SELECT l.* FROM leads l
     JOIN campaign_lists cl ON l.list_id = cl.list_id
     WHERE cl.campaign_id = ? AND l.do_not_call = 0
-      AND l.status NOT IN ('completed', 'contacted', 'voicemail', 'no_answer', 'callback')
-    ORDER BY l.created_at ASC
-  `).all(campaignId);
+      AND l.status NOT IN ('completed', 'contacted', 'callback', 'failed')
+      AND COALESCE(l.attempts, 0) < ${MAX_DIAL_ATTEMPTS}
+    ORDER BY COALESCE(l.attempts, 0) ASC, l.created_at ASC
+    LIMIT ?
+  `).all(campaignId, cap);
+}
+
+/**
+ * Get count of callable leads for a campaign (fast check without loading data).
+ */
+export function getCampaignCallableLeadCount(campaignId) {
+  const db = getDb();
+  return db.prepare(`
+    SELECT COUNT(*) as cnt FROM leads l
+    JOIN campaign_lists cl ON l.list_id = cl.list_id
+    WHERE cl.campaign_id = ? AND l.do_not_call = 0
+      AND l.status NOT IN ('completed', 'contacted', 'callback', 'failed')
+      AND COALESCE(l.attempts, 0) < ${MAX_DIAL_ATTEMPTS}
+  `).get(campaignId).cnt;
 }
 
 /**

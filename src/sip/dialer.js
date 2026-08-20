@@ -2,6 +2,7 @@ import Srf from "drachtio-srf";
 import os from "os";
 import logger from "../utils/logger.js";
 import { getDrachtioConfig, getSipConfig } from "../../config/sip.js";
+import { reportTrunkSuccess, reportTrunkFailure } from "../billing/balance-guard.js";
 
 /**
  * SIP Dialer - connects to drachtio-server and manages outbound SIP calls.
@@ -117,33 +118,50 @@ export class SipDialer {
    */
   async _makeCallAccount(phoneNumber, localSdp, sip) {
     const uri = `sip:${phoneNumber}@${sip.server}:${sip.port}`;
-    logger.info(`[account] Placing outbound SIP call to ${uri}`);
 
     const DIAL_TIMEOUT_MS = 60000;
+    const MAX_RETRIES = 2;
 
-    try {
-      const dialog = await Promise.race([
-        this.srf.createUAC(uri, {
-          localSdp,
-          headers: {
-            "From": `<sip:${sip.username}@${sip.server}:${sip.port}>`,
-            "To": `<sip:${phoneNumber}@${sip.server}>`,
-          },
-          auth: {
-            username: sip.username,
-            password: sip.password,
-          },
-        }),
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("Dial timeout: no SIP response in 60s")), DIAL_TIMEOUT_MS)
-        ),
-      ]);
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      if (attempt === 0) {
+        logger.info(`[account] Placing outbound SIP call to ${uri}`);
+      } else {
+        logger.info(`[account] INVITE retry ${attempt}/${MAX_RETRIES} for ${phoneNumber}`);
+      }
 
-      logger.info(`Call answered by ${phoneNumber}`);
-      return dialog;
-    } catch (err) {
-      logger.error(`Failed to call ${phoneNumber}: ${err.status || err.message}`);
-      throw err;
+      try {
+        const dialog = await Promise.race([
+          this.srf.createUAC(uri, {
+            localSdp,
+            headers: {
+              "From": `<sip:${sip.username}@${sip.server}:${sip.port}>`,
+              "To": `<sip:${phoneNumber}@${sip.server}>`,
+            },
+            auth: {
+              username: sip.username,
+              password: sip.password,
+            },
+          }),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Dial timeout: no SIP response in 60s")), DIAL_TIMEOUT_MS)
+          ),
+        ]);
+
+        logger.info(`Call answered by ${phoneNumber}`);
+        reportTrunkSuccess();
+        return dialog;
+      } catch (err) {
+        const isTimeout = err.message && err.message.includes("Dial timeout");
+        if (isTimeout && attempt < MAX_RETRIES) {
+          const backoffMs = (attempt + 1) * 3000;
+          logger.warn(`[account] Dial timeout for ${phoneNumber}, retrying in ${backoffMs / 1000}s (attempt ${attempt + 1}/${MAX_RETRIES})`);
+          await new Promise(r => setTimeout(r, backoffMs));
+          continue;
+        }
+        logger.error(`Failed to call ${phoneNumber}: ${err.status || err.message}`);
+        reportTrunkFailure(err.status, err.message);
+        throw err;
+      }
     }
   }
 
@@ -163,10 +181,6 @@ export class SipDialer {
     const srcIp = sip.sourceIp || this._getLocalIp();
     const srcPort = 5060;
 
-    logger.info(`[trunk] INVITE ${uri}`);
-    logger.info(`[trunk] From: "${fromUser}" <sip:${fromUser}@${srcIp}>`);
-    logger.info(`[trunk] To: <sip:${phoneNumber}@${destHost}:${destPort}>`);
-
     const uacOptions = {
       localSdp,
       callingNumber: fromUser,
@@ -182,26 +196,44 @@ export class SipDialer {
         username: sip.username,
         password: sip.password,
       };
-      logger.info(`[trunk] Auth enabled for user: ${sip.username}`);
-    } else {
-      logger.info(`[trunk] IP-based auth (no password)`);
     }
 
     const DIAL_TIMEOUT_MS = 60000;
+    const MAX_RETRIES = 2;
 
-    try {
-      const dialog = await Promise.race([
-        this.srf.createUAC(uri, uacOptions),
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("Dial timeout: no SIP response in 60s")), DIAL_TIMEOUT_MS)
-        ),
-      ]);
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      if (attempt === 0) {
+        logger.info(`[trunk] INVITE ${uri}`);
+        logger.info(`[trunk] From: "${fromUser}" <sip:${fromUser}@${srcIp}>`);
+        logger.info(`[trunk] To: <sip:${phoneNumber}@${destHost}:${destPort}>`);
+        logger.info(sip.password && sip.password.trim() !== "" ? `[trunk] Auth enabled for user: ${sip.username}` : `[trunk] IP-based auth (no password)`);
+      } else {
+        logger.info(`[trunk] INVITE retry ${attempt}/${MAX_RETRIES} for ${phoneNumber}`);
+      }
 
-      logger.info(`Call answered by ${phoneNumber}`);
-      return dialog;
-    } catch (err) {
-      logger.error(`Failed to call ${phoneNumber}: ${err.status || err.message}`);
-      throw err;
+      try {
+        const dialog = await Promise.race([
+          this.srf.createUAC(uri, uacOptions),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Dial timeout: no SIP response in 60s")), DIAL_TIMEOUT_MS)
+          ),
+        ]);
+
+        logger.info(`Call answered by ${phoneNumber}`);
+        reportTrunkSuccess();
+        return dialog;
+      } catch (err) {
+        const isTimeout = err.message && err.message.includes("Dial timeout");
+        if (isTimeout && attempt < MAX_RETRIES) {
+          const backoffMs = (attempt + 1) * 3000;
+          logger.warn(`[trunk] Dial timeout for ${phoneNumber}, retrying in ${backoffMs / 1000}s (attempt ${attempt + 1}/${MAX_RETRIES})`);
+          await new Promise(r => setTimeout(r, backoffMs));
+          continue;
+        }
+        logger.error(`Failed to call ${phoneNumber}: ${err.status || err.message}`);
+        reportTrunkFailure(err.status, err.message);
+        throw err;
+      }
     }
   }
 

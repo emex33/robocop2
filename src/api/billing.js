@@ -8,6 +8,9 @@ import { getUserBalance } from "../db/helpers.js";
 
 const router = Router();
 
+const usageCache = new Map();
+const USAGE_CACHE_TTL = 60_000; // 1 minute
+
 // GET /api/billing/balance — current user's credit balance
 router.get("/balance", (req, res) => {
   const balance = getUserBalance(req.user.userId);
@@ -47,8 +50,15 @@ router.get("/transactions", (req, res) => {
 
 // GET /api/billing/usage — user's usage summary
 router.get("/usage", (req, res) => {
-  const db = getDb();
   const userId = req.user.userId;
+
+  const cached = usageCache.get(userId);
+  if (cached && Date.now() - cached.ts < USAGE_CACHE_TTL) {
+    cached.data.balance = getUserBalance(userId);
+    return res.json(cached.data);
+  }
+
+  const db = getDb();
 
   const totals = db.prepare(`
     SELECT
@@ -58,7 +68,7 @@ router.get("/usage", (req, res) => {
       COALESCE(SUM(call_cost), 0) AS total_cost,
       COALESCE(SUM(voip_cost), 0) AS total_voip_cost,
       COALESCE(SUM(ai_cost), 0) AS total_ai_cost
-    FROM call_records WHERE user_id = ?
+    FROM call_records WHERE user_id = ? AND started_at >= datetime('now', '-30 days')
   `).get(userId);
 
   const byDay = db.prepare(`
@@ -83,7 +93,7 @@ router.get("/usage", (req, res) => {
       SUM(cr.call_cost) AS cost
     FROM call_records cr
     LEFT JOIN campaigns c ON cr.campaign_id = c.id
-    WHERE cr.user_id = ?
+    WHERE cr.user_id = ? AND cr.started_at >= datetime('now', '-30 days')
     GROUP BY cr.campaign_id
     ORDER BY cost DESC
     LIMIT 20
@@ -91,7 +101,9 @@ router.get("/usage", (req, res) => {
 
   const balance = getUserBalance(userId);
 
-  res.json({ balance, totals, byDay, byCampaign });
+  const data = { balance, totals, byDay, byCampaign };
+  usageCache.set(userId, { ts: Date.now(), data });
+  res.json(data);
 });
 
 export default router;

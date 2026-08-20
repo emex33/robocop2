@@ -235,17 +235,105 @@ function ListDetail({ listId, onUpdate }) {
 }
 
 function CsvUploadModal({ listId, onClose, onDone }) {
-  const [step, setStep] = useState('upload'); // upload | map | done
+  const [step, setStep] = useState('upload'); // upload | map | importing | done
   const [file, setFile] = useState(null);
   const [columns, setColumns] = useState([]);
+  const [preview, setPreview] = useState([]);
   const [totalRows, setTotalRows] = useState(0);
+  const [headerless, setHeaderless] = useState(false);
   const [mapping, setMapping] = useState({});
   const [uploading, setUploading] = useState(false);
   const [importing, setImporting] = useState(false);
+  const [importProgress, setImportProgress] = useState(null);
   const [error, setError] = useState('');
   const fileRef = useRef();
+  const pollRef = useRef(null);
 
   const standardFields = ['phone', 'first_name', 'last_name', 'email', 'company', 'country', 'notes'];
+
+  useEffect(() => () => {
+    if (pollRef.current) clearInterval(pollRef.current);
+  }, []);
+
+  // Detect field types from the actual sample values (works even without headers)
+  const detectByContent = (cols, preview) => {
+    const map = {};
+    const used = new Set();
+    const sample = (col) => (preview || []).map(r => String(r[col] ?? '').trim()).filter(Boolean);
+    const ratio = (arr, test) => (arr.length ? arr.filter(test).length / arr.length : 0);
+
+    // Phone = column with the most values that are 8-15 digits
+    let bestPhone = null, bestPhoneScore = 0;
+    for (const c of cols) {
+      const s = sample(c);
+      const r = ratio(s, v => { const d = v.replace(/\D/g, ''); return d.length >= 8 && d.length <= 15; });
+      if (r > bestPhoneScore) { bestPhoneScore = r; bestPhone = c; }
+    }
+    if (bestPhone && bestPhoneScore >= 0.6) { map.phone = bestPhone; used.add(bestPhone); }
+
+    // Email = column whose values contain "@"
+    for (const c of cols) {
+      if (used.has(c)) continue;
+      if (ratio(sample(c), v => v.includes('@')) >= 0.6) { map.email = c; used.add(c); break; }
+    }
+
+    // Remaining text columns fill name/company/country/notes by position
+    const order = ['first_name', 'last_name', 'company', 'country', 'notes'];
+    let oi = 0;
+    for (const c of cols) {
+      if (used.has(c)) continue;
+      const s = sample(c);
+      if (ratio(s, v => /[A-Za-z]/.test(v)) < 0.4) continue; // skip empty/numeric leftovers
+      while (oi < order.length && map[order[oi]]) oi++;
+      if (oi >= order.length) break;
+      map[order[oi]] = c;
+      used.add(c);
+      oi++;
+    }
+    return map;
+  };
+
+  const autoMapColumns = (cols, isHeaderless, preview) => {
+    if (isHeaderless) return detectByContent(cols, preview);
+
+    const autoMap = {};
+    for (const sf of standardFields) {
+      const match = cols.find(c => c.toLowerCase().replace(/[_ ]/g, '') === sf.replace(/_/g, ''));
+      if (match) autoMap[sf] = match;
+    }
+    // If a header file still didn't map the required phone, fall back to content detection
+    if (!autoMap.phone) {
+      const detected = detectByContent(cols, preview);
+      if (detected.phone) autoMap.phone = detected.phone;
+    }
+    return autoMap;
+  };
+
+  const pollImportStatus = () => {
+    if (pollRef.current) clearInterval(pollRef.current);
+    pollRef.current = setInterval(async () => {
+      try {
+        const status = await api.getImportStatus(listId);
+        if (status.status === 'running') {
+          setImportProgress(status);
+        } else if (status.status === 'done') {
+          clearInterval(pollRef.current);
+          pollRef.current = null;
+          setImportProgress(status);
+          setStep('done');
+          setImporting(false);
+        } else if (status.status === 'error') {
+          clearInterval(pollRef.current);
+          pollRef.current = null;
+          setError(status.error || 'Import failed');
+          setImporting(false);
+          setStep('map');
+        }
+      } catch {
+        // keep polling
+      }
+    }, 3000);
+  };
 
   const handleUpload = async () => {
     if (!file) return;
@@ -254,14 +342,10 @@ function CsvUploadModal({ listId, onClose, onDone }) {
     try {
       const result = await api.uploadCsv(listId, file);
       setColumns(result.columns);
+      setPreview(result.preview || []);
       setTotalRows(result.totalRows);
-      // Auto-map matching columns
-      const autoMap = {};
-      for (const sf of standardFields) {
-        const match = result.columns.find(c => c.toLowerCase().replace(/[_ ]/g, '') === sf.replace(/_/g, ''));
-        if (match) autoMap[sf] = match;
-      }
-      setMapping(autoMap);
+      setHeaderless(!!result.headerless);
+      setMapping(autoMapColumns(result.columns, !!result.headerless, result.preview));
       setStep('map');
     } catch (err) {
       setError(err.message);
@@ -275,11 +359,16 @@ function CsvUploadModal({ listId, onClose, onDone }) {
     setImporting(true);
     setError('');
     try {
-      await api.importLeads(listId, mapping);
-      onDone();
+      const result = await api.importLeads(listId, mapping);
+      if (result.background) {
+        setStep('importing');
+        setImportProgress({ imported: 0, total: result.count, status: 'running' });
+        pollImportStatus();
+      } else {
+        onDone();
+      }
     } catch (err) {
       setError(err.message);
-    } finally {
       setImporting(false);
     }
   };
@@ -315,24 +404,66 @@ function CsvUploadModal({ listId, onClose, onDone }) {
 
           {step === 'map' && (
             <>
-              <p className="text-sm text-gray-600">Found <b>{totalRows}</b> rows with {columns.length} columns. Map fields:</p>
+              <p className="text-sm text-gray-600">Found <b>{totalRows.toLocaleString()}</b> rows with {columns.length} columns. Map fields:</p>
+              {headerless && (
+                <div className="bg-amber-50 text-amber-800 text-sm rounded-lg px-4 py-3">
+                  No header row detected — columns are labeled Column 1, 2, 3… We auto-detected the fields from the data. Each dropdown shows a sample value to help you verify.
+                </div>
+              )}
               <div className="space-y-2 max-h-72 overflow-auto">
-                {standardFields.map(sf => (
-                  <div key={sf} className="flex items-center gap-3">
-                    <label className="text-sm text-gray-700 w-28 shrink-0 font-medium capitalize">{sf.replace(/_/g, ' ')}</label>
-                    <select value={mapping[sf] || ''} onChange={e => setMapping({ ...mapping, [sf]: e.target.value })}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none">
-                      <option value="">— Skip —</option>
-                      {columns.map(c => <option key={c} value={c}>{c}</option>)}
-                    </select>
-                  </div>
-                ))}
+                {standardFields.map(sf => {
+                  const colLabel = (c) => {
+                    const s = preview.find(r => String(r[c] ?? '').trim());
+                    const val = s ? String(s[c]).slice(0, 22) : '';
+                    return val ? `${c}  (e.g. ${val})` : c;
+                  };
+                  return (
+                    <div key={sf} className="flex items-center gap-3">
+                      <label className="text-sm text-gray-700 w-28 shrink-0 font-medium capitalize">
+                        {sf.replace(/_/g, ' ')}{sf === 'phone' && <span className="text-red-500"> *</span>}
+                      </label>
+                      <select value={mapping[sf] || ''} onChange={e => setMapping({ ...mapping, [sf]: e.target.value })}
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none">
+                        <option value="">— Skip —</option>
+                        {columns.map(c => <option key={c} value={c}>{colLabel(c)}</option>)}
+                      </select>
+                    </div>
+                  );
+                })}
               </div>
               <button onClick={handleImport} disabled={importing}
                 className="w-full bg-indigo-600 text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50 transition">
-                {importing ? 'Importing...' : `Import ${totalRows} Leads`}
+                {importing ? 'Starting import...' : `Import ${totalRows.toLocaleString()} Leads`}
               </button>
             </>
+          )}
+
+          {step === 'importing' && (
+            <div className="text-center py-6 space-y-3">
+              <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto" />
+              <p className="text-sm font-medium text-gray-900">Importing leads in the background...</p>
+              {importProgress && (
+                <p className="text-sm text-gray-500">
+                  {importProgress.imported?.toLocaleString() || 0} / {importProgress.total?.toLocaleString()} processed
+                </p>
+              )}
+              <p className="text-xs text-gray-400">Large files can take several minutes. You can close this and refresh the list later.</p>
+              <button onClick={onDone} className="text-sm text-indigo-600 hover:text-indigo-800 font-medium">
+                Close and refresh list
+              </button>
+            </div>
+          )}
+
+          {step === 'done' && (
+            <div className="text-center py-6 space-y-3">
+              <p className="text-sm font-medium text-green-700">
+                Import complete — {importProgress?.imported?.toLocaleString()} leads added.
+              </p>
+              <button onClick={onDone}
+                className="w-full bg-indigo-600 text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition">
+                Done
+              </button>
+            </div>
           )}
         </div>
       </div>

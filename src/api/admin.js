@@ -9,6 +9,7 @@ import { getDb, generateId } from "../db/schema.js";
 import { addCredits, getAllPlatformSettings, setPlatformSetting } from "../db/helpers.js";
 import { deepgramKeyManager } from "../deepgram/key-manager.js";
 import { getSipConfig } from "../../config/sip.js";
+import { evaluateBalances, describeBalances, clearBalanceCache, getTrunkState } from "../billing/balance-guard.js";
 
 const router = Router();
 
@@ -342,8 +343,8 @@ router.get("/settings", (req, res) => {
 
 // PUT /api/admin/settings — update platform settings
 router.put("/settings", (req, res) => {
-  const numericKeys = ["voip_cost_per_min", "ai_cost_per_min"];
-  const stringKeys = ["voice_engine", "local_voice_agent_url"];
+  const numericKeys = ["voip_cost_per_min", "ai_cost_per_min", "deepgram_min_balance", "voip_min_balance", "voip_balance_manual"];
+  const stringKeys = ["voice_engine", "local_voice_agent_url", "balance_guard_enabled", "voip_balance_api_url", "voip_balance_api_key", "voip_balance_json_path"];
   const updates = req.body;
   let count = 0;
   for (const key of numericKeys) {
@@ -359,12 +360,29 @@ router.put("/settings", (req, res) => {
       if (key === "voice_engine" && !["deepgram", "local"].includes(updates[key])) {
         return res.status(400).json({ error: `voice_engine must be "deepgram" or "local"` });
       }
+      if (key === "balance_guard_enabled" && !["true", "false"].includes(String(updates[key]))) {
+        return res.status(400).json({ error: `balance_guard_enabled must be "true" or "false"` });
+      }
       setPlatformSetting(key, updates[key]);
       count++;
     }
   }
   if (count === 0) return res.status(400).json({ error: "No valid settings provided" });
+  clearBalanceCache(); // thresholds/endpoints may have changed — re-check on next tick
   res.json({ message: `${count} setting(s) updated`, settings: getAllPlatformSettings() });
+});
+
+// GET /api/admin/balances — live provider balances + whether dialing is allowed
+router.get("/balances", async (req, res) => {
+  const userId = req.query.user_id || req.user?.id;
+  if (!userId) return res.status(400).json({ error: "user_id required" });
+  if (req.query.refresh === "1") clearBalanceCache();
+  try {
+    const result = await evaluateBalances(userId);
+    res.json({ ...result, trunkDetail: getTrunkState(), summary: describeBalances(result) });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // ===== Google Sheets per user =====

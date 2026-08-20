@@ -91,65 +91,94 @@ export class AudioBridge {
    * Start listening for RTP audio on a specific UDP port from the allocated range.
    * Returns the local port number to use in SDP negotiation.
    */
+  _handleMessage(msg, rinfo) {
+    this.lastRtpReceivedTime = Date.now();
+    
+    const incomingHost = rinfo.address;
+    const incomingPort = rinfo.port;
+    
+    if (!this.remoteRtpHost || this.remoteRtpHost !== incomingHost || this.remoteRtpPort !== incomingPort) {
+      if (this.remoteRtpHost && (this.remoteRtpHost !== incomingHost || this.remoteRtpPort !== incomingPort)) {
+        logger.info(`RTP endpoint changed: ${this.remoteRtpHost}:${this.remoteRtpPort} -> ${incomingHost}:${incomingPort} (symmetric RTP)`, { callId: this.callId });
+      } else {
+        logger.info(`RTP stream started from ${incomingHost}:${incomingPort}`, { callId: this.callId });
+      }
+      this.remoteRtpHost = incomingHost;
+      this.remoteRtpPort = incomingPort;
+    }
+
+    if (msg.length > RTP_HEADER_SIZE) {
+      const pt = msg[1] & 0x7F;
+      if (this.negotiatedCodec !== pt && (pt === 0 || pt === 8)) {
+        this.negotiatedCodec = pt;
+        logger.info(`Negotiated codec: ${pt === 0 ? 'PCMU' : 'PCMA'} (PT ${pt})`, { callId: this.callId });
+      }
+      const payload = msg.slice(RTP_HEADER_SIZE);
+      
+      if (this.recordingEnabled && this.recLeadQueue) {
+        this.recLeadQueue.push(payload);
+      }
+      
+      const pcm16 = pt === 0 ? mulawToLinear16(payload) : alawToLinear16(payload);
+      if (this.onAudioFromLead) {
+        this.onAudioFromLead(pcm16);
+      }
+    }
+  }
+
   async start() {
     return new Promise((resolve, reject) => {
-      this.udpSocket = dgram.createSocket("udp4");
+      this.udpSocket = dgram.createSocket({ type: "udp4", reuseAddr: true });
 
-      this.udpSocket.on("message", (msg, rinfo) => {
-        // Track when we last received audio
-        this.lastRtpReceivedTime = Date.now();
-        
-        // Symmetric RTP: ALWAYS use the actual source of incoming packets
-        // This fixes NAT traversal issues where SDP contains private IPs
-        const incomingHost = rinfo.address;
-        const incomingPort = rinfo.port;
-        
-        if (!this.remoteRtpHost || this.remoteRtpHost !== incomingHost || this.remoteRtpPort !== incomingPort) {
-          // First packet or endpoint changed - update to use real source
-          if (this.remoteRtpHost && (this.remoteRtpHost !== incomingHost || this.remoteRtpPort !== incomingPort)) {
-            logger.info(`RTP endpoint changed: ${this.remoteRtpHost}:${this.remoteRtpPort} -> ${incomingHost}:${incomingPort} (symmetric RTP)`, { callId: this.callId });
-          } else {
-            logger.info(`RTP stream started from ${incomingHost}:${incomingPort}`, { callId: this.callId });
-          }
-          this.remoteRtpHost = incomingHost;
-          this.remoteRtpPort = incomingPort;
-        }
+      this.udpSocket.on("message", (msg, rinfo) => this._handleMessage(msg, rinfo));
 
-        // Strip RTP header, detect codec from payload type, decode to linear16 PCM
-        if (msg.length > RTP_HEADER_SIZE) {
-          const pt = msg[1] & 0x7F; // payload type from RTP header
-          if (this.negotiatedCodec !== pt && (pt === 0 || pt === 8)) {
-            this.negotiatedCodec = pt;
-            logger.info(`Negotiated codec: ${pt === 0 ? 'PCMU' : 'PCMA'} (PT ${pt})`, { callId: this.callId });
-          }
-          const payload = msg.slice(RTP_HEADER_SIZE);
-          
-          // Queue raw G.711 for recording (mixed in send loop)
-          if (this.recordingEnabled && this.recLeadQueue) {
-            this.recLeadQueue.push(payload);
-          }
-          
-          const pcm16 = pt === 0 ? mulawToLinear16(payload) : alawToLinear16(payload);
-          if (this.onAudioFromLead) {
-            this.onAudioFromLead(pcm16);
-          }
-        }
-      });
+      // Bind to a port from the allocated range, retrying if OS still holds it
+      const tryBind = (attemptsLeft) => {
+        this.localPort = allocateRtpPort();
+        this.udpSocket.bind(this.localPort, "0.0.0.0", () => {
+          logger.info(`Audio bridge listening on UDP port ${this.localPort}`, { callId: this.callId });
+          this._startSendLoop();
+          this._startRecording();
+          this._startKeepalive();
+          resolve(this.localPort);
+        });
+      };
 
       this.udpSocket.on("error", (err) => {
+        if (err.code === "EADDRINUSE" && this.localPort) {
+          logger.warn(`Port ${this.localPort} still in use by OS, trying next port`, { callId: this.callId });
+          releaseRtpPort(this.localPort);
+          // Recreate socket and try next port
+          try { this.udpSocket.close(); } catch (e) {}
+          this.udpSocket = dgram.createSocket({ type: "udp4", reuseAddr: true });
+          this.udpSocket.on("message", (msg, rinfo) => this._handleMessage(msg, rinfo));
+          this.udpSocket.on("error", (e) => {
+            if (e.code === "EADDRINUSE") {
+              logger.warn(`Port ${this.localPort} also in use, giving up`, { callId: this.callId });
+              releaseRtpPort(this.localPort);
+            }
+            logger.error(`UDP socket error: ${e.message}`, { callId: this.callId });
+            reject(e);
+          });
+          try {
+            this.localPort = allocateRtpPort();
+            this.udpSocket.bind(this.localPort, "0.0.0.0", () => {
+              logger.info(`Audio bridge listening on UDP port ${this.localPort}`, { callId: this.callId });
+              this._startSendLoop();
+              this._startRecording();
+              this._startKeepalive();
+              resolve(this.localPort);
+            });
+          } catch (allocErr) {
+            reject(allocErr);
+          }
+          return;
+        }
         logger.error(`UDP socket error: ${err.message}`, { callId: this.callId });
         reject(err);
       });
 
-      // Bind to a specific port from the allocated range (for Docker port mapping)
-      this.localPort = allocateRtpPort();
-      this.udpSocket.bind(this.localPort, "0.0.0.0", () => {
-        logger.info(`Audio bridge listening on UDP port ${this.localPort}`, { callId: this.callId });
-        this._startSendLoop();
-        this._startRecording();
-        this._startKeepalive();
-        resolve(this.localPort);
-      });
+      tryBind();
     });
   }
   
@@ -474,28 +503,51 @@ export class AudioBridge {
    * Returns the recording path if recording was enabled.
    */
   stop() {
-    // Finalize recording first
-    const recordingPath = this._finalizeRecording();
-    
-    if (this.sendInterval) {
-      clearInterval(this.sendInterval);
-      this.sendInterval = null;
+    // Each teardown step is isolated so that a failure in one (e.g. a disk I/O
+    // error while finalizing the recording) can NEVER prevent the RTP port from
+    // being released. A leaked port would otherwise permanently shrink the pool
+    // until the app runs out and every new call fails with "No available RTP
+    // ports". The port release is in a `finally` to guarantee it always runs.
+    let recordingPath = null;
+    try {
+      recordingPath = this._finalizeRecording();
+    } catch (e) {
+      logger.error(`Error finalizing recording: ${e.message}`, { callId: this.callId });
     }
-    if (this.keepaliveInterval) {
-      clearInterval(this.keepaliveInterval);
-      this.keepaliveInterval = null;
+
+    try {
+      if (this.sendInterval) {
+        clearInterval(this.sendInterval);
+        this.sendInterval = null;
+      }
+    } catch (e) { /* ignore */ }
+
+    try {
+      if (this.keepaliveInterval) {
+        clearInterval(this.keepaliveInterval);
+        this.keepaliveInterval = null;
+      }
+    } catch (e) { /* ignore */ }
+
+    try {
+      if (this.udpSocket) {
+        this.udpSocket.close();
+        this.udpSocket = null;
+      }
+    } catch (e) { /* ignore */ }
+
+    try {
+      // Always release the RTP port; null it out so stop() is idempotent.
+      if (this.localPort) {
+        releaseRtpPort(this.localPort);
+        this.localPort = 0;
+      }
+      this.sendQueue = [];
+      this.audioOutBuffer = Buffer.alloc(0);
+    } finally {
+      logger.info("Audio bridge stopped", { callId: this.callId });
     }
-    if (this.udpSocket) {
-      this.udpSocket.close();
-      this.udpSocket = null;
-    }
-    if (this.localPort) {
-      releaseRtpPort(this.localPort);
-    }
-    this.sendQueue = [];
-    this.audioOutBuffer = Buffer.alloc(0);
-    logger.info("Audio bridge stopped", { callId: this.callId });
-    
+
     return recordingPath;
   }
 }

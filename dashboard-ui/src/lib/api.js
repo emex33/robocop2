@@ -16,6 +16,20 @@ export function clearToken() {
   localStorage.removeItem('robocop_token');
 }
 
+async function parseJsonResponse(res) {
+  const text = await res.text();
+  try {
+    return JSON.parse(text);
+  } catch {
+    if (text.trimStart().startsWith("<!DOCTYPE") || text.trimStart().startsWith("<html")) {
+      throw new Error(
+        `Server returned an error page (${res.status}). The request may have timed out — for large files, wait a few minutes and refresh the list.`
+      );
+    }
+    throw new Error(text.slice(0, 200) || `Request failed (${res.status})`);
+  }
+}
+
 async function request(path, options = {}) {
   const token = getToken();
   const headers = { 'Content-Type': 'application/json', ...options.headers };
@@ -29,7 +43,7 @@ async function request(path, options = {}) {
     throw new Error('Unauthorized');
   }
 
-  const data = await res.json();
+  const data = await parseJsonResponse(res);
   if (!res.ok) throw new Error(data.error || 'Request failed');
   return data;
 }
@@ -93,11 +107,12 @@ export const api = {
       headers: token ? { 'Authorization': `Bearer ${token}` } : {},
       body: formData,
     });
-    const data = await res.json();
+    const data = await parseJsonResponse(res);
     if (!res.ok) throw new Error(data.error || 'Upload failed');
     return data;
   },
   importLeads: (listId, mapping) => request(`/lists/${listId}/import`, { method: 'POST', body: JSON.stringify({ mapping }) }),
+  getImportStatus: (listId) => request(`/lists/${listId}/import-status`),
 
   // SIP Trunks
   getSipTrunks: () => request('/settings/sip'),

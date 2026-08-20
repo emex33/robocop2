@@ -1,15 +1,16 @@
 /**
  * Deepgram API Key Manager
- * 
+ *
  * Manages a pool of Deepgram API keys per user.
- * Detects 402 (Payment Required) errors and auto-rotates to the next active key.
- * After 5 consecutive 402 errors on a key, it's marked as "depleted".
+ * A key at or below the low-balance floor is retired immediately and the next
+ * healthy key is selected — getKey() is a local DB read, so the swap does not
+ * delay the call. A single 402 also retires the key on the spot (no wait).
  */
 
 import { getDb } from "../db/schema.js";
 import logger from "../utils/logger.js";
 
-const ERROR_THRESHOLD = 5;
+const ERROR_THRESHOLD = 1;
 
 class DeepgramKeyManager {
   /**
@@ -82,17 +83,7 @@ class DeepgramKeyManager {
     logger.warn(`Deepgram 402 on key "${key.label || key.id}" (${newCount}/${ERROR_THRESHOLD})`, { userId });
 
     if (newCount >= ERROR_THRESHOLD) {
-      // Only deplete if still active (another thread may have already done it)
-      const changed = db.prepare(
-        "UPDATE deepgram_keys SET status = 'depleted', is_current = 0 WHERE id = ? AND status = 'active'"
-      ).run(keyId);
-
-      if (changed.changes > 0) {
-        logger.error(`Key "${key.label || key.id}" marked DEPLETED after ${ERROR_THRESHOLD} consecutive 402 errors`, { userId });
-        return this._rotateToNext(userId, keyId);
-      }
-      // Already depleted by another thread — just return current key
-      return this.getKey(userId);
+      return this.retireKey(userId, keyId, "402 Payment Required");
     }
 
     return { id: keyId, key: key.api_key, label: key.label, source: "pool", rotated: false };
@@ -114,6 +105,25 @@ class DeepgramKeyManager {
 
     logger.error(`Key "${keyId}" marked INVALID (401 Unauthorized)`, { userId });
     return this._rotateToNext(userId, keyId);
+  }
+
+  /**
+   * Take a key out of the rotation pool and switch current to the next healthy one.
+   * Does not delete the row (so a later top-up can reactivate it). Instant — no HTTP.
+   */
+  retireKey(userId, keyId, reason = "Low balance") {
+    if (!keyId) return this.getKey(userId);
+    const db = getDb();
+    const key = db.prepare("SELECT * FROM deepgram_keys WHERE id = ?").get(keyId);
+    const changed = db.prepare(
+      "UPDATE deepgram_keys SET status = 'depleted', is_current = 0, last_error = ?, last_error_at = datetime('now') WHERE id = ? AND status = 'active'"
+    ).run(reason, keyId);
+
+    if (changed.changes > 0) {
+      logger.warn(`Deepgram key "${key?.label || keyId}" retired from pool (${reason}) — switching to a healthy key`, { userId });
+      return this._rotateToNext(userId, keyId);
+    }
+    return this.getKey(userId);
   }
 
   /**

@@ -146,7 +146,9 @@ export class DashboardServer {
         activeCalls: runner.activeCalls || [],
         completedCalls: runner.completedCalls || 0,
         totalLeads: runner.totalLeads || 0,
-        remainingLeads: runner.queue?.leads?.length || 0,
+        remainingLeads: runner.getRemainingLeads
+          ? runner.getRemainingLeads()
+          : (runner.queue?.leads?.length || 0),
       });
     });
 
