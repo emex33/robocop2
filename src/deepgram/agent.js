@@ -45,6 +45,10 @@ export class DeepgramAgent {
     // dropped (normal barge-in). The greeting and mid-reply chunks are never held.
     this.responseDelayMs = Math.max(0, Math.min(3000, Number(options.responseDelayMs) || 0));
     this._leadTurnPending = false;
+    // True between replies (after AgentAudioDone / barge-in, and at call start).
+    // The hold may only start at a reply boundary — never in the middle of a
+    // streaming reply, or a lead's "hello?" over the AI would cut the AI's audio.
+    this._atReplyBoundary = true;
     this._holdBuffer = [];
     this._holdTimer = null;
   }
@@ -52,19 +56,21 @@ export class DeepgramAgent {
   /** Route AI audio through the reaction-pause hold when appropriate. */
   _dispatchAudio(data) {
     if (!this.onAudioReceived) return;
-    if (this.responseDelayMs > 0 && this._leadTurnPending) {
+    if (this._holdTimer) { this._holdBuffer.push(data); return; }
+    if (this.responseDelayMs > 0 && this._leadTurnPending && this._atReplyBoundary) {
       this._holdBuffer.push(data);
-      if (!this._holdTimer) {
-        this._holdTimer = setTimeout(() => this._releaseHold(), this.responseDelayMs);
-      }
+      this._holdTimer = setTimeout(() => this._releaseHold(), this.responseDelayMs);
       return;
     }
+    this._atReplyBoundary = false;
+    this._leadTurnPending = false;
     this.onAudioReceived(data);
   }
 
   _releaseHold() {
     this._holdTimer = null;
     this._leadTurnPending = false;
+    this._atReplyBoundary = false;
     const chunks = this._holdBuffer;
     this._holdBuffer = [];
     if (!this.onAudioReceived) return;
@@ -248,6 +254,7 @@ export class DeepgramAgent {
         logger.info("Lead started speaking (barge-in)", { callId: this.callId });
         this._dropHold();
         this._leadTurnPending = true;
+        this._atReplyBoundary = true; // Deepgram cancels the current reply on barge-in
         if (this.onBargeIn) this.onBargeIn();
         break;
 
@@ -258,6 +265,7 @@ export class DeepgramAgent {
 
       case "AgentAudioDone":
         logger.info("AI finished speaking", { callId: this.callId });
+        this._atReplyBoundary = true;
         if (this._aiSpeakingStart) {
           this._aiTotalSpeakingMs += Date.now() - this._aiSpeakingStart;
           this._aiSpeakingStart = null;
