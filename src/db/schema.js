@@ -474,6 +474,12 @@ function initSchema() {
   if (!campaignCols.includes("google_drive_folder_id")) {
     db.exec("ALTER TABLE campaigns ADD COLUMN google_drive_folder_id TEXT DEFAULT ''");
   }
+  // Migration: stats_since — set when a campaign is reset for a re-run. Campaign
+  // counters/analytics only count call_records started at or after this time,
+  // so a re-run starts from zero without deleting the old call history.
+  if (!campaignCols.includes("stats_since")) {
+    db.exec("ALTER TABLE campaigns ADD COLUMN stats_since TEXT DEFAULT ''");
+  }
 
   // Migration: add google_sheets_credentials to users
   if (!userCols.includes("google_sheets_credentials")) {

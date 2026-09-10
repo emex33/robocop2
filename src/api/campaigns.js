@@ -5,6 +5,7 @@
 
 import { Router } from "express";
 import { getDb, generateId } from "../db/schema.js";
+import { resetCampaignForRerun } from "../db/helpers.js";
 import fs from "fs";
 import path from "path";
 
@@ -50,6 +51,21 @@ function getCached(key, compute) {
   return value;
 }
 
+/** Drop every cached counter for one campaign (after a reset or bulk change). */
+function invalidateCampaignCaches(campaignId) {
+  for (const k of statsCache.keys()) {
+    if (k.endsWith(`:${campaignId}`) || (k.startsWith("calls:") && k.includes(campaignId))) statsCache.delete(k);
+  }
+}
+
+/**
+ * A campaign reset for a re-run gets `stats_since`; its counters only look at
+ * calls started from then on. '' (never reset) matches every record.
+ */
+function getStatsSince(db, campaignId) {
+  return db.prepare("SELECT stats_since FROM campaigns WHERE id = ?").get(campaignId)?.stats_since || "";
+}
+
 function getCallCountsByCampaign(db, campaignIds) {
   if (!campaignIds.length) return {};
   const key = `calls:${campaignIds.slice().sort().join(",")}`;
@@ -57,12 +73,13 @@ function getCallCountsByCampaign(db, campaignIds) {
     const callCounts = {};
     const placeholders = campaignIds.map(() => "?").join(",");
     db.prepare(`
-      SELECT campaign_id,
+      SELECT cr.campaign_id,
         COUNT(*) as total_calls,
-        SUM(CASE WHEN outcome = 'transferred' THEN 1 ELSE 0 END) as answered_leads,
-        SUM(CASE WHEN outcome NOT IN ('unknown','error') THEN 1 ELSE 0 END) as contacted_leads
-      FROM call_records WHERE campaign_id IN (${placeholders})
-      GROUP BY campaign_id
+        SUM(CASE WHEN cr.outcome = 'transferred' THEN 1 ELSE 0 END) as answered_leads,
+        SUM(CASE WHEN cr.outcome NOT IN ('unknown','error') THEN 1 ELSE 0 END) as contacted_leads
+      FROM call_records cr JOIN campaigns c ON c.id = cr.campaign_id
+      WHERE cr.campaign_id IN (${placeholders}) AND cr.started_at >= COALESCE(c.stats_since, '')
+      GROUP BY cr.campaign_id
     `).all(...campaignIds).forEach(r => { callCounts[r.campaign_id] = r; });
     return callCounts;
   });
@@ -72,11 +89,11 @@ function getCampaignCallStats(db, campaignId) {
   return getCached(`cstats:${campaignId}`, () => db.prepare(`
     SELECT
       COUNT(*) as total_calls,
-      SUM(CASE WHEN outcome = 'transferred' THEN 1 ELSE 0 END) as transferred_calls,
-      SUM(CASE WHEN outcome IN ('interested','transferred','appointment_set') THEN 1 ELSE 0 END) as answered_leads,
-      SUM(CASE WHEN outcome = 'not_interested' THEN 1 ELSE 0 END) as rejected_leads
-    FROM call_records WHERE campaign_id = ?
-  `).get(campaignId));
+      COALESCE(SUM(CASE WHEN outcome = 'transferred' THEN 1 ELSE 0 END), 0) as transferred_calls,
+      COALESCE(SUM(CASE WHEN outcome IN ('interested','transferred','appointment_set') THEN 1 ELSE 0 END), 0) as answered_leads,
+      COALESCE(SUM(CASE WHEN outcome = 'not_interested' THEN 1 ELSE 0 END), 0) as rejected_leads
+    FROM call_records WHERE campaign_id = ? AND started_at >= ?
+  `).get(campaignId, getStatsSince(db, campaignId)));
 }
 
 function getCampaignDncCount(db, campaignId) {
@@ -410,6 +427,19 @@ router.delete("/:id/lists/:listId", (req, res) => {
   res.json({ message: "List removed from campaign" });
 });
 
+// Reset a campaign for a re-run: leads callable again (appointments, DNC and
+// invalid numbers protected), counters restart from zero, call history kept.
+router.post("/:id/reset", (req, res) => {
+  const db = getDb();
+  const campaign = db.prepare("SELECT id, name, status FROM campaigns WHERE id = ? AND user_id = ?").get(req.params.id, req.user.userId);
+  if (!campaign) return res.status(404).json({ error: "Campaign not found" });
+  if (campaign.status === "running") return res.status(409).json({ error: "Pause the campaign before resetting it" });
+
+  const result = resetCampaignForRerun(campaign.id, req.user.userId);
+  invalidateCampaignCaches(campaign.id);
+  res.json({ message: `Campaign "${campaign.name}" reset`, ...result });
+});
+
 // Get leads for a campaign (from all assigned lists)
 router.get("/:id/leads", (req, res) => {
   const db = getDb();
@@ -474,18 +504,19 @@ router.get("/:id/calls", (req, res) => {
   const limit = Math.min(parseInt(req.query.limit) || 50, 200);
   const offset = (page - 1) * limit;
 
+  const since = getStatsSince(db, req.params.id);
   const total = getCached(`ccount:${req.params.id}`, () =>
-    db.prepare("SELECT COUNT(*) as cnt FROM call_records WHERE campaign_id = ?").get(req.params.id).cnt
+    db.prepare("SELECT COUNT(*) as cnt FROM call_records WHERE campaign_id = ? AND started_at >= ?").get(req.params.id, since).cnt
   );
 
   const calls = db.prepare(`
     SELECT id, call_id, phone, lead_name, outcome, duration_seconds, notes,
            recording_path, recording_url, started_at, ended_at, created_at
     FROM call_records
-    WHERE campaign_id = ?
+    WHERE campaign_id = ? AND started_at >= ?
     ORDER BY created_at DESC
     LIMIT ? OFFSET ?
-  `).all(req.params.id, limit, offset);
+  `).all(req.params.id, since, limit, offset);
 
   res.json({
     calls,
@@ -501,6 +532,7 @@ router.get("/:id/analytics", (req, res) => {
   const campaignId = req.params.id;
 
   const payload = getCached(`analytics:${campaignId}`, () => {
+    const since = getStatsSince(db, campaignId);
     const summary = db.prepare(`
       SELECT
         COUNT(*) as total_calls,
@@ -514,23 +546,23 @@ router.get("/:id/analytics", (req, res) => {
         SUM(CASE WHEN outcome = 'no_answer' THEN 1 ELSE 0 END) as no_answer,
         AVG(duration_seconds) as avg_duration,
         SUM(duration_seconds) as total_duration
-      FROM call_records WHERE campaign_id = ?
-    `).get(campaignId);
+      FROM call_records WHERE campaign_id = ? AND started_at >= ?
+    `).get(campaignId, since);
 
     const callsByDay = db.prepare(`
       SELECT date(started_at) as day, COUNT(*) as count,
         SUM(CASE WHEN outcome = 'transferred' THEN 1 ELSE 0 END) as transfers
       FROM call_records
-      WHERE campaign_id = ? AND started_at >= datetime('now', '-30 days')
+      WHERE campaign_id = ? AND started_at >= datetime('now', '-30 days') AND started_at >= ?
       GROUP BY date(started_at)
       ORDER BY day
-    `).all(campaignId);
+    `).all(campaignId, since);
 
     const outcomes = db.prepare(`
       SELECT outcome, COUNT(*) as count
-      FROM call_records WHERE campaign_id = ?
+      FROM call_records WHERE campaign_id = ? AND started_at >= ?
       GROUP BY outcome
-    `).all(campaignId);
+    `).all(campaignId, since);
 
     return { summary, callsByDay, outcomes };
   });

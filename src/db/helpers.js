@@ -307,6 +307,74 @@ export function getCampaignCallableLeads(campaignId, limit = 4000) {
 /**
  * Get count of callable leads for a campaign (fast check without loading data).
  */
+/**
+ * Reset a campaign for a fresh run: every lead in its lists becomes callable
+ * again, except leads that must never be re-dialed —
+ *   - anyone with an appointment (matched by lead id AND by phone number across
+ *     all of the user's appointments, so a booking made from another list still
+ *     protects the number),
+ *   - do-not-call leads (compliance; the flag and status are left untouched),
+ *   - leads retired because the phone column is not a phone number.
+ * Campaign counters/analytics restart from zero via `stats_since`; the old
+ * call_records are kept (transcripts, recordings, billing history).
+ */
+export function resetCampaignForRerun(campaignId, userId) {
+  const db = getDb();
+  const campaign = db.prepare("SELECT id, user_id FROM campaigns WHERE id = ? AND user_id = ?").get(campaignId, userId);
+  if (!campaign) return null;
+  const lists = db.prepare("SELECT list_id FROM campaign_lists WHERE campaign_id = ?").all(campaignId).map(r => r.list_id);
+  if (lists.length === 0) return { reset: 0, protected_appointments: 0, protected_dnc: 0, protected_invalid: 0, callable: 0 };
+
+  // Compare on the last 10 digits so +1 / spaces / dashes don't hide a match.
+  const norm = (col) => `substr(replace(replace(replace(replace(replace(${col},'+',''),' ',''),'-',''),'(',''),')',''), -10)`;
+  const inLists = lists.map(() => "?").join(",");
+
+  const tx = db.transaction(() => {
+    db.exec("CREATE TEMP TABLE IF NOT EXISTS _protected_leads (id TEXT PRIMARY KEY)");
+    db.exec("CREATE TEMP TABLE IF NOT EXISTS _appt_phones (p TEXT PRIMARY KEY)");
+    db.exec("DELETE FROM _protected_leads; DELETE FROM _appt_phones");
+    db.prepare(`INSERT OR IGNORE INTO _appt_phones (p) SELECT ${norm("phone")} FROM appointments WHERE user_id = ? AND phone <> ''`).run(userId);
+    db.prepare(`
+      INSERT OR IGNORE INTO _protected_leads (id)
+      SELECT l.id FROM leads l WHERE l.list_id IN (${inLists}) AND (
+        l.status = 'appointment_set'
+        OR EXISTS (SELECT 1 FROM appointments a WHERE a.lead_id = l.id)
+        OR ${norm("l.phone")} IN (SELECT p FROM _appt_phones)
+      )
+    `).run(...lists);
+    const protectedAppointments = db.prepare("SELECT COUNT(*) n FROM _protected_leads").get().n;
+    const protectedDnc = db.prepare(`SELECT COUNT(*) n FROM leads WHERE list_id IN (${inLists}) AND do_not_call = 1 AND id NOT IN (SELECT id FROM _protected_leads)`).get(...lists).n;
+    const protectedInvalid = db.prepare(`SELECT COUNT(*) n FROM leads WHERE list_id IN (${inLists}) AND do_not_call = 0 AND last_error LIKE 'invalid phone number:%' AND id NOT IN (SELECT id FROM _protected_leads)`).get(...lists).n;
+
+    const reset = db.prepare(`
+      UPDATE leads SET status = 'new', attempts = 0, last_error = ''
+      WHERE list_id IN (${inLists}) AND do_not_call = 0
+        AND NOT (last_error LIKE 'invalid phone number:%')
+        AND id NOT IN (SELECT id FROM _protected_leads)
+    `).run(...lists).changes;
+
+    // Appointment leads must stay out of the dial queue whatever status they had.
+    db.prepare("UPDATE leads SET status = 'completed' WHERE id IN (SELECT id FROM _protected_leads) AND status NOT IN ('completed','appointment_set')").run();
+
+    // Keep the "Total leads" counter honest — it drifts after imports/deletes.
+    db.prepare(`UPDATE lists SET total_leads = (SELECT COUNT(*) FROM leads WHERE list_id = lists.id) WHERE id IN (${inLists})`).run(...lists);
+
+    const statsSince = new Date().toISOString();
+    db.prepare("UPDATE campaigns SET stats_since = ?, updated_at = datetime('now') WHERE id = ?").run(statsSince, campaignId);
+    db.exec("DELETE FROM _protected_leads; DELETE FROM _appt_phones");
+
+    return {
+      reset,
+      protected_appointments: protectedAppointments,
+      protected_dnc: protectedDnc,
+      protected_invalid: protectedInvalid,
+      callable: getCampaignCallableLeadCount(campaignId),
+      stats_since: statsSince,
+    };
+  });
+  return tx();
+}
+
 export function getCampaignCallableLeadCount(campaignId) {
   const db = getDb();
   return db.prepare(`
