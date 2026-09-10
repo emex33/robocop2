@@ -250,13 +250,20 @@ export class DeepgramAgent {
         if (this.onTranscript) this.onTranscript(msg.role, msg.content);
         break;
 
-      case "UserStartedSpeaking":
+      case "UserStartedSpeaking": {
         logger.info("Lead started speaking (barge-in)", { callId: this.callId });
-        this._dropHold();
-        this._leadTurnPending = true;
-        this._atReplyBoundary = true; // Deepgram cancels the current reply on barge-in
+        // Flush whatever is queued for playback first (standard barge-in)...
         if (this.onBargeIn) this.onBargeIn();
+        // ...then, if we were holding the start of a reply, let it play instead of
+        // silently discarding it. VAD fires on breaths and background noise too;
+        // dropping the reply made the agent go mute ("she didn't say anything").
+        // If the lead really is talking, Deepgram stops streaming the reply and
+        // only the held fragment plays — like a person who starts and yields.
+        if (this._holdTimer) { clearTimeout(this._holdTimer); this._holdTimer = null; this._releaseHold(); }
+        this._leadTurnPending = true;
+        this._atReplyBoundary = true;
         break;
+      }
 
       case "AgentStartedSpeaking":
         logger.info("AI started speaking", { callId: this.callId });
