@@ -684,6 +684,77 @@ router.get("/live", (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
+// GET /appointments?range=today|7d|30d&campaign_id= — the actual results:
+// every appointment booked in the range with the lead, the call behind it and
+// the recording, plus "hot" leads (callback / interested / transferred) that
+// still need a human follow-up.
+// ---------------------------------------------------------------------------
+function rangeSinceIso(range) {
+  if (range === "today") return startOfDayIso(HOUSE_TZ);
+  const days = range === "7d" ? 7 : 30;
+  return `${addDays(utcDay(new Date()), -days)}T00:00:00.000Z`;
+}
+
+router.get("/appointments", (req, res) => {
+  const userId = req.user.userId;
+  const range = ["today", "7d", "30d"].includes(req.query.range) ? req.query.range : "today";
+  const campaignId = req.query.campaign_id || "";
+  const db = getDb();
+
+  // Not cached: every query here walks a small index range (≤300 rows), and the
+  // panel must reflect a status change or a fresh booking on the next fetch.
+  const data = (() => {
+    const sinceIso = rangeSinceIso(range);
+    // appointments.created_at is SQLite datetime('now') → "YYYY-MM-DD HH:MM:SS" (UTC).
+    const sinceSql = sinceIso.slice(0, 19).replace("T", " ");
+    const scope = campaignId ? "AND a.campaign_id = ?" : "";
+    const params = campaignId ? [userId, sinceSql, campaignId] : [userId, sinceSql];
+
+    const appointments = db.prepare(`
+      SELECT a.id, a.campaign_id, a.lead_id, a.call_id, a.lead_name, a.phone, a.email,
+             a.appointment_date, a.appointment_time, a.timezone, a.notes, a.status, a.created_at,
+             c.name AS campaign,
+             l.first_name, l.last_name, l.company, l.country, l.email AS lead_email, l.status AS lead_status,
+             cr.duration_seconds, cr.recording_url, cr.recording_path, cr.call_summary, cr.outcome AS call_outcome,
+             cr.id AS call_record_id
+      FROM appointments a
+      LEFT JOIN campaigns c ON c.id = a.campaign_id
+      LEFT JOIN leads l ON l.id = a.lead_id
+      LEFT JOIN call_records cr ON cr.call_id = a.call_id AND a.call_id <> ''
+      WHERE a.user_id = ? AND a.created_at >= ? ${scope}
+      ORDER BY a.created_at DESC
+      LIMIT 300
+    `).all(...params).map((r) => ({
+      ...r,
+      created_at_iso: r.created_at ? new Date(r.created_at.replace(" ", "T") + "Z").toISOString() : null,
+      email: r.email || r.lead_email || "",
+      has_recording: !!(r.recording_url || r.recording_path),
+    }));
+
+    const by_status = { scheduled: 0, completed: 0, no_show: 0, cancelled: 0, rescheduled: 0 };
+    for (const a of appointments) by_status[a.status] = (by_status[a.status] || 0) + 1;
+
+    const hotScope = campaignId ? "AND cr.campaign_id = ?" : "";
+    const hotParams = campaignId ? [userId, sinceIso, campaignId] : [userId, sinceIso];
+    const hot_leads = db.prepare(`
+      SELECT cr.id, cr.call_id, cr.campaign_id, cr.lead_id, cr.phone, cr.lead_name, cr.outcome, cr.duration_seconds,
+             cr.started_at, cr.notes, cr.call_summary, cr.recording_url, cr.recording_path,
+             c.name AS campaign, l.email, l.company, l.country
+      FROM call_records cr
+      LEFT JOIN campaigns c ON c.id = cr.campaign_id
+      LEFT JOIN leads l ON l.id = cr.lead_id
+      WHERE cr.user_id = ? AND cr.outcome IN ('callback','interested','transferred') AND cr.started_at >= ? ${hotScope}
+      ORDER BY cr.started_at DESC
+      LIMIT 100
+    `).all(...hotParams).map((r) => ({ ...r, has_recording: !!(r.recording_url || r.recording_path) }));
+
+    return { range, since: sinceIso, appointments, by_status, hot_leads };
+  })();
+
+  res.json(data);
+});
+
+// ---------------------------------------------------------------------------
 // GET /inventory/:campaignId — lead pool state
 // ---------------------------------------------------------------------------
 router.get("/inventory/:campaignId", (req, res) => {

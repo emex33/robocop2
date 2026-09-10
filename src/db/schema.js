@@ -558,6 +558,9 @@ function initSchema() {
   db.exec("CREATE INDEX IF NOT EXISTS idx_call_records_user_created ON call_records(user_id, created_at)");
   db.exec("CREATE INDEX IF NOT EXISTS idx_call_records_campaign_started ON call_records(campaign_id, started_at, outcome, user_id)");
   db.exec("CREATE INDEX IF NOT EXISTS idx_call_records_user_outcome_started ON call_records(user_id, outcome, started_at)");
+  // appointments.call_id → call_records.call_id (recording / summary behind a booking)
+  db.exec("CREATE INDEX IF NOT EXISTS idx_call_records_call_id ON call_records(call_id)");
+  db.exec("CREATE INDEX IF NOT EXISTS idx_appointments_user_created ON appointments(user_id, created_at)");
   db.exec("CREATE INDEX IF NOT EXISTS idx_credit_transactions_user_created ON credit_transactions(user_id, created_at)");
 
   // Migration: platform_settings table for dynamic cost rates

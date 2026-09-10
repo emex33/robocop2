@@ -636,6 +636,22 @@ async function runCampaign(campaignId, userId, runner) {
           runner.activeAbortHandles.set(handle.callId, handle);
         },
         onLiveEvent: (type, data) => {
+          // Keep the Command Center's live-call row honest: what stage is this call in?
+          try {
+            if (type === "sip_connected") activeCall.status = "connected";
+            else if (type === "deepgram" && data.status === "connected") activeCall.status = "talking";
+            else if (type === "transcript") {
+              activeCall.status = "talking";
+              activeCall.turns = (activeCall.turns || 0) + 1;
+              activeCall.lastRole = data.role;
+              activeCall.lastText = String(data.text || "").slice(0, 140);
+            }
+            else if (type === "voicemail_detected") activeCall.status = "voicemail";
+            else if (type === "function_call" && data.function === "book_appointment") activeCall.status = "booking";
+            else if (type === "appointment_saved") activeCall.status = "booked";
+            else if (type === "function_call" && data.function === "transfer_call") activeCall.status = "transfer";
+            else if (type === "function_call" && data.function === "end_call") activeCall.status = `ending:${data.outcome || ""}`;
+          } catch {}
           dashboard.broadcastToUser(userId, "live_event", { 
             campaignId, 
             type, 

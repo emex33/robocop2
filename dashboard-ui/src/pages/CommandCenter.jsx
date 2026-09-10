@@ -1,9 +1,10 @@
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { Fragment, useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { api } from '../lib/api';
 import { useWebSocket } from '../hooks/useWebSocket';
 import {
   Activity, Phone, PhoneOff, Users, CalendarCheck, DollarSign, Zap, ShieldAlert, ShieldCheck,
   Play, Square, RefreshCw, Pause, AlertTriangle, Info, Flame, Radio, Clock, Gauge,
+  Mail, Building2, MapPin, Volume2,
 } from 'lucide-react';
 import {
   ComposedChart, Bar, Line, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
@@ -219,6 +220,269 @@ function FragmentRow({ wd, hours, grid, metric }) {
 }
 
 // ---------------------------------------------------------------------------
+// recordings — one shared player so two rows never play at once
+// ---------------------------------------------------------------------------
+function useRecordingPlayer() {
+  const [playing, setPlaying] = useState(null);
+  const audioRef = useRef(null);
+  const stop = useCallback(() => {
+    if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
+    setPlaying(null);
+  }, []);
+  const play = useCallback(async (campaignId, callRecordId) => {
+    if (playing === callRecordId) return stop();
+    stop();
+    setPlaying(callRecordId);
+    try {
+      const token = localStorage.getItem('robocop_token');
+      const res = await fetch(`/api/campaigns/${campaignId}/calls/${callRecordId}/recording?token=${encodeURIComponent(token)}`);
+      if (!res.ok) throw new Error('no recording');
+      const url = URL.createObjectURL(await res.blob());
+      const audio = new Audio(url);
+      audio.onended = audio.onerror = () => { setPlaying(null); URL.revokeObjectURL(url); };
+      await audio.play();
+      audioRef.current = audio;
+    } catch { setPlaying(null); }
+  }, [playing, stop]);
+  useEffect(() => stop, [stop]);
+  return { playing, play };
+}
+
+function RecordingButton({ row, player }) {
+  if (!row.has_recording || !row.campaign_id) return <span className="text-slate-600">—</span>;
+  const id = row.call_record_id || row.id;
+  const on = player.playing === id;
+  return (
+    <button onClick={() => player.play(row.campaign_id, id)} title={on ? 'Stop' : 'Play recording'}
+      className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded ring-1 text-[10.5px] ${on ? 'bg-emerald-500/20 text-emerald-200 ring-emerald-500/40' : 'bg-slate-800 text-slate-300 ring-slate-700 hover:text-white'}`}>
+      {on ? <Square className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />} {on ? 'Stop' : secs(row.duration_seconds)}
+    </button>
+  );
+}
+
+const LIVE_STAGE = {
+  dialing: { label: 'Dialing', cls: 'bg-slate-500/20 text-slate-300 ring-slate-500/40', dot: 'bg-slate-400' },
+  connected: { label: 'Answered', cls: 'bg-sky-500/20 text-sky-200 ring-sky-500/40', dot: 'bg-sky-400' },
+  talking: { label: 'Talking', cls: 'bg-cyan-500/20 text-cyan-200 ring-cyan-500/40', dot: 'bg-cyan-400 animate-pulse' },
+  voicemail: { label: 'Voicemail', cls: 'bg-amber-500/20 text-amber-200 ring-amber-500/40', dot: 'bg-amber-400' },
+  booking: { label: 'Booking…', cls: 'bg-emerald-500/25 text-emerald-100 ring-emerald-400/50', dot: 'bg-emerald-300 animate-pulse' },
+  booked: { label: 'BOOKED', cls: 'bg-emerald-500/30 text-emerald-100 ring-emerald-400/60 font-semibold', dot: 'bg-emerald-300' },
+  transfer: { label: 'Transferring', cls: 'bg-indigo-500/20 text-indigo-200 ring-indigo-500/40', dot: 'bg-indigo-400' },
+  ending: { label: 'Ending', cls: 'bg-slate-500/20 text-slate-300 ring-slate-500/40', dot: 'bg-slate-400' },
+};
+function stageOf(status) {
+  if (!status) return LIVE_STAGE.dialing;
+  if (status.startsWith('ending:')) {
+    const o = status.slice(7).replace(/_/g, ' ');
+    return { label: `Ending · ${o}`, cls: OUTCOME_STYLE[status.slice(7)] || 'bg-slate-500/20 text-slate-300 ring-slate-500/40', dot: 'bg-slate-400' };
+  }
+  return LIVE_STAGE[status] || LIVE_STAGE.dialing;
+}
+
+function LiveCalls({ active, now }) {
+  const rows = useMemo(() => [...(active || [])].sort((a, b) => Date.parse(a.startedAt) - Date.parse(b.startedAt)), [active]);
+  // `now` is the server clock from /live (refreshed every 5 s); without it, fall
+  // back to the newest call start so durations still read sensibly.
+  const nowMs = now ? Date.parse(now) : Math.max(0, ...rows.map((c) => Date.parse(c.startedAt) || 0));
+  const stages = rows.reduce((m, c) => { const k = (c.status || 'dialing').split(':')[0]; m[k] = (m[k] || 0) + 1; return m; }, {});
+  return (
+    <Panel title={`Live calls · ${rows.length} on the line`}
+      right={<div className="flex gap-1.5 text-[10px]">
+        {Object.entries(stages).map(([k, v]) => <span key={k} className={`px-1.5 py-0.5 rounded ring-1 ${stageOf(k).cls}`}>{v} {stageOf(k).label.toLowerCase()}</span>)}
+      </div>}>
+      {!rows.length ? <p className="text-xs text-slate-500">No call in progress.</p> : (
+        <div className="overflow-x-auto -mx-3 -mb-3">
+          <table className="w-full text-[11.5px]">
+            <thead><tr className="text-slate-500">
+              <th className="text-left px-3 py-1.5 font-medium">Stage</th>
+              <th className="text-left px-3 py-1.5 font-medium">Lead</th>
+              <th className="text-left px-3 py-1.5 font-medium">Phone</th>
+              <th className="text-left px-3 py-1.5 font-medium">Campaign</th>
+              <th className="text-left px-3 py-1.5 font-medium">Last words</th>
+              <th className="text-right px-3 py-1.5 font-medium">Turns</th>
+              <th className="text-right px-3 py-1.5 font-medium">Time</th>
+            </tr></thead>
+            <tbody>
+              {rows.map((c) => {
+                const st = stageOf(c.status);
+                const dur = Math.max(0, Math.round((nowMs - Date.parse(c.startedAt)) / 1000));
+                return (
+                  <tr key={c.leadId || c.phone} className="border-t border-slate-800/70">
+                    <td className="px-3 py-1.5 whitespace-nowrap"><span className={`inline-flex items-center gap-1.5 text-[10px] px-1.5 py-0.5 rounded ring-1 ${st.cls}`}><span className={`w-1.5 h-1.5 rounded-full ${st.dot}`} />{st.label}</span></td>
+                    <td className="px-3 py-1.5 text-slate-100 whitespace-nowrap">{c.name || <span className="text-slate-500">unknown</span>}</td>
+                    <td className="px-3 py-1.5 text-slate-400 font-mono whitespace-nowrap">{c.phone}</td>
+                    <td className="px-3 py-1.5 text-slate-400 whitespace-nowrap max-w-[160px] truncate">{c.campaign}</td>
+                    <td className="px-3 py-1.5 text-slate-300 max-w-[420px] truncate" title={c.lastText || ''}>
+                      {c.lastText ? <><span className={`text-[10px] mr-1.5 ${c.lastRole === 'user' ? 'text-sky-300' : 'text-emerald-300'}`}>{c.lastRole === 'user' ? 'LEAD' : 'EMMA'}</span>{c.lastText}</> : <span className="text-slate-600">…</span>}
+                    </td>
+                    <td className="px-3 py-1.5 text-right text-slate-400 tabular-nums">{c.turns || 0}</td>
+                    <td className="px-3 py-1.5 text-right text-slate-300 tabular-nums whitespace-nowrap">{secs(dur)}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </Panel>
+  );
+}
+
+const APPT_STATUS = {
+  scheduled: { label: 'Scheduled', cls: 'bg-sky-500/15 text-sky-200 ring-sky-500/30' },
+  completed: { label: 'Client ✓', cls: 'bg-emerald-500/20 text-emerald-200 ring-emerald-500/40' },
+  no_show: { label: 'No show', cls: 'bg-amber-500/15 text-amber-200 ring-amber-500/30' },
+  cancelled: { label: 'Cancelled', cls: 'bg-rose-500/15 text-rose-200 ring-rose-500/30' },
+  rescheduled: { label: 'Rescheduled', cls: 'bg-violet-500/15 text-violet-200 ring-violet-500/30' },
+};
+
+/** Pull "amount / platform / when" out of Emma's free-text notes so they scan as columns. */
+function parseNotes(notes = '') {
+  const s = String(notes);
+  const amount = s.match(/(?:C\$|CA\$|US\$|\$|USD|CAD)\s?[\d,.]+(?:\s?[kK])?|[\d,.]+\s?(?:k\b|K\b|thousand|,000)\s?(?:CAD|USD|dollars|C\$|\$)?|(?:approx(?:imately)?\.?|roughly|about|lost)\s+[\d,.]+/i)?.[0];
+  const platform = s.match(/platform\s*(?:name)?\s*[:\-–]?\s*([^;,.\n]+)/i)?.[1]?.trim();
+  return { amount: amount?.replace(/^(approx(?:imately)?\.?|roughly|about|lost)\s+/i, '').trim(), platform: platform && !/unknown|not (specified|provided|mentioned|stated)|unspecified|n\/a/i.test(platform) ? platform : null };
+}
+
+function AppointmentsPanel({ data, range, player, onStatus, loading }) {
+  const [filter, setFilter] = useState('all');
+  const [open, setOpen] = useState(null);
+  const appts = data?.appointments || [];
+  const rows = filter === 'all' ? appts : appts.filter((a) => a.status === filter);
+  const bs = data?.by_status || {};
+  const label = range === 'today' ? 'today' : range === '7d' ? 'last 7 days' : 'last 30 days';
+  return (
+    <Panel title={`Appointments booked · ${label} · ${appts.length}`}
+      right={<div className="flex items-center gap-1.5">
+        {['all', 'scheduled', 'completed', 'no_show', 'cancelled'].map((k) => (
+          <button key={k} onClick={() => setFilter(k)}
+            className={`text-[10px] px-1.5 py-0.5 rounded ring-1 ${filter === k ? 'bg-slate-100 text-slate-900 ring-slate-100' : (APPT_STATUS[k]?.cls || 'bg-slate-800 text-slate-300 ring-slate-700')}`}>
+            {k === 'all' ? `All ${appts.length}` : `${APPT_STATUS[k].label} ${bs[k] || 0}`}
+          </button>
+        ))}
+      </div>}>
+      {loading && !data ? <p className="text-xs text-slate-500">Loading…</p> : !rows.length ? (
+        <p className="text-xs text-slate-500">No appointments {filter !== 'all' ? `with status "${filter}" ` : ''}in this range.</p>
+      ) : (
+        <div className="overflow-x-auto -mx-3 -mb-3">
+          <table className="w-full text-[11.5px]">
+            <thead><tr className="text-slate-500">
+              <th className="text-left px-3 py-1.5 font-medium whitespace-nowrap">Booked</th>
+              <th className="text-left px-3 py-1.5 font-medium">Lead</th>
+              <th className="text-left px-3 py-1.5 font-medium">Contact</th>
+              <th className="text-left px-3 py-1.5 font-medium">Campaign</th>
+              <th className="text-left px-3 py-1.5 font-medium whitespace-nowrap">Meeting</th>
+              <th className="text-left px-3 py-1.5 font-medium">Lost</th>
+              <th className="text-left px-3 py-1.5 font-medium">Platform</th>
+              <th className="text-left px-3 py-1.5 font-medium">Notes</th>
+              <th className="text-left px-3 py-1.5 font-medium">Call</th>
+              <th className="text-left px-3 py-1.5 font-medium">Status</th>
+            </tr></thead>
+            <tbody>
+              {rows.map((a) => {
+                const p = parseNotes(a.notes);
+                const st = APPT_STATUS[a.status] || APPT_STATUS.scheduled;
+                const name = a.lead_name || [a.first_name, a.last_name].filter(Boolean).join(' ') || 'unknown';
+                const isOpen = open === a.id;
+                return (
+                  <Fragment key={a.id}>
+                    <tr onClick={() => setOpen(isOpen ? null : a.id)} className={`border-t border-slate-800/70 cursor-pointer hover:bg-slate-800/40 ${a.status === 'completed' ? 'bg-emerald-500/5' : ''}`}>
+                      <td className="px-3 py-1.5 text-slate-400 whitespace-nowrap tabular-nums">
+                        {a.created_at_iso ? <>{fmtDay(a.created_at_iso)} <span className="text-slate-200">{fmtTime(a.created_at_iso)}</span></> : ''}
+                      </td>
+                      <td className="px-3 py-1.5 text-slate-100 whitespace-nowrap font-medium">{name}</td>
+                      <td className="px-3 py-1.5 whitespace-nowrap">
+                        <div className="font-mono text-slate-300">{a.phone}</div>
+                        {a.email && <div className="text-[10.5px] text-slate-500 truncate max-w-[180px]">{a.email}</div>}
+                      </td>
+                      <td className="px-3 py-1.5 text-slate-400 whitespace-nowrap max-w-[150px] truncate">{a.campaign || '—'}</td>
+                      <td className="px-3 py-1.5 whitespace-nowrap tabular-nums">
+                        <span className="text-slate-100">{a.appointment_date}</span> <span className="text-slate-300">{a.appointment_time}</span>
+                        <div className="text-[10px] text-slate-500">{(a.timezone || '').split('/')[1] || a.timezone}</div>
+                      </td>
+                      <td className="px-3 py-1.5 whitespace-nowrap text-emerald-200 tabular-nums">{p.amount || <span className="text-slate-600">—</span>}</td>
+                      <td className="px-3 py-1.5 whitespace-nowrap text-slate-300 max-w-[140px] truncate" title={p.platform || ''}>{p.platform || <span className="text-slate-600">—</span>}</td>
+                      <td className="px-3 py-1.5 text-slate-400 max-w-[300px] truncate" title={a.notes}>{a.notes || <span className="text-slate-600">—</span>}</td>
+                      <td className="px-3 py-1.5 whitespace-nowrap" onClick={(e) => e.stopPropagation()}><RecordingButton row={a} player={player} /></td>
+                      <td className="px-3 py-1.5 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                        <select value={a.status} onChange={(e) => onStatus(a, e.target.value)}
+                          className={`text-[10.5px] rounded ring-1 px-1.5 py-0.5 bg-transparent ${st.cls}`}>
+                          {Object.entries(APPT_STATUS).map(([k, v]) => <option key={k} value={k} className="bg-slate-900 text-slate-200">{v.label}</option>)}
+                        </select>
+                      </td>
+                    </tr>
+                    {isOpen && (
+                      <tr className="bg-slate-900/80">
+                        <td colSpan={10} className="px-4 py-3">
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-[11.5px]">
+                            <div className="space-y-1">
+                              <div className="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Lead</div>
+                              <div className="flex items-center gap-2 text-slate-200"><Phone className="w-3 h-3 text-slate-500" /> <span className="font-mono">{a.phone}</span></div>
+                              <div className="flex items-center gap-2 text-slate-200"><Mail className="w-3 h-3 text-slate-500" /> {a.email || <span className="text-slate-600">no email</span>}</div>
+                              <div className="flex items-center gap-2 text-slate-200"><Building2 className="w-3 h-3 text-slate-500" /> {a.company || <span className="text-slate-600">no company</span>}</div>
+                              <div className="flex items-center gap-2 text-slate-200"><MapPin className="w-3 h-3 text-slate-500" /> {a.country || <span className="text-slate-600">no country</span>}</div>
+                              <div className="text-slate-500 pt-1">lead status: <span className="text-slate-300">{a.lead_status || '—'}</span> · id <span className="font-mono">{a.lead_id || '—'}</span></div>
+                            </div>
+                            <div className="space-y-1">
+                              <div className="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Emma's notes</div>
+                              <div className="text-slate-200 whitespace-pre-wrap leading-relaxed">{a.notes || '—'}</div>
+                            </div>
+                            <div className="space-y-1">
+                              <div className="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Call</div>
+                              <div className="text-slate-300">Outcome <span className="text-slate-100">{(a.call_outcome || '—').replace(/_/g, ' ')}</span> · {secs(a.duration_seconds)} · {a.has_recording ? 'recording available' : 'no recording'}</div>
+                              {a.call_summary && <div className="text-slate-400 whitespace-pre-wrap leading-relaxed">{a.call_summary}</div>}
+                              <div className="text-slate-500 pt-1">appointment id <span className="font-mono">{a.id}</span> · call <span className="font-mono">{a.call_id || '—'}</span></div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </Panel>
+  );
+}
+
+function HotLeadsPanel({ rows, player }) {
+  if (!rows?.length) return null;
+  return (
+    <Panel title={`Hot leads to follow up · ${rows.length}`} right={<span className="text-[10px] text-slate-500">callback · interested · transferred — not yet booked</span>}>
+      <div className="overflow-x-auto -mx-3 -mb-3">
+        <table className="w-full text-[11.5px]">
+          <thead><tr className="text-slate-500">
+            <th className="text-left px-3 py-1.5 font-medium">When</th>
+            <th className="text-left px-3 py-1.5 font-medium">Outcome</th>
+            <th className="text-left px-3 py-1.5 font-medium">Lead</th>
+            <th className="text-left px-3 py-1.5 font-medium">Phone</th>
+            <th className="text-left px-3 py-1.5 font-medium">Campaign</th>
+            <th className="text-left px-3 py-1.5 font-medium">Notes</th>
+            <th className="text-left px-3 py-1.5 font-medium">Call</th>
+          </tr></thead>
+          <tbody>
+            {rows.slice(0, 40).map((r) => (
+              <tr key={r.id} className="border-t border-slate-800/70">
+                <td className="px-3 py-1.5 text-slate-400 whitespace-nowrap tabular-nums">{fmtDay(r.started_at)} <span className="text-slate-200">{fmtTime(r.started_at)}</span></td>
+                <td className="px-3 py-1.5 whitespace-nowrap"><span className={`text-[10px] px-1.5 py-0.5 rounded ring-1 ${OUTCOME_STYLE[r.outcome] || ''}`}>{r.outcome.replace(/_/g, ' ')}</span></td>
+                <td className="px-3 py-1.5 text-slate-100 whitespace-nowrap">{r.lead_name || <span className="text-slate-500">unknown</span>}{r.email && <div className="text-[10.5px] text-slate-500">{r.email}</div>}</td>
+                <td className="px-3 py-1.5 text-slate-300 font-mono whitespace-nowrap">{r.phone}</td>
+                <td className="px-3 py-1.5 text-slate-400 whitespace-nowrap max-w-[150px] truncate">{r.campaign}</td>
+                <td className="px-3 py-1.5 text-slate-400 max-w-[420px] truncate" title={r.notes || r.call_summary || ''}>{r.notes || r.call_summary || <span className="text-slate-600">—</span>}</td>
+                <td className="px-3 py-1.5 whitespace-nowrap"><RecordingButton row={r} player={player} /></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Panel>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // page
 // ---------------------------------------------------------------------------
 export default function CommandCenter() {
@@ -235,8 +499,28 @@ export default function CommandCenter() {
   const [seriesMode, setSeriesMode] = useState('volume');
   const [busy, setBusy] = useState({});
   const [updatedAt, setUpdatedAt] = useState(null);
+  const [appts, setAppts] = useState(null);
+  const [apptsLoading, setApptsLoading] = useState(true);
   const tape = useRef([]);
   const { connected, on } = useWebSocket();
+  const player = useRecordingPlayer();
+
+  const loadAppts = useCallback(async () => {
+    try { setAppts(await api.getCommandAppointments(range, campaignId)); }
+    catch { /* keep last */ }
+    finally { setApptsLoading(false); }
+  }, [range, campaignId]);
+
+  const setApptStatus = async (a, status) => {
+    // Optimistic: the server-side list is cached for a few seconds.
+    setAppts((d) => d ? {
+      ...d,
+      appointments: d.appointments.map((x) => (x.id === a.id ? { ...x, status } : x)),
+      by_status: { ...d.by_status, [a.status]: Math.max(0, (d.by_status[a.status] || 0) - 1), [status]: (d.by_status[status] || 0) + 1 },
+    } : d);
+    try { await api.updateAppointment(a.id, { status }); }
+    catch (e) { setErr(e.message); loadAppts(); }
+  };
 
   const loadOverview = useCallback(async (quiet = false) => {
     if (!quiet) setLoading(true);
@@ -258,6 +542,7 @@ export default function CommandCenter() {
   useEffect(() => { api.getCampaigns().then((c) => setCampaigns(Array.isArray(c) ? c : c.campaigns || [])).catch(() => {}); }, []);
   useEffect(() => { loadOverview(); }, [loadOverview]);
   useEffect(() => { loadLive(); }, [loadLive]);
+  useEffect(() => { setApptsLoading(true); loadAppts(); }, [loadAppts]);
   useEffect(() => {
     if (!campaignId) { setInventory(null); return; }
     api.getCommandInventory(campaignId).then(setInventory).catch(() => setInventory(null));
@@ -268,17 +553,21 @@ export default function CommandCenter() {
     if (!auto) return;
     const a = setInterval(loadLive, 5000);
     const b = setInterval(() => loadOverview(true), data?.warming ? 15000 : 30000);
-    return () => { clearInterval(a); clearInterval(b); };
-  }, [auto, loadLive, loadOverview, data?.warming]);
+    const c = setInterval(loadAppts, 60000);
+    return () => { clearInterval(a); clearInterval(b); clearInterval(c); };
+  }, [auto, loadLive, loadOverview, loadAppts, data?.warming]);
 
   // live tape from websocket
   useEffect(() => {
     const off = on('call_ended', (d) => {
       tape.current = [{ call_id: d.callId || Math.random(), phone: d.phone, lead_name: d.name, outcome: d.outcome, duration_seconds: d.duration, started_at: new Date().toISOString(), campaign: campaigns.find((c) => c.id === d.campaignId)?.name }, ...tape.current].slice(0, 25);
       setLive((l) => (l ? { ...l, recent: tape.current } : l));
+      // A booking / callback just landed: refresh the results panels once the row is written.
+      if (['appointment_set', 'callback', 'interested', 'transferred'].includes(d.outcome)) setTimeout(loadAppts, 4000);
     });
-    return off;
-  }, [on, campaigns]);
+    const off2 = on('appointment_created', () => setTimeout(loadAppts, 1500));
+    return () => { off?.(); off2?.(); };
+  }, [on, campaigns, loadAppts]);
 
   const act = async (id, action) => {
     setBusy((b) => ({ ...b, [id]: true }));
@@ -413,6 +702,9 @@ export default function CommandCenter() {
         </Panel>
       )}
 
+      {/* ---------------------------------------------------------------- live calls */}
+      {(live?.active?.length > 0 || runningCount > 0) && <LiveCalls active={live?.active} now={live?.now} />}
+
       {/* ---------------------------------------------------------------- range KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-2">
         <Kpi label="Dials" value={n0(t.dials)} sub={`${pct(t.connect_rate)} connected`} icon={Phone} />
@@ -423,6 +715,10 @@ export default function CommandCenter() {
         <Kpi label="Cost / appt" value={usd(t.cost_per_appt, 0)} sub={`${usd(t.cost_per_human)} per human · ${usd(t.cost_per_dial)} per dial`} tone="violet" icon={DollarSign} />
         <Kpi label="Spend" value={usd(t.cost)} sub={`VoIP ${usd(t.voip_cost)} · AI ${usd(t.ai_cost)} · ${n0(t.minutes)} min`} icon={Flame} />
       </div>
+
+      {/* ---------------------------------------------------------------- results: appointments + hot leads */}
+      <AppointmentsPanel data={appts} range={range} player={player} onStatus={setApptStatus} loading={apptsLoading} />
+      <HotLeadsPanel rows={appts?.hot_leads} player={player} />
 
       {/* ---------------------------------------------------------------- funnel + recommendations */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-3">

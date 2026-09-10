@@ -151,6 +151,8 @@ export const api = {
     request(`/command/overview?range=${range}${campaignId ? `&campaign_id=${campaignId}` : ''}`),
   getCommandLive: () => request('/command/live'),
   getCommandInventory: (campaignId) => request(`/command/inventory/${campaignId}`),
+  getCommandAppointments: (range = 'today', campaignId = '') =>
+    request(`/command/appointments?range=${range}${campaignId ? `&campaign_id=${campaignId}` : ''}`),
 
   // Call Logs
   getCalls: (params = {}) => {
