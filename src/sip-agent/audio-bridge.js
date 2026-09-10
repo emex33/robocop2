@@ -136,9 +136,25 @@ export class AgentAudioBridge {
   }
 
   _startSendLoop() {
+    // Wall-clock paced (see src/audio/bridge.js): a bare 20 ms setInterval
+    // drifts late under load, which starves the phone of RTP and desyncs the
+    // recording. Process exactly as many 20 ms frames as are due each tick.
+    this.loopStartMs = Date.now();
+    this.framesDone = 0;
     this.sendInterval = setInterval(() => {
+      let due = Math.floor((Date.now() - this.loopStartMs) / PTIME) - this.framesDone;
+      if (due > 25) { this.framesDone += due - 25; due = 25; }
+      for (let i = 0; i < due; i++) {
+        this.framesDone++;
+        this._processFrame();
+      }
+    }, PTIME / 2);
+  }
+
+  _processFrame() {
       // --- Recording: mix remote + agent at 8kHz ---
       if (this.recStream && !this.recStream.destroyed) {
+        while (this.recRemoteQueue.length > 25) this.recRemoteQueue.shift();
         let remotePcm;
         if (this.recRemoteQueue.length > 0) {
           const remoteG711 = this.recRemoteQueue.shift();
@@ -178,7 +194,6 @@ export class AgentAudioBridge {
       this.udpSocket.send(rtpPacket, this.remoteRtpPort, this.remoteRtpHost, (err) => {
         if (err) logger.error(`Agent RTP send error: ${err.message}`, { callId: this.callId });
       });
-    }, PTIME);
   }
 
   _createRtpPacket(payload) {

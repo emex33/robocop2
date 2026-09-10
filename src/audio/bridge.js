@@ -25,6 +25,8 @@ const PTIME = 20; // 20ms packets
 const SAMPLES_PER_PACKET = SAMPLE_RATE * PTIME / 1000; // 160 samples
 const BYTES_PER_PACKET = SAMPLES_PER_PACKET; // 160 bytes (8-bit G.711)
 const PAYLOAD_TYPE = 8; // PCMA (G.711 A-law)
+const MAX_CATCHUP_FRAMES = 25; // 500 ms — max frames processed in one tick after a stall
+const MAX_LEAD_QUEUE = 25;     // 500 ms — max buffered lead packets awaiting recording
 
 // Port allocation for RTP (use range from env or default)
 const RTP_PORT_MIN = parseInt(process.env.RTP_PORT_MIN || "20000");
@@ -388,55 +390,86 @@ export class AudioBridge {
    * Also writes mixed recording frame each tick.
    */
   _startSendLoop() {
+    // Wall-clock paced: a bare setInterval(20ms) fires LATE under load (Node
+    // reschedules from when the callback ran, so lag accumulates and never
+    // catches up). Measured on live calls: only 46-48 frames/s instead of 50,
+    // i.e. 3-10% slow. Effects: (1) AI audio reached the phone slower than
+    // real time -> jitter-buffer underruns -> choppy voice ("you're cutting
+    // out"); (2) the recording ran short and the lead channel (consumed one
+    // packet per tick) drifted seconds behind the AI channel, so the AI seemed
+    // to answer before the lead spoke. Now every tick processes exactly as many
+    // 20 ms frames as wall-clock time says are due.
+    this.loopStartMs = Date.now();
+    this.framesDone = 0;
     this.sendInterval = setInterval(() => {
-      // --- Recording: mix lead + AI at 8kHz every tick ---
-      if (this.recStream && !this.recStream.destroyed) {
-        // Lead: shift one packet from the queue (or silence)
-        let leadPcm;
-        if (this.recLeadQueue.length > 0) {
-          const leadG711 = this.recLeadQueue.shift();
-          leadPcm = this.negotiatedCodec === 0
-            ? mulawDecode8k(leadG711)
-            : alawDecode8k(leadG711);
-        } else {
-          leadPcm = Buffer.alloc(SAMPLES_PER_PACKET * 2, 0);
-        }
+      let due = Math.floor((Date.now() - this.loopStartMs) / PTIME) - this.framesDone;
+      if (due > MAX_CATCHUP_FRAMES) {
+        // Pathological stall (GC pause, blocked loop): don't burst-flood the
+        // network; give up on the missed time instead.
+        this.framesDone += due - MAX_CATCHUP_FRAMES;
+        due = MAX_CATCHUP_FRAMES;
+      }
+      for (let i = 0; i < due; i++) {
+        this.framesDone++;
+        this._processFrame();
+      }
+    }, PTIME / 2);
+  }
 
-        // AI: peek at the front of the send queue (or silence)
-        let aiPcm;
-        if (this.sendQueue.length > 0) {
-          const aiG711 = this.sendQueue[0];
-          aiPcm = this.negotiatedCodec === 0
-            ? mulawDecode8k(aiG711)
-            : alawDecode8k(aiG711);
-        } else {
-          aiPcm = Buffer.alloc(SAMPLES_PER_PACKET * 2, 0);
-        }
-
-        // Mix: add samples, clamp to 16-bit
-        const mixed = Buffer.alloc(SAMPLES_PER_PACKET * 2);
-        for (let i = 0; i < SAMPLES_PER_PACKET; i++) {
-          let m = leadPcm.readInt16LE(i * 2) + aiPcm.readInt16LE(i * 2);
-          if (m > 32767) m = 32767;
-          if (m < -32768) m = -32768;
-          mixed.writeInt16LE(m, i * 2);
-        }
-        this.recStream.write(mixed);
+  /**
+   * One 20 ms frame: write a mixed recording frame and send one AI RTP packet.
+   */
+  _processFrame() {
+    // --- Recording: mix lead + AI at 8kHz every frame ---
+    if (this.recStream && !this.recStream.destroyed) {
+      // Safety valve: if the lead queue somehow runs ahead of wall-clock
+      // (remote clock skew), drop the oldest packets rather than drifting.
+      while (this.recLeadQueue.length > MAX_LEAD_QUEUE) this.recLeadQueue.shift();
+      // Lead: shift one packet from the queue (or silence)
+      let leadPcm;
+      if (this.recLeadQueue.length > 0) {
+        const leadG711 = this.recLeadQueue.shift();
+        leadPcm = this.negotiatedCodec === 0
+          ? mulawDecode8k(leadG711)
+          : alawDecode8k(leadG711);
+      } else {
+        leadPcm = Buffer.alloc(SAMPLES_PER_PACKET * 2, 0);
       }
 
-      // --- Send AI RTP packet ---
-      if (this.isMuted || this.sendQueue.length === 0) return;
-      if (!this.remoteRtpHost || !this.remoteRtpPort) return;
+      // AI: peek at the front of the send queue (or silence)
+      let aiPcm;
+      if (this.sendQueue.length > 0) {
+        const aiG711 = this.sendQueue[0];
+        aiPcm = this.negotiatedCodec === 0
+          ? mulawDecode8k(aiG711)
+          : alawDecode8k(aiG711);
+      } else {
+        aiPcm = Buffer.alloc(SAMPLES_PER_PACKET * 2, 0);
+      }
 
-      const pcmPayload = this.sendQueue.shift();
-      const rtpPacket = this._createRtpPacket(pcmPayload);
+      // Mix: add samples, clamp to 16-bit
+      const mixed = Buffer.alloc(SAMPLES_PER_PACKET * 2);
+      for (let i = 0; i < SAMPLES_PER_PACKET; i++) {
+        let m = leadPcm.readInt16LE(i * 2) + aiPcm.readInt16LE(i * 2);
+        if (m > 32767) m = 32767;
+        if (m < -32768) m = -32768;
+        mixed.writeInt16LE(m, i * 2);
+      }
+      this.recStream.write(mixed);
+    }
 
-      this.udpSocket.send(rtpPacket, this.remoteRtpPort, this.remoteRtpHost, (err) => {
-        if (err) {
-          logger.error(`RTP send error: ${err.message}`, { callId: this.callId });
-        }
-      });
-    }, PTIME);
+    // --- Send AI RTP packet ---
+    if (this.isMuted || this.sendQueue.length === 0) return;
+    if (!this.remoteRtpHost || !this.remoteRtpPort) return;
+
+    const pcmPayload = this.sendQueue.shift();
+    const rtpPacket = this._createRtpPacket(pcmPayload);
+
+    this.udpSocket.send(rtpPacket, this.remoteRtpPort, this.remoteRtpHost, (err) => {
+      if (err) {
+        logger.error(`RTP send error: ${err.message}`, { callId: this.callId });
+      }
+    });
   }
 
   /**
@@ -612,14 +645,14 @@ function alawSampleToLinear16(alaw) {
 
 /**
  * Convert a Buffer of G.711 A-law bytes to a Buffer of signed 16-bit LE PCM.
- * Upsamples 8kHz → 16kHz by duplicating each sample (for Deepgram 16kHz input).
+ * Upsamples 8kHz â†’ 16kHz by duplicating each sample (for Deepgram 16kHz input).
  */
 function alawToLinear16(alawBuf) {
-  // Each A-law byte becomes 2 PCM samples (upsample 8k→16k), each sample is 2 bytes
+  // Each A-law byte becomes 2 PCM samples (upsample 8kâ†’16k), each sample is 2 bytes
   const pcm = Buffer.alloc(alawBuf.length * 4);
   for (let i = 0; i < alawBuf.length; i++) {
     const sample = alawSampleToLinear16(alawBuf[i]);
-    // Duplicate sample for 8kHz → 16kHz
+    // Duplicate sample for 8kHz â†’ 16kHz
     pcm.writeInt16LE(sample, i * 4);
     pcm.writeInt16LE(sample, i * 4 + 2);
   }
@@ -640,7 +673,7 @@ function linear16ToAlaw(pcmBuf) {
 }
 
 // ============================================================
-// G.711 μ-law (PCMU) codec conversion functions
+// G.711 Î¼-law (PCMU) codec conversion functions
 // ============================================================
 
 const MULAW_BIAS = 0x84;
@@ -744,7 +777,7 @@ function alawDecode8k(alawBuf) {
 }
 
 /**
- * Decode G.711 μ-law to 8kHz linear16 (no upsampling). For recording.
+ * Decode G.711 Î¼-law to 8kHz linear16 (no upsampling). For recording.
  */
 function mulawDecode8k(mulawBuf) {
   const pcm = Buffer.alloc(mulawBuf.length * 2);
