@@ -366,6 +366,11 @@ function initSchema() {
   if (!agentCols.includes("eot_timeout_ms")) {
     db.exec("ALTER TABLE agents ADD COLUMN eot_timeout_ms INTEGER DEFAULT 5000");
   }
+  // Reaction pause: how long we hold the start of the AI's reply after the lead
+  // stops talking, so it doesn't answer instantly like a machine.
+  if (!agentCols.includes("response_delay_ms")) {
+    db.exec("ALTER TABLE agents ADD COLUMN response_delay_ms INTEGER DEFAULT 600");
+  }
 
   // Migration: add trunk_username to sip_settings
   const sipCols = db.prepare("PRAGMA table_info(sip_settings)").all().map(c => c.name);

@@ -629,6 +629,7 @@ async function runCampaign(campaignId, userId, runner) {
     try {
       result = await callManager.callLead(leadData, { 
         agentSettings, 
+        responseDelayMs: agent.response_delay_ms ?? 600,
         transferExtensions: extensions, 
         sipConfig,
         deepgramApiKey,

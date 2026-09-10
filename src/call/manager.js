@@ -127,6 +127,7 @@ export class CallManager {
       }
       deepgramAgent = new DeepgramAgent(callId, {
         agentSettings,
+        responseDelayMs: options.responseDelayMs,
         // AI audio -> play to lead via RTP
         onAudioReceived: (audioBuffer) => {
           audioBridge.sendAudioToLead(Buffer.from(audioBuffer));

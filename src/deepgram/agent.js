@@ -37,6 +37,43 @@ export class DeepgramAgent {
     this._aiSpeakingStart = null;
     this._aiTotalSpeakingMs = 0;
     this._aiAudioBytesReceived = 0;
+
+    // Human-like reaction pause: Deepgram starts streaming the reply ~300ms after
+    // the lead stops talking, which sounds like an IVR pouncing. We hold the first
+    // audio of each reply that follows a lead turn for responseDelayMs before
+    // playing it. If the lead resumes talking during the hold, the held audio is
+    // dropped (normal barge-in). The greeting and mid-reply chunks are never held.
+    this.responseDelayMs = Math.max(0, Math.min(3000, Number(options.responseDelayMs) || 0));
+    this._leadTurnPending = false;
+    this._holdBuffer = [];
+    this._holdTimer = null;
+  }
+
+  /** Route AI audio through the reaction-pause hold when appropriate. */
+  _dispatchAudio(data) {
+    if (!this.onAudioReceived) return;
+    if (this.responseDelayMs > 0 && this._leadTurnPending) {
+      this._holdBuffer.push(data);
+      if (!this._holdTimer) {
+        this._holdTimer = setTimeout(() => this._releaseHold(), this.responseDelayMs);
+      }
+      return;
+    }
+    this.onAudioReceived(data);
+  }
+
+  _releaseHold() {
+    this._holdTimer = null;
+    this._leadTurnPending = false;
+    const chunks = this._holdBuffer;
+    this._holdBuffer = [];
+    if (!this.onAudioReceived) return;
+    for (const c of chunks) this.onAudioReceived(c);
+  }
+
+  _dropHold() {
+    if (this._holdTimer) { clearTimeout(this._holdTimer); this._holdTimer = null; }
+    this._holdBuffer = [];
   }
 
   /**
@@ -75,9 +112,7 @@ export class DeepgramAgent {
       this.ws.on("message", (data, isBinary) => {
         if (isBinary) {
           this._aiAudioBytesReceived += data.length;
-          if (this.onAudioReceived) {
-            this.onAudioReceived(data);
-          }
+          this._dispatchAudio(data);
         } else {
           this._handleJsonMessage(JSON.parse(data.toString()));
         }
@@ -155,6 +190,7 @@ export class DeepgramAgent {
    * Disconnect from Deepgram.
    */
   disconnect() {
+    this._dropHold();
     if (this._aiSpeakingStart) {
       this._aiTotalSpeakingMs += Date.now() - this._aiSpeakingStart;
       this._aiSpeakingStart = null;
@@ -204,11 +240,14 @@ export class DeepgramAgent {
 
       case "ConversationText":
         logger.info(`[${msg.role}]: ${msg.content}`, { callId: this.callId });
+        if (msg.role === "user") this._leadTurnPending = true;
         if (this.onTranscript) this.onTranscript(msg.role, msg.content);
         break;
 
       case "UserStartedSpeaking":
         logger.info("Lead started speaking (barge-in)", { callId: this.callId });
+        this._dropHold();
+        this._leadTurnPending = true;
         if (this.onBargeIn) this.onBargeIn();
         break;
 

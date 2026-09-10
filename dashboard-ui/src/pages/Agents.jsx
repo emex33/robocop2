@@ -359,6 +359,7 @@ function AgentModal({ agent, onClose, onSaved }) {
     tts_speed: agent?.tts_speed || 'normal',
     eot_threshold: agent?.eot_threshold ?? 0.85,
     eot_timeout_ms: agent?.eot_timeout_ms ?? 5000,
+    response_delay_ms: agent?.response_delay_ms ?? 600,
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -693,6 +694,17 @@ function AgentModal({ agent, onClose, onSaved }) {
                     </div>
                   </div>
                 )}
+                <div className="w-1/2 pr-2">
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Reaction pause before replying</label>
+                  <select value={String(Number(form.response_delay_ms))} onChange={e => setForm({ ...form, response_delay_ms: Number(e.target.value) })} className={selectCls}>
+                    <option value="0">None — reply instantly (machine-like)</option>
+                    <option value="300">0.3 s</option>
+                    <option value="600">⭐ 0.6 s — natural phone pace</option>
+                    <option value="900">0.9 s — relaxed</option>
+                    <option value="1200">1.2 s — very relaxed</option>
+                  </select>
+                  <p className="text-[11px] text-gray-500 mt-1">Held after the client stops talking; dropped instantly if they keep speaking.</p>
+                </div>
               </div>
 
               {/* TTS (Speak) */}

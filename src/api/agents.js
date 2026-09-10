@@ -46,7 +46,7 @@ router.post("/", (req, res) => {
     llm_provider, llm_model, llm_temperature,
     stt_provider, stt_model,
     tts_provider, tts_model, tts_voice_id, tts_speed,
-    eot_threshold, eot_timeout_ms,
+    eot_threshold, eot_timeout_ms, response_delay_ms,
     functions,
   } = req.body;
 
@@ -58,8 +58,8 @@ router.post("/", (req, res) => {
   db.prepare(`
     INSERT INTO agents (id, user_id, name, mode, language, company, tone, greeting, script, appointment_script,
       llm_provider, llm_model, llm_temperature, stt_provider, stt_model,
-      tts_provider, tts_model, tts_voice_id, tts_speed, eot_threshold, eot_timeout_ms, functions_json)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      tts_provider, tts_model, tts_voice_id, tts_speed, eot_threshold, eot_timeout_ms, response_delay_ms, functions_json)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     id, req.user.userId,
     name,
@@ -81,6 +81,7 @@ router.post("/", (req, res) => {
     tts_speed || "normal",
     eot_threshold ?? 0.85,
     eot_timeout_ms ?? 5000,
+    response_delay_ms ?? 600,
     functionsJson
   );
 
@@ -104,7 +105,7 @@ router.put("/:id", (req, res) => {
     "name", "mode", "language", "company", "tone", "greeting", "script", "appointment_script",
     "llm_provider", "llm_model", "llm_temperature",
     "stt_provider", "stt_model", "tts_provider", "tts_model",
-    "tts_voice_id", "tts_speed", "eot_threshold", "eot_timeout_ms",
+    "tts_voice_id", "tts_speed", "eot_threshold", "eot_timeout_ms", "response_delay_ms",
   ];
 
   for (const key of allowed) {
@@ -160,8 +161,8 @@ router.post("/:id/duplicate", (req, res) => {
   db.prepare(`
     INSERT INTO agents (id, user_id, name, mode, language, company, tone, greeting, script, appointment_script,
       llm_provider, llm_model, llm_temperature, stt_provider, stt_model,
-      tts_provider, tts_model, tts_voice_id, tts_speed, eot_threshold, eot_timeout_ms, functions_json)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      tts_provider, tts_model, tts_voice_id, tts_speed, eot_threshold, eot_timeout_ms, response_delay_ms, functions_json)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     newId, req.user.userId,
     source.name + " (copy)", source.mode || "live_transfer",
@@ -170,7 +171,7 @@ router.post("/:id/duplicate", (req, res) => {
     source.llm_provider, source.llm_model, source.llm_temperature,
     source.stt_provider, source.stt_model, source.tts_provider, source.tts_model,
     source.tts_voice_id || "", source.tts_speed || "normal",
-    source.eot_threshold ?? 0.85, source.eot_timeout_ms ?? 5000,
+    source.eot_threshold ?? 0.85, source.eot_timeout_ms ?? 5000, source.response_delay_ms ?? 600,
     source.functions_json
   );
 
