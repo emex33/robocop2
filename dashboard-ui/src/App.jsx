@@ -4,6 +4,7 @@ import Layout from './components/Layout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import CommandCenter from './pages/CommandCenter';
 import Agents from './pages/Agents';
 import Campaigns from './pages/Campaigns';
 import CampaignDetail from './pages/CampaignDetail';
@@ -49,6 +50,7 @@ export default function App() {
           <Route path="/agent/softphone" element={<AgentSoftphone />} />
           <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
             <Route index element={<Dashboard />} />
+            <Route path="command" element={<CommandCenter />} />
             <Route path="agents" element={<Agents />} />
             <Route path="campaigns" element={<Campaigns />} />
             <Route path="campaigns/:id" element={<CampaignDetail />} />

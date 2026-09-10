@@ -77,6 +77,32 @@ async function ensureHeaders(sheets, spreadsheetId) {
 }
 
 /**
+ * Write a row at an explicitly computed position.
+ *
+ * `values.append` treats its range as a *hint* for locating a table, not as a
+ * destination. Once a stray block of cells existed further right on this sheet,
+ * Google's table detection latched onto it and every appointment was written to
+ * columns P:AG instead of A:S — reported as a success, but invisible to anyone
+ * reading the sheet. Deriving the target row from column A removes the guess.
+ */
+async function appendRowAt(sheets, spreadsheetId, tab, row, lastColumn) {
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId,
+    range: `${tab}!A:A`,
+  });
+  const rowNumber = (res.data.values?.length || 0) + 1;
+
+  await sheets.spreadsheets.values.update({
+    spreadsheetId,
+    range: `${tab}!A${rowNumber}:${lastColumn}${rowNumber}`,
+    valueInputOption: "RAW",
+    requestBody: { values: [row] },
+  });
+
+  return rowNumber;
+}
+
+/**
  * Build a row from appointment + lead data.
  */
 function buildRow(appointment, lead, campaignName, recordingUrl) {
@@ -155,15 +181,9 @@ export async function pushAppointmentToSheet(appointmentId) {
 
     const row = buildRow(appt, lead, appt.campaign_name, recordingUrl);
 
-    await sheets.spreadsheets.values.append({
-      spreadsheetId: appt.google_sheet_id,
-      range: "Sheet1!A:S",
-      valueInputOption: "RAW",
-      insertDataOption: "INSERT_ROWS",
-      requestBody: { values: [row] },
-    });
+    const rowNumber = await appendRowAt(sheets, appt.google_sheet_id, "Sheet1", row, "S");
 
-    logger.info(`Google Sheets: pushed appointment ${appointmentId} to sheet ${appt.google_sheet_id}`);
+    logger.info(`Google Sheets: pushed appointment ${appointmentId} to ${appt.google_sheet_id} row ${rowNumber}`);
   } catch (err) {
     logger.error(`Google Sheets: failed to push appointment ${appointmentId}: ${err.message}`);
   }
@@ -407,15 +427,9 @@ export async function pushTransferToSheet(transferData) {
 
     const row = buildTransferRow(transferData, lead, campaign.name, recordingUrl);
 
-    await sheets.spreadsheets.values.append({
-      spreadsheetId: campaign.google_sheet_id,
-      range: "Transfers!A:Q",
-      valueInputOption: "RAW",
-      insertDataOption: "INSERT_ROWS",
-      requestBody: { values: [row] },
-    });
+    const rowNumber = await appendRowAt(sheets, campaign.google_sheet_id, "Transfers", row, "Q");
 
-    logger.info(`Google Sheets: pushed transfer to "Transfers" tab in ${campaign.google_sheet_id}`);
+    logger.info(`Google Sheets: pushed transfer to "Transfers" row ${rowNumber} in ${campaign.google_sheet_id}`);
   } catch (err) {
     logger.error(`Google Sheets: failed to push transfer: ${err.message}`);
   }

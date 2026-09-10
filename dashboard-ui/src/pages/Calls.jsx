@@ -384,24 +384,31 @@ export default function Calls() {
 
 function CallDetailModal({ call, onClose }) {
   const [tab, setTab] = useState('info');
+  const [detail, setDetail] = useState(call);
   const { isSuperAdmin } = useAuth();
 
+  useEffect(() => {
+    let cancelled = false;
+    api.getCall(call.id).then(full => { if (!cancelled) setDetail(full); }).catch(() => {});
+    return () => { cancelled = true; };
+  }, [call.id]);
+
   const infoItems = [
-    { label: 'Phone', value: call.phone },
-    { label: 'Lead', value: call.lead_name || '—' },
-    { label: 'Email', value: call.email || '—' },
-    { label: 'Campaign', value: call.campaign_name || '—' },
-    ...(isSuperAdmin ? [{ label: 'AI Agent', value: call.agent_name || '—' }] : []),
-    { label: 'Outcome', value: call.outcome },
-    { label: 'Started', value: call.started_at ? `${formatDate(call.started_at)} ${formatTime(call.started_at)}` : '—' },
-    { label: 'Ended', value: call.ended_at ? `${formatDate(call.ended_at)} ${formatTime(call.ended_at)}` : '—' },
-    ...(call.call_cost > 0 ? (isSuperAdmin
-      ? [{ label: 'Call Cost', value: `$${call.call_cost.toFixed(4)} (VoIP: $${(call.voip_cost||0).toFixed(4)}, AI: $${(call.ai_cost||0).toFixed(4)})` }]
-      : [{ label: 'Call Cost', value: `$${call.call_cost.toFixed(4)}` }]
+    { label: 'Phone', value: detail.phone },
+    { label: 'Lead', value: detail.lead_name || '—' },
+    { label: 'Email', value: detail.email || '—' },
+    { label: 'Campaign', value: detail.campaign_name || '—' },
+    ...(isSuperAdmin ? [{ label: 'AI Agent', value: detail.agent_name || '—' }] : []),
+    { label: 'Outcome', value: detail.outcome },
+    { label: 'Started', value: detail.started_at ? `${formatDate(detail.started_at)} ${formatTime(detail.started_at)}` : '—' },
+    { label: 'Ended', value: detail.ended_at ? `${formatDate(detail.ended_at)} ${formatTime(detail.ended_at)}` : '—' },
+    ...(detail.call_cost > 0 ? (isSuperAdmin
+      ? [{ label: 'Call Cost', value: `$${detail.call_cost.toFixed(4)} (VoIP: $${(detail.voip_cost||0).toFixed(4)}, AI: $${(detail.ai_cost||0).toFixed(4)})` }]
+      : [{ label: 'Call Cost', value: `$${detail.call_cost.toFixed(4)}` }]
     ) : []),
-    ...(isSuperAdmin && call.ai_duration_seconds > 0 ? [{ label: 'AI Talk Time', value: `${(call.ai_duration_seconds / 60).toFixed(1)} min` }] : []),
-    ...(call.transferred_to ? [{ label: 'Transferred To', value: call.transferred_to }] : []),
-    ...(call.error_message ? [{ label: 'Error', value: call.error_message }] : []),
+    ...(isSuperAdmin && detail.ai_duration_seconds > 0 ? [{ label: 'AI Talk Time', value: `${(detail.ai_duration_seconds / 60).toFixed(1)} min` }] : []),
+    ...(detail.transferred_to ? [{ label: 'Transferred To', value: detail.transferred_to }] : []),
+    ...(detail.error_message ? [{ label: 'Error', value: detail.error_message }] : []),
   ];
 
   return (
@@ -432,8 +439,8 @@ function CallDetailModal({ call, onClose }) {
               }`}
             >
               {t.label}
-              {t.id === 'transcript' && call.transcript?.length > 0 && (
-                <span className="ml-1.5 text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full">{call.transcript.length}</span>
+              {t.id === 'transcript' && detail.transcript?.length > 0 && (
+                <span className="ml-1.5 text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full">{detail.transcript.length}</span>
               )}
             </button>
           ))}
@@ -445,8 +452,8 @@ function CallDetailModal({ call, onClose }) {
             <div className="space-y-5">
               {/* Top row */}
               <div className="flex items-center gap-3">
-                <OutcomeBadge outcome={call.outcome} />
-                <span className="text-sm text-gray-500">{formatDuration(call.duration_seconds)}</span>
+                <OutcomeBadge outcome={detail.outcome} />
+                <span className="text-sm text-gray-500">{formatDuration(detail.duration_seconds)}</span>
               </div>
 
               {/* Details grid */}
@@ -460,18 +467,18 @@ function CallDetailModal({ call, onClose }) {
               </div>
 
               {/* Summary */}
-              {call.call_summary && (
+              {detail.call_summary && (
                 <div>
                   <p className="text-xs text-gray-400 font-medium uppercase tracking-wider mb-1">Call Summary</p>
-                  <p className="text-sm text-gray-700 bg-gray-50 rounded-lg p-3 leading-relaxed">{call.call_summary}</p>
+                  <p className="text-sm text-gray-700 bg-gray-50 rounded-lg p-3 leading-relaxed">{detail.call_summary}</p>
                 </div>
               )}
 
               {/* Notes */}
-              {call.notes && (
+              {detail.notes && (
                 <div>
                   <p className="text-xs text-gray-400 font-medium uppercase tracking-wider mb-1">Notes</p>
-                  <p className="text-sm text-gray-700 bg-gray-50 rounded-lg p-3 leading-relaxed">{call.notes}</p>
+                  <p className="text-sm text-gray-700 bg-gray-50 rounded-lg p-3 leading-relaxed">{detail.notes}</p>
                 </div>
               )}
             </div>
@@ -479,12 +486,12 @@ function CallDetailModal({ call, onClose }) {
 
           {tab === 'transcript' && (
             <div className="space-y-3">
-              {(!call.transcript || call.transcript.length === 0) ? (
+              {(!detail.transcript || detail.transcript.length === 0) ? (
                 <div className="text-center py-12 text-gray-400">
                   <MessageSquare className="w-10 h-10 mx-auto mb-2 opacity-40" />
                   <p>No transcript available</p>
                 </div>
-              ) : call.transcript.map((msg, i) => (
+              ) : detail.transcript.map((msg, i) => (
                 <div key={i} className={`flex gap-3 ${msg.role === 'agent' ? '' : 'flex-row-reverse'}`}>
                   <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
                     msg.role === 'agent' ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-600'

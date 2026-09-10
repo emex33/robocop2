@@ -110,11 +110,17 @@ services:
       - RTP_PORT_MAX=20200
       - DRACHTIO_HOST=172.18.0.1
       - LOCAL_VOICE_AGENT_URL=ws://voice-agent:8765
+      # SQLite lives on a Docker volume (Linux ext4 inside the Docker VM), NOT
+      # on the ./data bind mount. ./data is a OneDrive-synced Windows folder;
+      # the same queries measured 30x slower there and every slow query froze
+      # the dialer. A nightly copy is written back to ./data/backups.
+      - DB_PATH=/app/dbdata/robocop.db
     volumes:
       - ./src:/app/src
       - ./config:/app/config
       - ./data:/app/data
       - ./logs:/app/logs
+      - robocop-db:/app/dbdata
     networks:
       - robocop
 
@@ -145,6 +151,7 @@ services:
 
 volumes:
   voice-agent-models:
+  robocop-db:
 
 networks:
   robocop:

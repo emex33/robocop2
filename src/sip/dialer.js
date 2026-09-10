@@ -158,8 +158,14 @@ export class SipDialer {
           await new Promise(r => setTimeout(r, backoffMs));
           continue;
         }
-        logger.error(`Failed to call ${phoneNumber}: ${err.status || err.message}`);
-        reportTrunkFailure(err.status, err.message);
+        logger.error(`Failed to call ${phoneNumber}: ${err.status || err.message}${err.reason ? ` (${err.reason})` : ""}`);
+        // SipError.message is always "Sip non-success response: <code>". The
+        // carrier's own explanation — including "low balance" — lives on
+        // err.reason and sometimes in the response body.
+        const sipDetail = [err.reason, err.res?.reason, err.res?.body, err.message]
+          .filter(Boolean)
+          .join(" ");
+        reportTrunkFailure(err.status, sipDetail);
         throw err;
       }
     }
@@ -230,8 +236,14 @@ export class SipDialer {
           await new Promise(r => setTimeout(r, backoffMs));
           continue;
         }
-        logger.error(`Failed to call ${phoneNumber}: ${err.status || err.message}`);
-        reportTrunkFailure(err.status, err.message);
+        logger.error(`Failed to call ${phoneNumber}: ${err.status || err.message}${err.reason ? ` (${err.reason})` : ""}`);
+        // SipError.message is always "Sip non-success response: <code>". The
+        // carrier's own explanation — including "low balance" — lives on
+        // err.reason and sometimes in the response body.
+        const sipDetail = [err.reason, err.res?.reason, err.res?.body, err.message]
+          .filter(Boolean)
+          .join(" ");
+        reportTrunkFailure(err.status, sipDetail);
         throw err;
       }
     }

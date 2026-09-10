@@ -45,7 +45,7 @@ function exitBulkMode(db) {
   if (bulkModeDepth === 0) {
     try { db.pragma("wal_checkpoint(PASSIVE)"); } catch {}
     try { db.pragma("synchronous = NORMAL"); } catch {}
-    try { db.pragma("cache_size = -8000"); } catch {}
+    try { db.pragma("cache_size = -65536"); } catch {}
   }
 }
 
@@ -214,7 +214,7 @@ router.get("/:id", (req, res) => {
   );
   const total = { cnt: totalCnt };
   const leads = db.prepare(
-    "SELECT * FROM leads WHERE list_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?"
+    "SELECT * FROM leads INDEXED BY idx_leads_list_created WHERE list_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?"
   ).all(req.params.id, limit, offset);
 
   const leadsResult = leads.map(l => ({

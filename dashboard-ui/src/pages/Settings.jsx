@@ -85,7 +85,7 @@ function DeepgramSettings() {
         <h2 className="text-lg font-semibold text-gray-900">API Keys</h2>
       </div>
       <p className="text-sm text-gray-500 mb-4">
-        Add multiple keys for auto-rotation. If a key gets 5+ consecutive 402 errors (out of credit), the system auto-switches to the next active key.
+        Add multiple keys for auto-rotation. The moment a key is rejected for lack of credit (402), the system switches to the next active key. Keys are also checked every minute and retired before they run dry.
       </p>
 
       {/* Status summary */}
@@ -113,11 +113,13 @@ function DeepgramSettings() {
                 </div>
                 <div className="flex items-center gap-3 mt-1 text-xs text-gray-500">
                   <code className="font-mono">{k.masked_key}</code>
-                  {k.error_count_402 > 0 && <span className="text-orange-600">{k.error_count_402}/5 errors</span>}
+                  {k.error_count_402 > 0 && <span className="text-orange-600">{k.error_count_402} credit rejection{k.error_count_402 === 1 ? '' : 's'}</span>}
                   {k.last_error && <span className="text-red-500 truncate">{k.last_error}</span>}
                   {testResult[k.id] && (
-                    <span className={testResult[k.id].success ? 'text-green-600' : 'text-red-500'}>
-                      {testResult[k.id].success ? `Valid (${testResult[k.id].project})` : testResult[k.id].error}
+                    <span className={testResult[k.id].success ? 'text-green-600' : testResult[k.id].unreachable ? 'text-orange-600' : 'text-red-500'}>
+                      {testResult[k.id].success
+                        ? `Valid (${testResult[k.id].project})${typeof testResult[k.id].balance === 'number' ? ` — $${testResult[k.id].balance.toFixed(2)}` : ''}`
+                        : testResult[k.id].error}
                     </span>
                   )}
                 </div>

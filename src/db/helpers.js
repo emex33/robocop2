@@ -189,12 +189,46 @@ export const MAX_DIAL_ATTEMPTS = 3;
  */
 const PERMANENT_SIP_CODES = ["404", "604"];
 
+/**
+ * Failures that never reached the lead's phone: carrier throttling / trunk
+ * trouble (5xx), request timeouts, and our own network or Deepgram outages.
+ * These say nothing about the number, so they must not use up its attempts —
+ * otherwise a 40% SIP 503 day retires perfectly good leads that never rang.
+ */
+const INFRA_ERROR_RE = /\b(50[0-9]|408)\b|econnrefused|etimedout|ehostunreach|enetunreach|enotfound|eai_again|socket hang up|fetch failed|deepgram/i;
+
+export function isInfrastructureError(errorMessage = "") {
+  return INFRA_ERROR_RE.test(String(errorMessage));
+}
+
+/** Retire a lead whose phone field cannot be dialed (e-mail address, too short). */
+export function markLeadInvalidPhone(leadId, phone = "") {
+  if (!leadId) return;
+  getDb().prepare("UPDATE leads SET status = 'failed', last_error = ? WHERE id = ?")
+    .run(`invalid phone number: ${String(phone).slice(0, 80)}`, leadId);
+}
+
 export function updateLeadStatus(leadId, callOutcome, errorMessage = "") {
   if (!leadId) return;
   const db = getDb();
 
-  // Every attempt counts, so a number that always fails eventually gets retired
-  // rather than being re-dialed from the top of the list on each restart.
+  // "503 (DNS Error)" is the trunk failing to resolve a non-numeric target —
+  // a bad lead, not a bad network. Permanent.
+  if (callOutcome === "error" && /DNS Error/i.test(String(errorMessage))) {
+    db.prepare("UPDATE leads SET status = 'failed', last_error = ? WHERE id = ?")
+      .run(String(errorMessage).slice(0, 200), leadId);
+    return;
+  }
+
+  if (callOutcome === "error" && isInfrastructureError(errorMessage)) {
+    // Infrastructure failure: record it, keep the lead callable, no attempt spent.
+    db.prepare("UPDATE leads SET status = 'new', last_error = ? WHERE id = ?")
+      .run(String(errorMessage).slice(0, 200), leadId);
+    return;
+  }
+
+  // Every real attempt counts, so a number that always fails eventually gets
+  // retired rather than being re-dialed from the top of the list on each restart.
   db.prepare("UPDATE leads SET attempts = COALESCE(attempts, 0) + 1 WHERE id = ?").run(leadId);
 
   if (callOutcome === "error") {
@@ -256,13 +290,16 @@ export function getCampaignCallableLeads(campaignId, limit = 4000) {
   const cap = Math.max(1, Math.min(Number(limit) || 4000, 8000));
   // voicemail / no_answer are NOT terminal: those leads stay callable and get
   // redialed (fresh attempts-0 leads first) until they hit MAX_DIAL_ATTEMPTS.
+  // The predicate below is byte-identical to the WHERE of idx_leads_callable
+  // (schema.js) so SQLite uses that partial index: 6.3s -> 60ms on a 250k
+  // list. `attempts` is never NULL (schema backfills it).
   return db.prepare(`
     SELECT l.* FROM leads l
     JOIN campaign_lists cl ON l.list_id = cl.list_id
     WHERE cl.campaign_id = ? AND l.do_not_call = 0
-      AND l.status NOT IN ('completed', 'contacted', 'callback', 'failed')
-      AND COALESCE(l.attempts, 0) < ${MAX_DIAL_ATTEMPTS}
-    ORDER BY COALESCE(l.attempts, 0) ASC, l.created_at ASC
+      AND l.status NOT IN ('completed','contacted','callback','failed')
+      AND l.attempts < ${MAX_DIAL_ATTEMPTS}
+    ORDER BY l.attempts ASC, l.created_at ASC
     LIMIT ?
   `).all(campaignId, cap);
 }
@@ -276,8 +313,8 @@ export function getCampaignCallableLeadCount(campaignId) {
     SELECT COUNT(*) as cnt FROM leads l
     JOIN campaign_lists cl ON l.list_id = cl.list_id
     WHERE cl.campaign_id = ? AND l.do_not_call = 0
-      AND l.status NOT IN ('completed', 'contacted', 'callback', 'failed')
-      AND COALESCE(l.attempts, 0) < ${MAX_DIAL_ATTEMPTS}
+      AND l.status NOT IN ('completed','contacted','callback','failed')
+      AND l.attempts < ${MAX_DIAL_ATTEMPTS}
   `).get(campaignId).cnt;
 }
 

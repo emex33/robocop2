@@ -146,6 +146,12 @@ export const api = {
   // Analytics
   getDashboard: () => request('/analytics/dashboard'),
 
+  // Command Center
+  getCommandOverview: (range = 'today', campaignId = '') =>
+    request(`/command/overview?range=${range}${campaignId ? `&campaign_id=${campaignId}` : ''}`),
+  getCommandLive: () => request('/command/live'),
+  getCommandInventory: (campaignId) => request(`/command/inventory/${campaignId}`),
+
   // Call Logs
   getCalls: (params = {}) => {
     const q = new URLSearchParams();

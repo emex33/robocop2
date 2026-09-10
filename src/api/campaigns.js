@@ -10,11 +10,124 @@ import path from "path";
 
 const router = Router();
 
+/** Calling window every campaign starts with: weekdays, 15:00 to midnight Amsterdam. */
+export const DEFAULT_SCHEDULE = Object.freeze({
+  daily_start_time: "15:00",
+  daily_end_time: "00:00",
+  timezone: "Europe/Amsterdam",
+  days_of_week: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+});
+
+// better-sqlite3 is synchronous: a full scan of 1M+ call_records (~3s) or
+// 250k leads (~10s) freezes HTTP + WebSocket, which the UI shows as a reload.
+const statsCache = new Map();
+const STATS_TTL_MS = 20_000;
+const STATS_MAX_AGE_MS = 10 * 60_000;
+
+// Stale-while-revalidate: an expired entry is returned immediately and
+// refreshed right after the response goes out, so a click never waits on a
+// COUNT over 300k call records. Only a cold key computes inline.
+function getCached(key, compute) {
+  const hit = statsCache.get(key);
+  const now = Date.now();
+  if (hit && now - hit.ts < STATS_TTL_MS) return hit.value;
+  if (hit && now - hit.ts < STATS_MAX_AGE_MS) {
+    if (!hit.refreshing) {
+      hit.refreshing = true;
+      setTimeout(() => {
+        try { statsCache.set(key, { ts: Date.now(), value: compute() }); }
+        catch { hit.refreshing = false; }
+      }, 0);
+    }
+    return hit.value;
+  }
+  const value = compute();
+  statsCache.set(key, { ts: now, value });
+  if (statsCache.size > 200) {
+    const cutoff = now - STATS_MAX_AGE_MS;
+    for (const [k, v] of statsCache) if (v.ts < cutoff) statsCache.delete(k);
+  }
+  return value;
+}
+
+function getCallCountsByCampaign(db, campaignIds) {
+  if (!campaignIds.length) return {};
+  const key = `calls:${campaignIds.slice().sort().join(",")}`;
+  return getCached(key, () => {
+    const callCounts = {};
+    const placeholders = campaignIds.map(() => "?").join(",");
+    db.prepare(`
+      SELECT campaign_id,
+        COUNT(*) as total_calls,
+        SUM(CASE WHEN outcome = 'transferred' THEN 1 ELSE 0 END) as answered_leads,
+        SUM(CASE WHEN outcome NOT IN ('unknown','error') THEN 1 ELSE 0 END) as contacted_leads
+      FROM call_records WHERE campaign_id IN (${placeholders})
+      GROUP BY campaign_id
+    `).all(...campaignIds).forEach(r => { callCounts[r.campaign_id] = r; });
+    return callCounts;
+  });
+}
+
+function getCampaignCallStats(db, campaignId) {
+  return getCached(`cstats:${campaignId}`, () => db.prepare(`
+    SELECT
+      COUNT(*) as total_calls,
+      SUM(CASE WHEN outcome = 'transferred' THEN 1 ELSE 0 END) as transferred_calls,
+      SUM(CASE WHEN outcome IN ('interested','transferred','appointment_set') THEN 1 ELSE 0 END) as answered_leads,
+      SUM(CASE WHEN outcome = 'not_interested' THEN 1 ELSE 0 END) as rejected_leads
+    FROM call_records WHERE campaign_id = ?
+  `).get(campaignId));
+}
+
+function getCampaignDncCount(db, campaignId) {
+  return getCached(`dnc:${campaignId}`, () => {
+    const lists = db.prepare("SELECT list_id FROM campaign_lists WHERE campaign_id = ?").all(campaignId);
+    if (lists.length === 0) return 0;
+    let total = 0;
+    const stmt = db.prepare("SELECT COUNT(*) as cnt FROM leads WHERE list_id = ? AND do_not_call = 1");
+    for (const row of lists) total += stmt.get(row.list_id).cnt;
+    return total;
+  });
+}
+
+/**
+ * Pre-compute the per-campaign counters for campaigns touched in the last 30
+ * days, one campaign per tick so the event loop stays free. Called at boot and
+ * periodically; with the stale-while-revalidate cache above this means the
+ * campaign list and detail pages never wait on a COUNT.
+ */
+export function warmCampaignCaches() {
+  const db = getDb();
+  let rows;
+  try {
+    rows = db.prepare("SELECT id, user_id FROM campaigns WHERE updated_at >= datetime('now','-30 days') ORDER BY updated_at DESC LIMIT 40").all();
+  } catch { return; }
+  const byUser = new Map();
+  for (const r of rows) byUser.set(r.user_id, [...(byUser.get(r.user_id) || []), r.id]);
+  let i = 0;
+  const step = () => {
+    if (i < rows.length) {
+      const c = rows[i++];
+      try { getCampaignCallStats(db, c.id); getCampaignDncCount(db, c.id); } catch {}
+      setTimeout(step, 150);
+    } else {
+      // The list page keys its cache by the user's full campaign id set.
+      for (const userId of byUser.keys()) {
+        try {
+          const ids = db.prepare("SELECT id FROM campaigns WHERE user_id = ?").all(userId).map(r => r.id);
+          getCallCountsByCampaign(db, ids);
+        } catch {}
+      }
+    }
+  };
+  step();
+}
+
 // List all campaigns for current user
 router.get("/", (req, res) => {
   const db = getDb();
   const campaigns = db.prepare(`
-    SELECT c.*, a.name as agent_name, a.script as agent_script, a.mode as agent_mode
+    SELECT c.*, a.name as agent_name, a.mode as agent_mode
     FROM campaigns c
     LEFT JOIN agents a ON c.agent_id = a.id
     WHERE c.user_id = ?
@@ -34,15 +147,7 @@ router.get("/", (req, res) => {
     GROUP BY cl.campaign_id
   `).all(...campaignIds).forEach(r => { leadCounts[r.campaign_id] = r.cnt; });
 
-  const callCounts = {};
-  db.prepare(`
-    SELECT campaign_id,
-      COUNT(*) as total_calls,
-      SUM(CASE WHEN outcome = 'transferred' THEN 1 ELSE 0 END) as answered_leads,
-      SUM(CASE WHEN outcome NOT IN ('unknown','error') THEN 1 ELSE 0 END) as contacted_leads
-    FROM call_records WHERE campaign_id IN (${placeholders})
-    GROUP BY campaign_id
-  `).all(...campaignIds).forEach(r => { callCounts[r.campaign_id] = r; });
+  const callCounts = getCallCountsByCampaign(db, campaignIds);
 
   const result = campaigns.map(c => ({
     ...c,
@@ -59,7 +164,7 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
   const db = getDb();
   const campaign = db.prepare(`
-    SELECT c.*, a.name as agent_name, a.script as agent_script, a.mode as agent_mode
+    SELECT c.*, a.name as agent_name, a.mode as agent_mode
     FROM campaigns c
     LEFT JOIN agents a ON c.agent_id = a.id
     WHERE c.id = ? AND c.user_id = ?
@@ -73,27 +178,15 @@ router.get("/:id", (req, res) => {
     WHERE cl.campaign_id = ?
   `).get(req.params.id);
 
-  const callStats = db.prepare(`
-    SELECT
-      COUNT(*) as total_calls,
-      SUM(CASE WHEN outcome = 'transferred' THEN 1 ELSE 0 END) as transferred_calls,
-      SUM(CASE WHEN outcome IN ('interested','transferred','appointment_set') THEN 1 ELSE 0 END) as answered_leads,
-      SUM(CASE WHEN outcome = 'not_interested' THEN 1 ELSE 0 END) as rejected_leads
-    FROM call_records WHERE campaign_id = ?
-  `).get(req.params.id);
-
-  const dncCount = db.prepare(`
-    SELECT COUNT(*) as cnt FROM leads l
-    JOIN campaign_lists cl ON l.list_id = cl.list_id
-    WHERE cl.campaign_id = ? AND l.do_not_call = 1
-  `).get(req.params.id);
+  const callStats = getCampaignCallStats(db, req.params.id);
+  const dncCount = getCampaignDncCount(db, req.params.id);
 
   campaign.total_leads = leadStats.total_leads;
   campaign.total_calls = callStats.total_calls;
   campaign.transferred_calls = callStats.transferred_calls;
   campaign.answered_leads = callStats.answered_leads;
   campaign.rejected_leads = callStats.rejected_leads;
-  campaign.dnc_leads = dncCount.cnt;
+  campaign.dnc_leads = dncCount;
   campaign.days_of_week = JSON.parse(campaign.days_of_week || "[]");
 
   campaign.extensions = db.prepare(
@@ -118,10 +211,18 @@ router.post("/", (req, res) => {
 
   if (!name) return res.status(400).json({ error: "Campaign name is required" });
 
+  // House rule for every campaign: Mon–Fri, 15:00 to midnight Amsterdam time.
+  // Set explicitly rather than relying on column defaults, because SQLite keeps
+  // whatever defaults the table was created with and this DB predates the rule.
   db.prepare(`
-    INSERT INTO campaigns (id, user_id, name, agent_id, type, phone_number)
-    VALUES (?, ?, ?, ?, ?, ?)
-  `).run(id, req.user.userId, name, agent_id || null, type || "outbound", phone_number || "");
+    INSERT INTO campaigns (id, user_id, name, agent_id, type, phone_number,
+      daily_start_time, daily_end_time, timezone, days_of_week)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    id, req.user.userId, name, agent_id || null, type || "outbound", phone_number || "",
+    DEFAULT_SCHEDULE.daily_start_time, DEFAULT_SCHEDULE.daily_end_time,
+    DEFAULT_SCHEDULE.timezone, JSON.stringify(DEFAULT_SCHEDULE.days_of_week),
+  );
 
   const campaign = db.prepare("SELECT * FROM campaigns WHERE id = ?").get(id);
   campaign.days_of_week = JSON.parse(campaign.days_of_week || "[]");
@@ -316,27 +417,53 @@ router.get("/:id/leads", (req, res) => {
   const limit = Math.min(parseInt(req.query.limit) || 50, 200);
   const offset = (page - 1) * limit;
 
-  // Use pre-computed total from lists table instead of counting 289K leads
-  const totalRow = db.prepare(`
-    SELECT COALESCE(SUM(l2.total_leads), 0) as cnt
-    FROM campaign_lists cl JOIN lists l2 ON cl.list_id = l2.id
+  const lists = db.prepare(`
+    SELECT l.id, l.name, l.total_leads
+    FROM lists l
+    JOIN campaign_lists cl ON l.id = cl.list_id
     WHERE cl.campaign_id = ?
-  `).get(req.params.id);
+  `).all(req.params.id);
 
-  const leads = db.prepare(`
-    SELECT l.*, li.name as list_name FROM leads l
-    JOIN campaign_lists cl ON l.list_id = cl.list_id
-    JOIN lists li ON l.list_id = li.id
-    WHERE cl.campaign_id = ?
-    ORDER BY l.created_at DESC
-    LIMIT ? OFFSET ?
-  `).all(req.params.id, limit, offset);
+  const total = lists.reduce((s, l) => s + (l.total_leads || 0), 0);
+  if (lists.length === 0) {
+    return res.json({ leads: [], total: 0, page, pages: 0 });
+  }
+
+  let leads;
+  if (lists.length === 1) {
+    // Index-backed: idx_leads_list_created. Sorting 250k rows via a JOIN
+    // was ~10s; walking the (list_id, created_at) index for 50 rows is ~1ms.
+    const list = lists[0];
+    leads = db.prepare(`
+      SELECT l.*, ? AS list_name FROM leads l INDEXED BY idx_leads_list_created
+      WHERE l.list_id = ?
+      ORDER BY l.created_at DESC
+      LIMIT ? OFFSET ?
+    `).all(list.name, list.id, limit, offset);
+  } else {
+    const nameById = Object.fromEntries(lists.map(l => [l.id, l.name]));
+    const take = offset + limit;
+    const merged = [];
+    const stmt = db.prepare(`
+      SELECT l.* FROM leads l INDEXED BY idx_leads_list_created
+      WHERE l.list_id = ?
+      ORDER BY l.created_at DESC
+      LIMIT ?
+    `);
+    for (const list of lists) {
+      for (const row of stmt.all(list.id, take)) {
+        merged.push({ ...row, list_name: nameById[list.id] });
+      }
+    }
+    merged.sort((a, b) => String(b.created_at || "").localeCompare(String(a.created_at || "")));
+    leads = merged.slice(offset, offset + limit);
+  }
 
   res.json({
     leads,
-    total: totalRow.cnt,
+    total,
     page,
-    pages: Math.ceil(totalRow.cnt / limit),
+    pages: Math.ceil(total / limit) || 1,
   });
 });
 
@@ -347,27 +474,24 @@ router.get("/:id/calls", (req, res) => {
   const limit = Math.min(parseInt(req.query.limit) || 50, 200);
   const offset = (page - 1) * limit;
 
-  const total = db.prepare(
-    "SELECT COUNT(*) as cnt FROM call_records WHERE campaign_id = ?"
-  ).get(req.params.id);
+  const total = getCached(`ccount:${req.params.id}`, () =>
+    db.prepare("SELECT COUNT(*) as cnt FROM call_records WHERE campaign_id = ?").get(req.params.id).cnt
+  );
 
   const calls = db.prepare(`
-    SELECT * FROM call_records
+    SELECT id, call_id, phone, lead_name, outcome, duration_seconds, notes,
+           recording_path, recording_url, started_at, ended_at, created_at
+    FROM call_records
     WHERE campaign_id = ?
     ORDER BY created_at DESC
     LIMIT ? OFFSET ?
   `).all(req.params.id, limit, offset);
 
-  const result = calls.map(c => ({
-    ...c,
-    transcript: JSON.parse(c.transcript_json || "[]"),
-  }));
-
   res.json({
-    calls: result,
-    total: total.cnt,
+    calls,
+    total,
     page,
-    pages: Math.ceil(total.cnt / limit),
+    pages: Math.ceil(total / limit) || 1,
   });
 });
 
@@ -376,40 +500,42 @@ router.get("/:id/analytics", (req, res) => {
   const db = getDb();
   const campaignId = req.params.id;
 
-  const summary = db.prepare(`
-    SELECT
-      COUNT(*) as total_calls,
-      SUM(CASE WHEN outcome = 'transferred' THEN 1 ELSE 0 END) as transfers,
-      SUM(CASE WHEN outcome = 'interested' THEN 1 ELSE 0 END) as interested,
-      SUM(CASE WHEN outcome = 'not_interested' THEN 1 ELSE 0 END) as not_interested,
-      SUM(CASE WHEN outcome = 'callback' THEN 1 ELSE 0 END) as callbacks,
-      SUM(CASE WHEN outcome = 'do_not_call' THEN 1 ELSE 0 END) as dnc,
-      SUM(CASE WHEN outcome = 'lead_hangup' THEN 1 ELSE 0 END) as hangups,
-      SUM(CASE WHEN outcome = 'error' THEN 1 ELSE 0 END) as errors,
-      SUM(CASE WHEN outcome = 'no_answer' THEN 1 ELSE 0 END) as no_answer,
-      AVG(duration_seconds) as avg_duration,
-      SUM(duration_seconds) as total_duration
-    FROM call_records WHERE campaign_id = ?
-  `).get(campaignId);
+  const payload = getCached(`analytics:${campaignId}`, () => {
+    const summary = db.prepare(`
+      SELECT
+        COUNT(*) as total_calls,
+        SUM(CASE WHEN outcome = 'transferred' THEN 1 ELSE 0 END) as transfers,
+        SUM(CASE WHEN outcome = 'interested' THEN 1 ELSE 0 END) as interested,
+        SUM(CASE WHEN outcome = 'not_interested' THEN 1 ELSE 0 END) as not_interested,
+        SUM(CASE WHEN outcome = 'callback' THEN 1 ELSE 0 END) as callbacks,
+        SUM(CASE WHEN outcome = 'do_not_call' THEN 1 ELSE 0 END) as dnc,
+        SUM(CASE WHEN outcome = 'lead_hangup' THEN 1 ELSE 0 END) as hangups,
+        SUM(CASE WHEN outcome = 'error' THEN 1 ELSE 0 END) as errors,
+        SUM(CASE WHEN outcome = 'no_answer' THEN 1 ELSE 0 END) as no_answer,
+        AVG(duration_seconds) as avg_duration,
+        SUM(duration_seconds) as total_duration
+      FROM call_records WHERE campaign_id = ?
+    `).get(campaignId);
 
-  // Calls per day (last 30 days)
-  const callsByDay = db.prepare(`
-    SELECT date(started_at) as day, COUNT(*) as count,
-      SUM(CASE WHEN outcome = 'transferred' THEN 1 ELSE 0 END) as transfers
-    FROM call_records
-    WHERE campaign_id = ? AND started_at >= datetime('now', '-30 days')
-    GROUP BY date(started_at)
-    ORDER BY day
-  `).all(campaignId);
+    const callsByDay = db.prepare(`
+      SELECT date(started_at) as day, COUNT(*) as count,
+        SUM(CASE WHEN outcome = 'transferred' THEN 1 ELSE 0 END) as transfers
+      FROM call_records
+      WHERE campaign_id = ? AND started_at >= datetime('now', '-30 days')
+      GROUP BY date(started_at)
+      ORDER BY day
+    `).all(campaignId);
 
-  // Outcome distribution
-  const outcomes = db.prepare(`
-    SELECT outcome, COUNT(*) as count
-    FROM call_records WHERE campaign_id = ?
-    GROUP BY outcome
-  `).all(campaignId);
+    const outcomes = db.prepare(`
+      SELECT outcome, COUNT(*) as count
+      FROM call_records WHERE campaign_id = ?
+      GROUP BY outcome
+    `).all(campaignId);
 
-  res.json({ summary, callsByDay, outcomes });
+    return { summary, callsByDay, outcomes };
+  });
+
+  res.json(payload);
 });
 
 // Stream/download a call recording

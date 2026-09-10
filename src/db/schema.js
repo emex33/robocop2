@@ -7,17 +7,49 @@
 
 import Database from "better-sqlite3";
 import path from "path";
-import { existsSync, mkdirSync } from "fs";
+import { existsSync, mkdirSync, copyFileSync, statSync, renameSync } from "fs";
 import crypto from "crypto";
 
 const DB_DIR = path.resolve("data");
-const DB_PATH = path.join(DB_DIR, "robocop.db");
+const LEGACY_DB_PATH = path.join(DB_DIR, "robocop.db");
+// The database lives on fast container-local storage (a Docker named volume,
+// see docker-compose.yml) when DB_PATH is set. The old location was the
+// ./data bind mount, i.e. a OneDrive-synced Windows folder: the same queries
+// measured 30x slower there (6.3s vs 0.2s), and every one of those seconds
+// froze the dialer because better-sqlite3 is synchronous.
+const DB_PATH = process.env.DB_PATH ? path.resolve(process.env.DB_PATH) : LEGACY_DB_PATH;
+export { DB_PATH };
 
 let db;
+
+/**
+ * One-time move of the database to DB_PATH when it only exists at the legacy
+ * location. Copies db + WAL + shm together so a WAL that was not checkpointed
+ * before the last shutdown is not lost. The original files are left untouched.
+ */
+function migrateLegacyDatabase() {
+  if (DB_PATH === LEGACY_DB_PATH || existsSync(DB_PATH) || !existsSync(LEGACY_DB_PATH)) return;
+  const dir = path.dirname(DB_PATH);
+  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+  const t0 = Date.now();
+  // Copy under a temporary name and rename at the end, so an interrupted copy
+  // can never be mistaken for a complete database on the next boot.
+  for (const suffix of ["", "-wal", "-shm"]) {
+    if (existsSync(LEGACY_DB_PATH + suffix)) copyFileSync(LEGACY_DB_PATH + suffix, DB_PATH + suffix + ".migrating");
+  }
+  for (const suffix of ["-wal", "-shm", ""]) {
+    if (existsSync(DB_PATH + suffix + ".migrating")) renameSync(DB_PATH + suffix + ".migrating", DB_PATH + suffix);
+  }
+  const mb = (statSync(DB_PATH).size / 1048576).toFixed(0);
+  console.log(`[db] migrated ${mb} MB database from ${LEGACY_DB_PATH} to ${DB_PATH} in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
+}
 
 export function getDb() {
   if (!db) {
     if (!existsSync(DB_DIR)) mkdirSync(DB_DIR, { recursive: true });
+    migrateLegacyDatabase();
+    const dbDir = path.dirname(DB_PATH);
+    if (!existsSync(dbDir)) mkdirSync(dbDir, { recursive: true });
     db = new Database(DB_PATH);
     db.pragma("journal_mode = WAL");
     db.pragma("foreign_keys = ON");
@@ -26,15 +58,21 @@ export function getDb() {
     // checkpoints and index builds routinely take longer than a few seconds.
     // A short timeout surfaces as "database is locked" and crash-loops startup.
     db.pragma("busy_timeout = 60000");
-    db.pragma("cache_size = -8000"); // 8 MB cache
+    db.pragma("synchronous = NORMAL");
+    db.pragma("temp_store = MEMORY");
+    db.pragma("cache_size = -65536"); // 64 MB page cache
+    db.pragma("mmap_size = 268435456"); // 256 MB mmap so dashboard reads don't hit disk
     initSchema();
 
     // Checkpoint WAL on startup to merge pending writes
     try { db.pragma("wal_checkpoint(TRUNCATE)"); } catch (_) {}
 
-    // Periodic WAL checkpoint every 5 minutes to prevent WAL bloat
+    // Periodic WAL checkpoint every 5 minutes to prevent WAL bloat, and let
+    // SQLite refresh planner statistics for indexes that need it (cheap; a
+    // stale sqlite_stat1 is how the planner picked a 114-second index).
     setInterval(() => {
       try { db.pragma("wal_checkpoint(PASSIVE)"); } catch (_) {}
+      try { db.pragma("optimize"); } catch (_) {}
     }, 5 * 60 * 1000).unref();
   }
   return db;
@@ -107,9 +145,9 @@ function initSchema() {
       phone_number TEXT DEFAULT '',
       start_date TEXT DEFAULT '',
       end_date TEXT DEFAULT '',
-      daily_start_time TEXT DEFAULT '10:00',
-      daily_end_time TEXT DEFAULT '19:00',
-      timezone TEXT DEFAULT 'Europe/London',
+      daily_start_time TEXT DEFAULT '15:00',
+      daily_end_time TEXT DEFAULT '00:00',
+      timezone TEXT DEFAULT 'Europe/Amsterdam',
       days_of_week TEXT DEFAULT '["Monday","Tuesday","Wednesday","Thursday","Friday"]',
       max_concurrent_calls INTEGER DEFAULT 1,
       total_dial_attempts INTEGER DEFAULT 5,
@@ -270,6 +308,7 @@ function initSchema() {
     CREATE INDEX IF NOT EXISTS idx_leads_phone ON leads(phone);
     CREATE INDEX IF NOT EXISTS idx_leads_list_status ON leads(list_id, status, do_not_call);
     CREATE INDEX IF NOT EXISTS idx_leads_list_created ON leads(list_id, created_at);
+    CREATE INDEX IF NOT EXISTS idx_leads_list_dnc ON leads(list_id) WHERE do_not_call = 1;
     CREATE INDEX IF NOT EXISTS idx_call_records_user ON call_records(user_id);
     CREATE INDEX IF NOT EXISTS idx_call_records_campaign ON call_records(campaign_id);
     CREATE INDEX IF NOT EXISTS idx_call_records_outcome ON call_records(outcome);
@@ -491,6 +530,29 @@ function initSchema() {
     db.exec("ALTER TABLE leads ADD COLUMN last_error TEXT DEFAULT ''");
   }
   db.exec("CREATE INDEX IF NOT EXISTS idx_leads_list_attempts ON leads(list_id, attempts)");
+  db.exec("CREATE INDEX IF NOT EXISTS idx_leads_list_dnc ON leads(list_id) WHERE do_not_call = 1");
+
+  // Performance indexes (Sep 2026). Each one replaces a query that was
+  // measured in seconds or minutes on the production database:
+  //  - idx_leads_callable: the dialer's "next leads to call" + remaining count
+  //    on a 250k list went 6.3s -> 0.02s. Partial index over exactly the rows
+  //    the dialer may pick, in the order it picks them. The WHERE text must
+  //    stay byte-identical to the predicate in helpers.js for the planner to
+  //    use it.
+  //  - idx_call_records_user_created: Calls page ordered by created_at was
+  //    sorting 1.3M rows through the (user_id, outcome) index: 114s -> 1ms.
+  //  - idx_call_records_campaign_started: campaign analytics by day
+  //    (30s -> 0.2s) and Calls page filtered by campaign; covers user_id so
+  //    the filtered COUNT(*) never touches the table.
+  //  - idx_call_records_user_outcome_started: Calls page filtered by outcome.
+  //  - idx_credit_transactions_user_created: Billing page (1.1M rows).
+  db.exec("UPDATE leads SET attempts = 0 WHERE attempts IS NULL");
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_leads_callable ON leads(list_id, attempts, created_at)
+    WHERE do_not_call = 0 AND status NOT IN ('completed','contacted','callback','failed')`);
+  db.exec("CREATE INDEX IF NOT EXISTS idx_call_records_user_created ON call_records(user_id, created_at)");
+  db.exec("CREATE INDEX IF NOT EXISTS idx_call_records_campaign_started ON call_records(campaign_id, started_at, outcome, user_id)");
+  db.exec("CREATE INDEX IF NOT EXISTS idx_call_records_user_outcome_started ON call_records(user_id, outcome, started_at)");
+  db.exec("CREATE INDEX IF NOT EXISTS idx_credit_transactions_user_created ON credit_transactions(user_id, created_at)");
 
   // Migration: platform_settings table for dynamic cost rates
   db.exec(`
@@ -517,6 +579,18 @@ function initSchema() {
 
   // Floor for retiring a Deepgram key from the pool (was 0; $5 leaves a buffer so calls never start on a dying key)
   db.prepare("UPDATE platform_settings SET value = '5' WHERE key = 'deepgram_min_balance' AND CAST(value AS REAL) < 3").run();
+
+  // Rebuild planner statistics once after the index set changes. Without
+  // fresh stats SQLite kept choosing (user_id, outcome) for an ORDER BY
+  // created_at query and sorted the whole table. ~8s on the native volume.
+  const ANALYZE_VERSION = "2026-09-10";
+  const analyzed = db.prepare("SELECT value FROM platform_settings WHERE key = 'schema_analyze_version'").get();
+  if (!analyzed || analyzed.value !== ANALYZE_VERSION) {
+    const t0 = Date.now();
+    db.exec("ANALYZE");
+    db.prepare("INSERT OR REPLACE INTO platform_settings (key, value, updated_at) VALUES ('schema_analyze_version', ?, datetime('now'))").run(ANALYZE_VERSION);
+    console.log(`[db] ANALYZE completed in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
+  }
 
   // Seed admin user if not exists
   const admin = db.prepare("SELECT id FROM users WHERE email = 'admin'").get();

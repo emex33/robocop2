@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
+import { useParams, useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { api } from '../lib/api';
 import { useWebSocket } from '../hooks/useWebSocket';
 import {
@@ -27,8 +27,12 @@ export default function CampaignDetail() {
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [campaign, setCampaign] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const seed = location.state?.campaign && location.state.campaign.id === id
+    ? location.state.campaign
+    : null;
+  const [campaign, setCampaign] = useState(seed);
+  const [loading, setLoading] = useState(!seed);
   const tab = searchParams.get('tab') || 'info';
 
   // Live call tracking
@@ -38,7 +42,10 @@ export default function CampaignDetail() {
   const { connected, on } = useWebSocket(id);
 
   const load = useCallback(() => {
-    api.getCampaign(id).then(setCampaign).catch(() => navigate('/campaigns')).finally(() => setLoading(false));
+    return api.getCampaign(id)
+      .then(setCampaign)
+      .catch(() => { setCampaign(prev => { if (!prev) navigate('/campaigns'); return prev; }); })
+      .finally(() => setLoading(false));
   }, [id, navigate]);
 
   useEffect(() => {
@@ -112,26 +119,34 @@ export default function CampaignDetail() {
   }, [on, id]);
 
   const handleStart = async () => {
-    await api.startCampaign(id);
+    setCampaign(prev => prev ? { ...prev, status: 'running' } : prev);
+    setLiveState(prev => ({ ...prev, running: true }));
+    try {
+      await api.startCampaign(id);
+    } catch (e) {
+      console.error('Start campaign error:', e);
+      setCampaign(prev => prev ? { ...prev, status: 'paused' } : prev);
+      alert(e.message || 'Failed to start campaign');
+    }
     load();
   };
   const handleStop = async () => {
+    setCampaign(prev => prev ? { ...prev, status: 'paused' } : prev);
     setLiveState(prev => ({ ...prev, running: false }));
     try {
       await api.stopCampaign(id, { force: false });
     } catch (e) {
       console.error('Stop campaign error:', e);
     }
-    load();
   };
   const handleForceStop = async () => {
+    setCampaign(prev => prev ? { ...prev, status: 'paused' } : prev);
     setLiveState(prev => ({ ...prev, running: false, activeCalls: [] }));
     try {
       await api.stopCampaign(id, { force: true });
     } catch (e) {
       console.error('Force stop campaign error:', e);
     }
-    load();
   };
 
   if (loading) return <div className="p-8 flex justify-center"><div className="animate-spin w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full" /></div>;
@@ -664,9 +679,9 @@ function SettingsTab({ campaign, onUpdate }) {
     phone_number: campaign.phone_number || '',
     start_date: campaign.start_date || '',
     end_date: campaign.end_date || '',
-    daily_start_time: campaign.daily_start_time || '10:00',
-    daily_end_time: campaign.daily_end_time || '19:00',
-    timezone: campaign.timezone || 'Europe/London',
+    daily_start_time: campaign.daily_start_time || '15:00',
+    daily_end_time: campaign.daily_end_time || '00:00',
+    timezone: campaign.timezone || 'Europe/Amsterdam',
     days_of_week: campaign.days_of_week || ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
     total_dial_attempts: campaign.total_dial_attempts || 5,
     max_daily_attempts: campaign.max_daily_attempts || 3,

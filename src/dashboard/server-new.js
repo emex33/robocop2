@@ -16,9 +16,9 @@ import logger from "../utils/logger.js";
 
 import authRoutes from "../api/auth.js";
 import agentRoutes from "../api/agents.js";
-import campaignRoutes from "../api/campaigns.js";
+import campaignRoutes, { warmCampaignCaches } from "../api/campaigns.js";
 import listRoutes from "../api/lists.js";
-import analyticsRoutes from "../api/analytics.js";
+import analyticsRoutes, { warmDashboard } from "../api/analytics.js";
 import reportRoutes from "../api/reports.js";
 import settingsRoutes from "../api/settings.js";
 import appointmentRoutes from "../api/appointments.js";
@@ -28,6 +28,7 @@ import callsRoutes from "../api/calls.js";
 import adminRoutes from "../api/admin.js";
 import billingRoutes from "../api/billing.js";
 import callbackRoutes from "../api/callbacks.js";
+import commandRoutes, { scheduleRollupWarmup } from "../api/command.js";
 import { authMiddleware, superAdminMiddleware } from "../db/auth.js";
 import { getDb } from "../db/schema.js";
 import { getUserBalance } from "../db/helpers.js";
@@ -48,6 +49,8 @@ export class DashboardServer {
 
     // Campaign runtime state (managed by index.js)
     this.campaignRunners = new Map(); // campaignId -> { status, ... }
+    // Route modules read live runner state through app.locals.
+    this.app.locals.campaignRunners = this.campaignRunners;
 
     // Callbacks (set by index.js)
     this.onStartCampaign = null;
@@ -82,6 +85,7 @@ export class DashboardServer {
     this.app.use("/api/calls", authMiddleware, callsRoutes);
     this.app.use("/api/billing", authMiddleware, billingRoutes);
     this.app.use("/api/callbacks", authMiddleware, callbackRoutes);
+    this.app.use("/api/command", authMiddleware, commandRoutes);
     this.app.use("/api/admin", authMiddleware, superAdminMiddleware, adminRoutes);
     
     // Public agent login endpoint (no auth required)
@@ -259,6 +263,20 @@ export class DashboardServer {
     return new Promise((resolve) => {
       this.server.listen(this.port, "0.0.0.0", () => {
         logger.info(`Dashboard running at http://localhost:${this.port}`);
+        // Pre-aggregate past days for the Command Center so 7d/30d views stay fast.
+        scheduleRollupWarmup();
+        // Keep the Dashboard and campaign counters warm: first at boot, then
+        // every 5 minutes, so no click ever pays for a cold COUNT.
+        const warm = () => {
+          try {
+            for (const u of getDb().prepare("SELECT id FROM users").all()) warmDashboard(u.id);
+            warmCampaignCaches();
+          } catch (e) {
+            logger.warn(`[warm] cache warm-up failed: ${e.message}`);
+          }
+        };
+        setTimeout(warm, 3_000).unref();
+        setInterval(warm, 5 * 60_000).unref();
         resolve();
       });
     });

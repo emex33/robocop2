@@ -9,7 +9,7 @@ import { getDb, generateId } from "../db/schema.js";
 import { addCredits, getAllPlatformSettings, setPlatformSetting } from "../db/helpers.js";
 import { deepgramKeyManager } from "../deepgram/key-manager.js";
 import { getSipConfig } from "../../config/sip.js";
-import { evaluateBalances, describeBalances, clearBalanceCache, getTrunkState } from "../billing/balance-guard.js";
+import { evaluateBalances, describeBalances, clearBalanceCache, getTrunkState, testDeepgramKey } from "../billing/balance-guard.js";
 
 const router = Router();
 
@@ -344,7 +344,7 @@ router.get("/settings", (req, res) => {
 // PUT /api/admin/settings — update platform settings
 router.put("/settings", (req, res) => {
   const numericKeys = ["voip_cost_per_min", "ai_cost_per_min", "deepgram_min_balance", "voip_min_balance", "voip_balance_manual"];
-  const stringKeys = ["voice_engine", "local_voice_agent_url", "balance_guard_enabled", "voip_balance_api_url", "voip_balance_api_key", "voip_balance_json_path"];
+  const stringKeys = ["voice_engine", "local_voice_agent_url", "balance_guard_enabled", "voip_trunk_breaker", "voip_balance_api_url", "voip_balance_api_key", "voip_balance_json_path"];
   const updates = req.body;
   let count = 0;
   for (const key of numericKeys) {
@@ -362,6 +362,9 @@ router.put("/settings", (req, res) => {
       }
       if (key === "balance_guard_enabled" && !["true", "false"].includes(String(updates[key]))) {
         return res.status(400).json({ error: `balance_guard_enabled must be "true" or "false"` });
+      }
+      if (key === "voip_trunk_breaker" && !["on", "off"].includes(String(updates[key]))) {
+        return res.status(400).json({ error: `voip_trunk_breaker must be "on" or "off"` });
       }
       setPlatformSetting(key, updates[key]);
       count++;
@@ -474,12 +477,7 @@ router.post("/users/:id/deepgram/keys/:keyId/test", async (req, res) => {
   const db = getDb();
   const row = db.prepare("SELECT api_key FROM deepgram_keys WHERE id = ? AND user_id = ?").get(req.params.keyId, req.params.id);
   if (!row) return res.status(404).json({ error: "Key not found" });
-  try {
-    const r = await fetch("https://api.deepgram.com/v1/projects", { headers: { Authorization: `Token ${row.api_key}` } });
-    const data = await r.json();
-    if (r.ok) res.json({ success: true, status: r.status, project: data.projects?.[0]?.name || "Unknown" });
-    else res.json({ success: false, status: r.status, error: data.details || data.message || r.statusText });
-  } catch (e) { res.json({ success: false, error: e.message }); }
+  res.json(await testDeepgramKey(row.api_key));
 });
 
 // GET /api/admin/users/:id/agents — get agents for a user

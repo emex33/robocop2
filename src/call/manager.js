@@ -3,6 +3,7 @@ import logger from "../utils/logger.js";
 import { DeepgramAgent } from "../deepgram/agent.js";
 import { AudioBridge } from "../audio/bridge.js";
 import { getPlatformSetting } from "../db/helpers.js";
+import { detectVoicemail } from "./voicemail.js";
 
 // Lazy-load configStore only for legacy/fallback usage
 let _configStore = null;
@@ -62,6 +63,16 @@ export class CallManager {
     let callResult = { outcome: "unknown", notes: "", transcript: [] };
     let aborted = false;
 
+    // Voicemail auto-hangup. The prompt asks the model to drop answering
+    // machines, but it routinely pitched to them for ~40s instead, so the
+    // decision is made in code. Screening prompts ("record your name...") are
+    // excluded by default: those calls do reach humans and book appointments.
+    const voicemailHangupEnabled = getPlatformSetting("voicemail_auto_hangup", "true") !== "false";
+    const cutScreenedCalls = getPlatformSetting("voicemail_cut_screened_calls", "false") === "true";
+    let answeredAtMs = 0;
+    let voicemailFound = null;
+    let endForVoicemail = null;
+
     const abortHandle = {
       callId,
       abort: () => {
@@ -94,6 +105,7 @@ export class CallManager {
       // makeCall only resolves on SIP 200 OK, so this is the true answer moment.
       // Anything before it is ring/reject time that the carrier does not bill.
       callResult.answeredAt = new Date().toISOString();
+      answeredAtMs = Date.now();
       emit("sip_connected", { status: "connected" });
 
       // Parse the remote SDP to get rtpengine/provider RTP endpoint
@@ -240,6 +252,21 @@ export class CallManager {
         onTranscript: (role, text) => {
           emit("transcript", { role, text });
           callResult.transcript.push({ role, text, time: new Date().toISOString() });
+
+          if (role !== "user" || voicemailFound || !voicemailHangupEnabled) return;
+          const hit = detectVoicemail(text, {
+            elapsedMs: answeredAtMs ? Date.now() - answeredAtMs : 0,
+            includeScreening: cutScreenedCalls,
+          });
+          if (!hit) return;
+
+          voicemailFound = hit;
+          callResult.outcome = "voicemail";
+          callResult.notes = `${hit.kind === "screening" ? "Call screening" : "Voicemail"} detected ("${hit.phrase}") — hung up immediately`;
+          logger.info(`[${callId}] ${hit.kind} detected ("${hit.phrase}") — hanging up now`);
+          emit("voicemail_detected", { phrase: hit.phrase, kind: hit.kind, confidence: hit.confidence });
+          // May fire before the wait loop arms the teardown; handled there too.
+          if (endForVoicemail) endForVoicemail();
         },
 
         onError: (err) => {
@@ -342,6 +369,23 @@ export class CallManager {
           callResult.outcome = "timeout";
           safeResolve();
         }, 600000);
+
+        // Immediate teardown for a detected machine: no goodbye and none of the
+        // 8s grace period end_call allows — every second here is billed for
+        // nothing. Armed last because safeResolve() clears the timers above.
+        endForVoicemail = () => {
+          try {
+            audioBridge.sendQueue = [];
+            audioBridge.audioOutBuffer = Buffer.alloc(0);
+          } catch (e) { /* ignore */ }
+          try { if (deepgramAgent) deepgramAgent.disconnect(); } catch (e) { /* ignore */ }
+          try { if (sipDialog) this.sipDialer.hangup(sipDialog).catch(() => {}); } catch (e) { /* ignore */ }
+          try { if (audioBridge) audioBridge.stop(); } catch (e) { /* ignore */ }
+          safeResolve();
+        };
+        // A machine greeting can be transcribed before this point, i.e. while
+        // the agent was still connecting — tear down now in that case.
+        if (voicemailFound) endForVoicemail();
       });
 
     } catch (err) {

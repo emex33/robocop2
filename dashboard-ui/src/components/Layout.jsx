@@ -1,7 +1,7 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import {
-  LayoutDashboard, Bot, Phone, PhoneForwarded, CalendarCheck, Megaphone, List, Settings, LogOut, ChevronDown, Headphones, Users, PhoneCall, DollarSign, Shield, PhoneIncoming
+  LayoutDashboard, Activity, Bot, Phone, PhoneForwarded, CalendarCheck, Megaphone, List, Settings, LogOut, ChevronDown, Headphones, Users, PhoneCall, DollarSign, Shield, PhoneIncoming
 } from 'lucide-react';
 import { cn } from '../lib/cn';
 import { useState } from 'react';
@@ -13,6 +13,7 @@ export default function Layout() {
 
   const navItems = [
     { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
+    { to: '/command', icon: Activity, label: 'Command Center' },
     ...(isSuperAdmin ? [{ to: '/agents', icon: Bot, label: 'AI Agents' }] : []),
     { to: '/campaigns', icon: Megaphone, label: 'Campaigns' },
     { to: '/lists', icon: List, label: 'Lists' },

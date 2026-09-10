@@ -3,6 +3,7 @@ import logger from "./utils/logger.js";
 import { SipDialer } from "./sip/dialer.js";
 import { CallManager } from "./call/manager.js";
 import { CallQueue } from "./leads/loader.js";
+import { isLocalCallingHour } from "./call/local-hours.js";
 import { DashboardServer } from "./dashboard/server-new.js";
 import { getDb } from "./db/schema.js";
 import {
@@ -12,6 +13,7 @@ import {
   getCampaignCallableLeadCount,
   recordCall,
   updateLeadStatus,
+  markLeadInvalidPhone,
   createAppointment,
   getUserBalance,
   deductCredits,
@@ -22,6 +24,8 @@ import { deepgramKeyManager } from "./deepgram/key-manager.js";
 import { getSipConfig } from "../config/sip.js";
 import { sipAgentManager } from "./sip-agent/manager.js";
 import { evaluateBalances, describeBalances } from "./billing/balance-guard.js";
+import { startHeartbeat } from "./utils/heartbeat.js";
+import { scheduleNightlyBackup } from "./db/backup.js";
 
 /**
  * ROBOCOP - AI Robot Caller (Enterprise Edition)
@@ -71,6 +75,35 @@ const dialTimeoutTracker = {
   }
 };
 
+/**
+ * Consecutive calls that died because Deepgram could not be reached.
+ *
+ * The balance guard now refuses to dial while Deepgram is unreachable, but it
+ * only re-evaluates once a minute. At full concurrency that is still hundreds of
+ * leads answering to silence, so the runner also watches live calls and pauses
+ * as soon as a short run of them fails to connect to Deepgram.
+ */
+const deepgramOutageTracker = {
+  consecutive: 0,
+  THRESHOLD: 5,
+
+  /** @returns {boolean} true when the run is long enough to stop dialing. */
+  record() {
+    this.consecutive++;
+    return this.consecutive >= this.THRESHOLD;
+  },
+
+  reset() {
+    this.consecutive = 0;
+  },
+};
+
+/** A call error that means Deepgram was never reached (vs. answering an error). */
+function isDeepgramUnreachableError(notes = "") {
+  return /econnrefused|etimedout|ehostunreach|enetunreach|enotfound|eai_again|socket hang up|fetch failed/i
+    .test(String(notes));
+}
+
 async function main() {
   logger.info("=== ROBOCOP AI Robot Caller v2 ===");
   logger.info("Starting up...");
@@ -78,6 +111,12 @@ async function main() {
   // Initialize database
   getDb();
   logger.info("Database initialized");
+
+  // Detect and record how long the process was gone (host reboot / Docker down).
+  const offlineGap = startHeartbeat();
+
+  // Nightly copy of the (volume-resident) database back to ./data/backups.
+  scheduleNightlyBackup();
 
   // Deepgram key is now per-user (stored in DB). Env var is optional fallback.
   if (!process.env.DEEPGRAM_API_KEY) {
@@ -123,6 +162,23 @@ async function main() {
   setInterval(() => { tickScheduler().catch(e => logger.error(`Scheduler tick error: ${e.message}`)); }, 60_000);
   tickScheduler().catch(e => logger.error(`Scheduler tick error: ${e.message}`));
   logger.info("Campaign scheduler started (checks calling windows + provider balances every 60s)");
+
+  // Tell the user, in the campaign feed, when the machine itself was down.
+  // Delayed so the first scheduler tick has registered the runners (the feed
+  // lives on the runner) — otherwise the notice would be dropped.
+  if (offlineGap) {
+    setTimeout(() => {
+      try {
+        const fmt = (iso) => new Date(iso).toLocaleString("en-GB", { timeZone: "Europe/Amsterdam", hour12: false });
+        for (const c of getDb().prepare("SELECT id, user_id, name FROM campaigns WHERE status = 'running'").all()) {
+          dashboard.pushCampaignLog(c.id, c.user_id, "warn",
+            `Robocop was offline ${fmt(offlineGap.from)} → ${fmt(offlineGap.to)} Amsterdam (${offlineGap.minutes} min) — the computer or Docker was down, no calls could be placed. Resumed automatically.`);
+        }
+      } catch (e) {
+        logger.warn(`[heartbeat] could not post offline notice: ${e.message}`);
+      }
+    }, 30_000).unref();
+  }
 
   logger.info("ROBOCOP ready. Use the dashboard to start calling.");
 }
@@ -242,12 +298,16 @@ function pauseForBalance(campaignId, reasons) {
     runner.queue.stop();
   }
   dashboard.pushCampaignLog(campaignId, runner.userId, "error",
-    `Out of balance — pausing. ${reasons.join("; ")}. Active calls will finish; will auto-resume once topped up.`);
+    `Out of balance — pausing. ${reasons.join("; ")}. Active calls will finish; retrying in a few minutes.`);
   logger.warn(`[balance-guard] Campaign ${campaignId} paused: ${reasons.join("; ")}`);
 }
 
 // Throttle the "out of balance" log so it isn't emitted every single minute.
 let lastBalanceWarnAt = 0;
+
+// Last completed balance verdict per user, used when a later evaluation cannot
+// finish in time. Keeps a known "do not dial" decision in force.
+const lastBalanceVerdict = new Map();
 
 /**
  * Runs every minute: starts campaigns whose window just opened and pauses those
@@ -309,9 +369,20 @@ async function tickScheduler() {
   const balanceByUser = new Map();
   for (const userId of new Set(inWindowCampaigns.map(c => c.user_id))) {
     try {
-      balanceByUser.set(userId, await withDeadline(evaluateBalances(userId), 20_000));
+      const verdict = await withDeadline(evaluateBalances(userId), 20_000);
+      balanceByUser.set(userId, verdict);
+      lastBalanceVerdict.set(userId, verdict);
     } catch (e) {
       logger.warn(`[balance-guard] evaluation failed for user ${userId}: ${e.message}`);
+      // Fall back to the last verdict rather than no verdict. An unresolved
+      // evaluation used to leave `balance` undefined, which skipped the guard
+      // entirely and started dialing — so the one moment a provider was in
+      // trouble was the moment protection switched off.
+      const previous = lastBalanceVerdict.get(userId);
+      if (previous && !previous.ok) {
+        logger.warn(`[balance-guard] reusing last verdict for user ${userId}: ${previous.reasons.join("; ")}`);
+        balanceByUser.set(userId, previous);
+      }
     }
   }
 
@@ -480,6 +551,11 @@ async function runCampaign(campaignId, userId, runner) {
   // Build lead queue
   const queue = new CallQueue(leads, maxConcurrent, delayMs);
   queue.refill = () => getCampaignCallableLeads(campaignId, QUEUE_BATCH);
+  // Consumer-local calling hours (CRTC: weekdays 09:00–21:30 in the lead's own
+  // zone). Western leads wait for their morning instead of being rung at 06:00.
+  queue.eligible = (lead) => isLocalCallingHour(lead.phone);
+  queue.onDeferred = (n) => dashboard.pushCampaignLog(campaignId, userId, "info",
+    `${n} leads are waiting for 09:00 in their own time zone (Canadian calling-hour rules) — dialing resumes automatically`);
   runner.queue = queue;
 
   const results = await queue.start(async (lead) => {
@@ -507,6 +583,17 @@ async function runCampaign(campaignId, userId, runner) {
 
     const rawName = lead.first_name || lead.name || "Unknown";
     const displayName = rawName.toLowerCase().replace(/(?:^|\s)\S/g, c => c.toUpperCase());
+
+    // Never send garbage to the trunk. Some imported lists carry an e-mail
+    // address (or nothing) in the phone column; the carrier answers those with
+    // "503 (DNS Error)", which looked exactly like its capacity 503s and — as
+    // an "infrastructure" error — would have been retried forever.
+    const digits = String(lead.phone || "").replace(/\D/g, "");
+    if (/[@a-z]/i.test(String(lead.phone || "")) || digits.length < 10 || digits.length > 15) {
+      try { markLeadInvalidPhone(lead.id, lead.phone); } catch {}
+      dashboard.pushCampaignLog(campaignId, userId, "warn", `Skipped ${displayName}: "${lead.phone}" is not a phone number — lead retired`);
+      return { outcome: "skipped" };
+    }
     dashboard.pushCampaignLog(campaignId, userId, "info", `Dialing ${displayName} (${lead.phone})`);
 
     // Pick the current healthy key at call start (local DB read — no Deepgram HTTP, no delay).
@@ -618,7 +705,9 @@ async function runCampaign(campaignId, userId, runner) {
           deepgramApiKey = rotated.key;
           dashboard.pushCampaignLog(campaignId, userId, "warn", `Deepgram key hit low balance. Auto-switched to "${rotated.label}" — campaign continues.`);
         } else if (!rotated) {
-          dashboard.pushCampaignLog(campaignId, userId, "error", "All Deepgram API keys depleted! Add more keys in Settings.");
+          // No funded key left. Pausing keeps the remaining leads intact; the
+          // guard reactivates a key and resumes as soon as one is topped up.
+          pauseForBalance(campaignId, ["All Deepgram API keys are out of balance — add credit or add a key"]);
         }
       } else if ((errMsg.includes("deepgram 401") || errMsg.includes("invalid_auth") || errMsg.includes("deactivated")) && !errMsg.includes("sip")) {
         const rotated = deepgramKeyManager.report401(userId, deepgramKeyInfo.id);
@@ -627,9 +716,21 @@ async function runCampaign(campaignId, userId, runner) {
           deepgramApiKey = rotated.key;
           dashboard.pushCampaignLog(campaignId, userId, "warn", `Deepgram key invalid (401). Auto-switched to "${rotated.label}".`);
         } else if (!rotated) {
-          dashboard.pushCampaignLog(campaignId, userId, "error", "All Deepgram API keys invalid! Add more keys in Settings.");
+          pauseForBalance(campaignId, ["All Deepgram API keys are invalid — add a working key"]);
         }
       }
+    }
+
+    // Deepgram unreachable: rotating keys cannot help, and every further dial
+    // connects a real lead to silence. Stop after a short run.
+    if (result.outcome === "error" && isDeepgramUnreachableError(result.notes)) {
+      if (deepgramOutageTracker.record()) {
+        pauseForBalance(campaignId, [
+          `Deepgram unreachable (${result.notes}) — calls would connect to silence; retrying every minute`,
+        ]);
+      }
+    } else if (result.outcome !== "error") {
+      deepgramOutageTracker.reset();
     }
     // Report success to reset error counter
     if (result.outcome !== "error" && deepgramKeyInfo.id) {
@@ -826,7 +927,7 @@ async function runCampaign(campaignId, userId, runner) {
     db.prepare("UPDATE campaigns SET status = 'running', updated_at = datetime('now') WHERE id = ?")
       .run(campaignId);
     dashboard.pushCampaignLog(campaignId, userId, "info",
-      `Out of balance — paused after ${completed} calls this session. Will auto-resume once the provider balance is topped up.`);
+      `Out of balance — paused after ${completed} calls this session. Will retry automatically every few minutes.`);
   } else if (wasSchedulePause) {
     db.prepare("UPDATE campaigns SET status = 'running', updated_at = datetime('now') WHERE id = ?")
       .run(campaignId);

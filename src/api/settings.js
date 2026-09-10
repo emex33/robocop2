@@ -4,6 +4,7 @@ import dns from "dns";
 import { getDb, generateId } from "../db/schema.js";
 import { getSipConfig } from "../../config/sip.js";
 import { deepgramKeyManager } from "../deepgram/key-manager.js";
+import { testDeepgramKey } from "../billing/balance-guard.js";
 
 const router = Router();
 
@@ -347,17 +348,7 @@ router.post("/deepgram/keys/:keyId/test", async (req, res) => {
   const row = db.prepare("SELECT api_key FROM deepgram_keys WHERE id = ? AND user_id = ?").get(req.params.keyId, req.user.userId);
   if (!row) return res.status(404).json({ error: "Key not found" });
 
-  try {
-    const r = await fetch("https://api.deepgram.com/v1/projects", { headers: { Authorization: `Token ${row.api_key}` } });
-    const data = await r.json();
-    if (r.ok) {
-      res.json({ success: true, status: r.status, project: data.projects?.[0]?.name || "Unknown" });
-    } else {
-      res.json({ success: false, status: r.status, error: data.details || data.message || r.statusText });
-    }
-  } catch (e) {
-    res.json({ success: false, error: e.message });
-  }
+  res.json(await testDeepgramKey(row.api_key));
 });
 
 // ===== Google Sheets Credentials =====

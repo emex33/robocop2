@@ -11,19 +11,43 @@ const router = Router();
 
 const analyticsCache = new Map();
 const CACHE_TTL_MS = 30_000; // 30 seconds
+const CACHE_MAX_AGE_MS = 15 * 60_000;
 
-function getCached(userId) {
+// Stale-while-revalidate: serve the last result instantly and rebuild it
+// right after responding when it is older than the TTL. Only a cold cache
+// (first request after a restart) computes inline.
+function getCached(userId, rebuild) {
   const entry = analyticsCache.get(userId);
-  if (entry && Date.now() - entry.ts < CACHE_TTL_MS) return entry.data;
-  return null;
+  if (!entry) return null;
+  const age = Date.now() - entry.ts;
+  if (age >= CACHE_MAX_AGE_MS) return null;
+  if (age >= CACHE_TTL_MS && !entry.refreshing) {
+    entry.refreshing = true;
+    setTimeout(() => {
+      try { analyticsCache.set(userId, { ts: Date.now(), data: rebuild() }); }
+      catch { entry.refreshing = false; }
+    }, 0);
+  }
+  return entry.data;
+}
+
+/** Pre-compute the dashboard for a user so the first click after boot is warm. */
+export function warmDashboard(userId) {
+  try { analyticsCache.set(userId, { ts: Date.now(), data: buildDashboard(userId) }); } catch {}
 }
 
 router.get("/dashboard", (req, res) => {
   const userId = req.user.userId;
 
-  const cached = getCached(userId);
+  const cached = getCached(userId, () => buildDashboard(userId));
   if (cached) return res.json(cached);
 
+  const result = buildDashboard(userId);
+  analyticsCache.set(userId, { ts: Date.now(), data: result });
+  res.json(result);
+});
+
+function buildDashboard(userId) {
   const db = getDb();
 
   const stats = db.prepare(`
@@ -141,7 +165,7 @@ router.get("/dashboard", (req, res) => {
 
   const errorBreakdown = db.prepare(`
     SELECT error_message, COUNT(*) as count
-    FROM call_records WHERE user_id = ? AND outcome = 'error' AND started_at >= datetime('now', '-7 days')
+    FROM call_records WHERE user_id = ? AND started_at >= datetime('now', '-7 days') AND +outcome = 'error'
     GROUP BY error_message ORDER BY count DESC LIMIT 10
   `).all(userId);
 
@@ -192,8 +216,7 @@ router.get("/dashboard", (req, res) => {
     durationBuckets,
   };
 
-  analyticsCache.set(userId, { ts: Date.now(), data: result });
-  res.json(result);
-});
+  return result;
+}
 
 export default router;

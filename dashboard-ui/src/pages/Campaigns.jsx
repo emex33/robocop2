@@ -73,11 +73,16 @@ function CampaignCard({ campaign: c, navigate, onDelete }) {
     draft: 'bg-gray-100 text-gray-600',
   };
 
+  const open = (tab) => navigate(`/campaigns/${c.id}${tab ? `?tab=${tab}` : ''}`, { state: { campaign: c } });
+
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition">
+    <div
+      className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition cursor-pointer"
+      onClick={() => open()}
+    >
       <div className="flex items-start justify-between mb-3">
         <h3 className="font-semibold text-gray-900 text-lg">{c.name}</h3>
-        <button onClick={onDelete} className="text-xs text-gray-400 hover:text-red-500 transition">Delete</button>
+        <button onClick={(e) => { e.stopPropagation(); onDelete(); }} className="text-xs text-gray-400 hover:text-red-500 transition">Delete</button>
       </div>
 
       <div className="flex items-center gap-2 mb-4">
@@ -108,20 +113,20 @@ function CampaignCard({ campaign: c, navigate, onDelete }) {
         </div>
       </div>
 
-      <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
-        <button onClick={() => navigate(`/campaigns/${c.id}?tab=leads`)}
+      <div className="flex items-center gap-2 pt-3 border-t border-gray-100" onClick={e => e.stopPropagation()}>
+        <button onClick={() => open('leads')}
           className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-indigo-600 px-2.5 py-1.5 rounded-lg hover:bg-indigo-50 transition">
           <Users className="w-3.5 h-3.5" /> Leads
         </button>
-        <button onClick={() => navigate(`/campaigns/${c.id}?tab=calls`)}
+        <button onClick={() => open('calls')}
           className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-indigo-600 px-2.5 py-1.5 rounded-lg hover:bg-indigo-50 transition">
           <Phone className="w-3.5 h-3.5" /> Calls
         </button>
-        <button onClick={() => navigate(`/campaigns/${c.id}?tab=settings`)}
+        <button onClick={() => open('settings')}
           className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-indigo-600 px-2.5 py-1.5 rounded-lg hover:bg-indigo-50 transition">
           <Settings className="w-3.5 h-3.5" /> Settings
         </button>
-        <button onClick={() => navigate(`/campaigns/${c.id}?tab=analytics`)}
+        <button onClick={() => open('analytics')}
           className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-indigo-600 px-2.5 py-1.5 rounded-lg hover:bg-indigo-50 transition">
           <BarChart3 className="w-3.5 h-3.5" /> Analytics
         </button>

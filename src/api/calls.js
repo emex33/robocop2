@@ -14,19 +14,39 @@ const router = Router();
 // pagination, so a few seconds of staleness is harmless.
 const countCache = new Map();
 const COUNT_TTL_MS = 15_000;
+const COUNT_MAX_AGE_MS = 10 * 60_000;
 
+// Stale-while-revalidate: a known total is returned at once and refreshed
+// after the response when older than the TTL; only a never-seen filter shape
+// counts inline.
 function getCachedCount(key, compute) {
   const hit = countCache.get(key);
-  if (hit && Date.now() - hit.ts < COUNT_TTL_MS) return hit.value;
+  const now = Date.now();
+  if (hit && now - hit.ts < COUNT_TTL_MS) return hit.value;
+  if (hit && now - hit.ts < COUNT_MAX_AGE_MS) {
+    if (!hit.refreshing) {
+      hit.refreshing = true;
+      setTimeout(() => {
+        try { countCache.set(key, { ts: Date.now(), value: compute() }); }
+        catch { hit.refreshing = false; }
+      }, 0);
+    }
+    return hit.value;
+  }
   const value = compute();
-  countCache.set(key, { ts: Date.now(), value });
+  countCache.set(key, { ts: now, value });
   // Prevent unbounded growth from many distinct filter combinations.
   if (countCache.size > 500) {
-    const cutoff = Date.now() - COUNT_TTL_MS;
+    const cutoff = now - COUNT_MAX_AGE_MS;
     for (const [k, v] of countCache) if (v.ts < cutoff) countCache.delete(k);
   }
   return value;
 }
+
+// Free-text search cannot use an index (LIKE '%x%'), so it is bounded: a
+// pure-digit term only searches the phone column, and the total is capped at
+// SEARCH_COUNT_CAP matches instead of scanning all 1.3M rows to count them.
+const SEARCH_COUNT_CAP = 2000;
 
 // GET /api/calls - paginated call logs with filters
 router.get("/", (req, res) => {
@@ -84,12 +104,19 @@ router.get("/", (req, res) => {
     params.push(parseInt(max_duration));
   }
 
-  if (search) {
-    conditions.push(
-      "(cr.phone LIKE ? OR cr.lead_name LIKE ? OR cr.notes LIKE ? OR cr.call_summary LIKE ?)"
-    );
-    const s = `%${search}%`;
-    params.push(s, s, s, s);
+  const term = String(search || "").trim();
+  if (term) {
+    const s = `%${term}%`;
+    if (/^[\d\s()+-]+$/.test(term)) {
+      // Phone-number search: one column, digits only.
+      conditions.push("cr.phone LIKE ?");
+      params.push(`%${term.replace(/\D/g, "")}%`);
+    } else {
+      conditions.push(
+        "(cr.lead_name LIKE ? OR cr.phone LIKE ? OR cr.notes LIKE ? OR cr.call_summary LIKE ?)"
+      );
+      params.push(s, s, s, s);
+    }
   }
 
   const where = conditions.join(" AND ");
@@ -108,8 +135,9 @@ router.get("/", (req, res) => {
   // Total count (cached — see countCache above). Keyed by the filter shape so
   // different filters/searches get their own cached total.
   const countKey = `${userId}|${where}|${JSON.stringify(params)}`;
-  const total = getCachedCount(countKey, () =>
-    db.prepare(`SELECT COUNT(*) as cnt FROM call_records cr WHERE ${where}`).get(...params).cnt
+  const total = getCachedCount(countKey, () => term
+    ? db.prepare(`SELECT COUNT(*) as cnt FROM (SELECT 1 FROM call_records cr WHERE ${where} LIMIT ${SEARCH_COUNT_CAP})`).get(...params).cnt
+    : db.prepare(`SELECT COUNT(*) as cnt FROM call_records cr WHERE ${where}`).get(...params).cnt
   );
 
   // Fetch records
@@ -118,7 +146,7 @@ router.get("/", (req, res) => {
     .prepare(
       `SELECT
         cr.id, cr.call_id, cr.phone, cr.lead_name, cr.outcome,
-        cr.duration_seconds, cr.ai_duration_seconds, cr.notes, cr.transcript_json,
+        cr.duration_seconds, cr.ai_duration_seconds, cr.notes,
         cr.transferred_to, cr.error_message, cr.call_summary,
         cr.recording_path, cr.recording_url, cr.started_at, cr.ended_at,
         cr.campaign_id, cr.agent_id,
@@ -162,7 +190,7 @@ router.get("/", (req, res) => {
     call_cost: r.call_cost || 0,
     voip_cost: r.voip_cost || 0,
     ai_cost: r.ai_cost || 0,
-    transcript: JSON.parse(r.transcript_json || "[]"),
+    transcript: [],
   }));
 
   // Compute lightweight stats from the total count (skip full table scan)
