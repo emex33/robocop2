@@ -4,7 +4,7 @@ import { useWebSocket } from '../hooks/useWebSocket';
 import {
   Activity, Phone, PhoneOff, Users, CalendarCheck, DollarSign, Zap, ShieldAlert, ShieldCheck,
   Play, Square, RefreshCw, Pause, AlertTriangle, Info, Flame, Radio, Clock, Gauge,
-  Mail, Building2, MapPin, Volume2,
+  Mail, Building2, MapPin, Volume2, Download,
 } from 'lucide-react';
 import {
   ComposedChart, Bar, Line, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
@@ -248,15 +248,40 @@ function useRecordingPlayer() {
   return { playing, play };
 }
 
+async function downloadRecording(row) {
+  const id = row.call_record_id || row.id;
+  try {
+    const token = localStorage.getItem('robocop_token');
+    const res = await fetch(`/api/campaigns/${row.campaign_id}/calls/${id}/recording?token=${encodeURIComponent(token)}`);
+    if (!res.ok) throw new Error('no recording');
+    const blob = await res.blob();
+    const when = new Date(row.started_at || row.created_at_iso || row.created_at || Date.now());
+    const pad = (n) => String(n).padStart(2, '0');
+    const stamp = isNaN(when) ? 'call' : `${when.getFullYear()}-${pad(when.getMonth() + 1)}-${pad(when.getDate())} ${pad(when.getHours())}-${pad(when.getMinutes())}`;
+    const safe = (s) => String(s || '').replace(/[^\w\- ]+/g, '').trim();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${stamp} ${safe(row.lead_name) || row.phone} ${row.phone || ''} ${safe(row.campaign_name || row.campaign)}.wav`.replace(/\s+/g, ' ');
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+  } catch { alert('Recording not available (it may have been removed by retention)'); }
+}
+
 function RecordingButton({ row, player }) {
   if (!row.has_recording || !row.campaign_id) return <span className="text-slate-600">—</span>;
   const id = row.call_record_id || row.id;
   const on = player.playing === id;
   return (
-    <button onClick={() => player.play(row.campaign_id, id)} title={on ? 'Stop' : 'Play recording'}
-      className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded ring-1 text-[10.5px] ${on ? 'bg-emerald-500/20 text-emerald-200 ring-emerald-500/40' : 'bg-slate-800 text-slate-300 ring-slate-700 hover:text-white'}`}>
-      {on ? <Square className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />} {on ? 'Stop' : secs(row.duration_seconds)}
-    </button>
+    <span className="inline-flex items-center gap-1">
+      <button onClick={() => player.play(row.campaign_id, id)} title={on ? 'Stop' : 'Play recording'}
+        className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded ring-1 text-[10.5px] ${on ? 'bg-emerald-500/20 text-emerald-200 ring-emerald-500/40' : 'bg-slate-800 text-slate-300 ring-slate-700 hover:text-white'}`}>
+        {on ? <Square className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />} {on ? 'Stop' : secs(row.duration_seconds)}
+      </button>
+      <button onClick={() => downloadRecording(row)} title="Download .wav"
+        className="inline-flex items-center px-1 py-0.5 rounded ring-1 bg-slate-800 text-slate-300 ring-slate-700 hover:text-white">
+        <Download className="w-3 h-3" />
+      </button>
+    </span>
   );
 }
 

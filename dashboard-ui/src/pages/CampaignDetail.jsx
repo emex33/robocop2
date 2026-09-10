@@ -5,7 +5,7 @@ import { useWebSocket } from '../hooks/useWebSocket';
 import {
   ArrowLeft, Play, Pause, Users, Phone, Settings, BarChart3, Info,
   Plus, Trash2, X, Upload, PhoneCall, PhoneOff, Clock, Zap, Radio,
-  Terminal, MessageSquare, Mic, Bot, User, AlertCircle, CheckCircle, ArrowRight
+  Terminal, MessageSquare, Mic, Bot, User, AlertCircle, CheckCircle, ArrowRight, Download
 } from 'lucide-react';
 import {
   BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area,
@@ -607,6 +607,37 @@ function CallsTab({ campaignId }) {
     }
   };
 
+  const downloadRecording = async (c) => {
+    try {
+      const token = localStorage.getItem('robocop_token');
+      const res = await fetch(`/api/campaigns/${campaignId}/calls/${c.id}/recording?token=${encodeURIComponent(token)}`);
+      if (!res.ok) throw new Error('Recording not available');
+      const blob = await res.blob();
+      const when = c.started_at ? new Date(c.started_at) : new Date();
+      const pad = (n) => String(n).padStart(2, '0');
+      const stamp = `${when.getFullYear()}-${pad(when.getMonth() + 1)}-${pad(when.getDate())} ${pad(when.getHours())}-${pad(when.getMinutes())}`;
+      const safe = (s) => String(s || '').replace(/[^\w\- ]+/g, '').trim();
+      const name = `${stamp} ${safe(c.lead_name) || c.phone} ${c.phone} ${safe(c.outcome)}.wav`;
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+    } catch (err) {
+      alert('Recording not available (it may have been removed by retention)');
+    }
+  };
+
+  const fmtLocal = (iso) => {
+    if (!iso) return '';
+    const d = new Date(iso);
+    if (isNaN(d)) return iso.replace('T', ' ').slice(0, 16);
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${pad(d.getDate())}/${pad(d.getMonth() + 1)} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  };
+
   if (loading) return <div className="py-8 text-center"><div className="animate-spin w-6 h-6 border-2 border-indigo-600 border-t-transparent rounded-full mx-auto" /></div>;
 
   return (
@@ -638,24 +669,33 @@ function CallsTab({ campaignId }) {
                 }`}>{c.outcome}</span>
               </td>
               <td className="px-4 py-2.5 text-gray-500">{c.duration_seconds}s</td>
-              <td className="px-4 py-2.5 text-gray-500 text-xs">{c.started_at?.replace('T', ' ').slice(0, 16)}</td>
+              <td className="px-4 py-2.5 text-gray-500 text-xs" title={c.started_at}>{fmtLocal(c.started_at)}</td>
               <td className="px-4 py-2.5">
                 {c.recording_path ? (
-                  <button
-                    onClick={() => playRecording(c.id)}
-                    className={`p-1.5 rounded-lg transition ${
-                      playingId === c.id
-                        ? 'bg-indigo-100 text-indigo-600'
-                        : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'
-                    }`}
-                    title={playingId === c.id ? 'Stop' : 'Play recording'}
-                  >
-                    {playingId === c.id ? (
-                      <Pause className="w-4 h-4" />
-                    ) : (
-                      <Play className="w-4 h-4" />
-                    )}
-                  </button>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => playRecording(c.id)}
+                      className={`p-1.5 rounded-lg transition ${
+                        playingId === c.id
+                          ? 'bg-indigo-100 text-indigo-600'
+                          : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'
+                      }`}
+                      title={playingId === c.id ? 'Stop' : 'Play recording'}
+                    >
+                      {playingId === c.id ? (
+                        <Pause className="w-4 h-4" />
+                      ) : (
+                        <Play className="w-4 h-4" />
+                      )}
+                    </button>
+                    <button
+                      onClick={() => downloadRecording(c)}
+                      className="p-1.5 rounded-lg transition hover:bg-gray-100 text-gray-500 hover:text-gray-700"
+                      title="Download recording (.wav)"
+                    >
+                      <Download className="w-4 h-4" />
+                    </button>
+                  </div>
                 ) : (
                   <span className="text-xs text-gray-300">—</span>
                 )}

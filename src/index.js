@@ -26,6 +26,7 @@ import { sipAgentManager } from "./sip-agent/manager.js";
 import { evaluateBalances, describeBalances } from "./billing/balance-guard.js";
 import { startHeartbeat } from "./utils/heartbeat.js";
 import { scheduleNightlyBackup } from "./db/backup.js";
+import { scheduleRecordingRetention } from "./services/recording-retention.js";
 
 /**
  * ROBOCOP - AI Robot Caller (Enterprise Edition)
@@ -117,6 +118,8 @@ async function main() {
 
   // Nightly copy of the (volume-resident) database back to ./data/backups.
   scheduleNightlyBackup();
+  // Keep appointment/callback recordings 30 days, conversations 3 days, the rest 2 hours.
+  scheduleRecordingRetention();
 
   // Deepgram key is now per-user (stored in DB). Env var is optional fallback.
   if (!process.env.DEEPGRAM_API_KEY) {
