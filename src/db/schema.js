@@ -358,6 +358,14 @@ function initSchema() {
   if (!agentCols.includes("mode")) {
     db.exec("ALTER TABLE agents ADD COLUMN mode TEXT DEFAULT 'live_transfer'");
   }
+  // Turn-taking (Flux end-of-turn). Deepgram's default 0.7 makes the agent jump
+  // in as soon as the lead pauses for breath; 0.85 waits for a real end of turn.
+  if (!agentCols.includes("eot_threshold")) {
+    db.exec("ALTER TABLE agents ADD COLUMN eot_threshold REAL DEFAULT 0.85");
+  }
+  if (!agentCols.includes("eot_timeout_ms")) {
+    db.exec("ALTER TABLE agents ADD COLUMN eot_timeout_ms INTEGER DEFAULT 5000");
+  }
 
   // Migration: add trunk_username to sip_settings
   const sipCols = db.prepare("PRAGMA table_info(sip_settings)").all().map(c => c.name);

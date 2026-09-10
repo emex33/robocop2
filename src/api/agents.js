@@ -46,6 +46,7 @@ router.post("/", (req, res) => {
     llm_provider, llm_model, llm_temperature,
     stt_provider, stt_model,
     tts_provider, tts_model, tts_voice_id, tts_speed,
+    eot_threshold, eot_timeout_ms,
     functions,
   } = req.body;
 
@@ -57,8 +58,8 @@ router.post("/", (req, res) => {
   db.prepare(`
     INSERT INTO agents (id, user_id, name, mode, language, company, tone, greeting, script, appointment_script,
       llm_provider, llm_model, llm_temperature, stt_provider, stt_model,
-      tts_provider, tts_model, tts_voice_id, tts_speed, functions_json)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      tts_provider, tts_model, tts_voice_id, tts_speed, eot_threshold, eot_timeout_ms, functions_json)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     id, req.user.userId,
     name,
@@ -78,6 +79,8 @@ router.post("/", (req, res) => {
     tts_model || "aura-2-thalia-en",
     tts_voice_id || "",
     tts_speed || "normal",
+    eot_threshold ?? 0.85,
+    eot_timeout_ms ?? 5000,
     functionsJson
   );
 
@@ -101,7 +104,7 @@ router.put("/:id", (req, res) => {
     "name", "mode", "language", "company", "tone", "greeting", "script", "appointment_script",
     "llm_provider", "llm_model", "llm_temperature",
     "stt_provider", "stt_model", "tts_provider", "tts_model",
-    "tts_voice_id", "tts_speed",
+    "tts_voice_id", "tts_speed", "eot_threshold", "eot_timeout_ms",
   ];
 
   for (const key of allowed) {
@@ -157,8 +160,8 @@ router.post("/:id/duplicate", (req, res) => {
   db.prepare(`
     INSERT INTO agents (id, user_id, name, mode, language, company, tone, greeting, script, appointment_script,
       llm_provider, llm_model, llm_temperature, stt_provider, stt_model,
-      tts_provider, tts_model, tts_voice_id, tts_speed, functions_json)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      tts_provider, tts_model, tts_voice_id, tts_speed, eot_threshold, eot_timeout_ms, functions_json)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     newId, req.user.userId,
     source.name + " (copy)", source.mode || "live_transfer",
@@ -167,6 +170,7 @@ router.post("/:id/duplicate", (req, res) => {
     source.llm_provider, source.llm_model, source.llm_temperature,
     source.stt_provider, source.stt_model, source.tts_provider, source.tts_model,
     source.tts_voice_id || "", source.tts_speed || "normal",
+    source.eot_threshold ?? 0.85, source.eot_timeout_ms ?? 5000,
     source.functions_json
   );
 
@@ -182,6 +186,7 @@ router.post("/test", async (req, res) => {
     llm_provider, llm_model,
     stt_provider, stt_model,
     tts_provider, tts_model, tts_voice_id, tts_speed,
+    eot_threshold, eot_timeout_ms,
   } = req.body;
 
   const logs = [];
@@ -209,6 +214,7 @@ router.post("/test", async (req, res) => {
     speakProvider.model_id = tts_model || "sonic-2";
     if (tts_voice_id) speakProvider.voice = { mode: "id", id: tts_voice_id };
     if (lang) speakProvider.language = lang;
+    if (tts_speed && tts_speed !== "normal") speakProvider.speed = tts_speed;
   } else if (tts_provider === "eleven_labs") {
     speakProvider.model_id = tts_model || "eleven_turbo_v2_5";
     if (tts_voice_id) speakProvider.voice_id = tts_voice_id;
@@ -219,7 +225,9 @@ router.post("/test", async (req, res) => {
   // Determine if using Flux (requires version: v2, no language param)
   const sttModelToUse = stt_model || "nova-3";
   const isFlux = sttModelToUse.startsWith("flux-");
-  
+  const eotThreshold = Math.min(1, Math.max(0.5, Number(eot_threshold) || 0.85));
+  const eotTimeoutMs = Math.round(Math.min(60000, Math.max(500, Number(eot_timeout_ms) || 5000)));
+
   const settings = {
     type: "Settings",
     audio: {
@@ -232,7 +240,9 @@ router.post("/test", async (req, res) => {
         provider: { 
           type: stt_provider || "deepgram", 
           model: sttModelToUse,
-          ...(isFlux ? { version: "v2" } : { language: sttLanguage }),
+          ...(isFlux
+            ? { version: "v2", eot_threshold: eotThreshold, eot_timeout_ms: eotTimeoutMs }
+            : { language: sttLanguage }),
         },
       },
       think: {

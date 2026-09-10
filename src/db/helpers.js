@@ -93,7 +93,17 @@ IMPORTANT: When client says "el lunes" or "Monday", use the date for Next Monday
   // Determine STT model and version (Flux requires v2)
   const sttModel = agent.stt_model || "nova-3";
   const isFlux = sttModel.startsWith("flux-");
-  
+
+  // Flux turn-taking. eot_threshold = how sure Flux must be that the lead has
+  // finished before the agent answers (0.5 fast/interrupting … 1.0 never on its
+  // own). eot_timeout_ms = hard cap on silence before the turn ends anyway.
+  const clamp = (v, lo, hi, dflt) => {
+    const n = Number(v);
+    return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : dflt;
+  };
+  const eotThreshold = clamp(agent.eot_threshold, 0.5, 1.0, 0.85);
+  const eotTimeoutMs = Math.round(clamp(agent.eot_timeout_ms, 500, 60000, 5000));
+
   return {
     type: "Settings",
     audio: {
@@ -106,7 +116,7 @@ IMPORTANT: When client says "el lunes" or "Monday", use the date for Next Monday
         provider: {
           type: agent.stt_provider || "deepgram",
           model: sttModel,
-          ...(isFlux ? { version: "v2" } : {}),
+          ...(isFlux ? { version: "v2", eot_threshold: eotThreshold, eot_timeout_ms: eotTimeoutMs } : {}),
           ...(!isFlux && { language: sttLanguage }),
         },
       },
@@ -138,9 +148,27 @@ IMPORTANT: When client says "el lunes" or "Monday", use the date for Next Monday
  * - OpenAI TTS: { type, model, voice }
  * - AWS Polly: { type, voice, engine, language_code }
  */
+/**
+ * agents.tts_speed is stored as a word (slowest…fastest) or a number.
+ * Cartesia takes either; Deepgram Aura wants a float 0.7–1.5.
+ */
+const SPEED_WORDS = { slowest: 0.8, slow: 0.9, normal: 1.0, fast: 1.1, fastest: 1.2 };
+function speedFor(agent, provider) {
+  const raw = String(agent.tts_speed ?? "normal").trim().toLowerCase();
+  if (!raw || raw === "normal" || raw === "1" || raw === "1.0") return null; // provider default
+  if (provider === "cartesia") {
+    if (raw in SPEED_WORDS) return raw;
+    const n = Number(raw);
+    return Number.isFinite(n) ? Math.min(2, Math.max(0.5, n)) : null;
+  }
+  const n = raw in SPEED_WORDS ? SPEED_WORDS[raw] : Number(raw);
+  return Number.isFinite(n) ? Math.min(1.5, Math.max(0.7, n)) : null;
+}
+
 function buildSpeakProvider(agent) {
   const type = agent.tts_provider || "deepgram";
   const model = agent.tts_model || "aura-2-thalia-en";
+  const speed = speedFor(agent, type);
 
   switch (type) {
     case "eleven_labs":
@@ -157,6 +185,7 @@ function buildSpeakProvider(agent) {
           voice: { mode: "id", id: agent.tts_voice_id },
         }),
         ...(agent.language && { language: agent.language }),
+        ...(speed !== null && { speed }),
       };
     case "open_ai":
       return {
@@ -172,7 +201,7 @@ function buildSpeakProvider(agent) {
         ...(agent.tts_language_code && { language_code: agent.tts_language_code }),
       };
     default: // deepgram
-      return { type, model };
+      return { type, model, ...(speed !== null && { speed }) };
   }
 }
 

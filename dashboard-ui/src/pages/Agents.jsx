@@ -356,6 +356,9 @@ function AgentModal({ agent, onClose, onSaved }) {
       return valid.includes(saved) ? saved : (valid[0] || getDefaultVoice(lang));
     })(),
     tts_voice_id: agent?.tts_voice_id || '',
+    tts_speed: agent?.tts_speed || 'normal',
+    eot_threshold: agent?.eot_threshold ?? 0.85,
+    eot_timeout_ms: agent?.eot_timeout_ms ?? 5000,
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -663,6 +666,33 @@ function AgentModal({ agent, onClose, onSaved }) {
                     </ul>
                   </div>
                 )}
+                {form.stt_model.startsWith('flux-') && (
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">Turn-taking patience</label>
+                      <select value={String(Number(form.eot_threshold))} onChange={e => setForm({ ...form, eot_threshold: Number(e.target.value) })} className={selectCls}>
+                        <option value="0.6">Quick — answers as soon as the client pauses</option>
+                        <option value="0.7">Deepgram default (0.7)</option>
+                        <option value="0.8">Natural (0.8)</option>
+                        <option value="0.85">⭐ Patient (0.85) — waits for a real end of sentence</option>
+                        <option value="0.9">Very patient (0.9)</option>
+                        <option value="0.95">Extra patient (0.95) — for slow / hesitant speakers</option>
+                      </select>
+                      <p className="text-[11px] text-gray-500 mt-1">Higher = fewer interruptions, a little more silence before Emma replies.</p>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">Max pause before replying</label>
+                      <select value={String(Number(form.eot_timeout_ms))} onChange={e => setForm({ ...form, eot_timeout_ms: Number(e.target.value) })} className={selectCls}>
+                        <option value="2000">2 s</option>
+                        <option value="3000">3 s</option>
+                        <option value="4000">4 s</option>
+                        <option value="5000">5 s (default)</option>
+                        <option value="7000">7 s</option>
+                      </select>
+                      <p className="text-[11px] text-gray-500 mt-1">Safety cap: after this much silence the agent replies regardless.</p>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* TTS (Speak) */}
@@ -727,6 +757,18 @@ function AgentModal({ agent, onClose, onSaved }) {
                   <p className="text-xs text-amber-600 bg-amber-50 px-3 py-2 rounded-lg">
                     OpenAI TTS is BYO — requires your own API key and endpoint. Set OPENAI_TTS_API_KEY in .env
                   </p>
+                )}
+                {(form.tts_provider === 'cartesia' || form.tts_provider === 'deepgram') && (
+                  <div className="w-1/2 pr-2">
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Speaking speed</label>
+                    <select value={form.tts_speed} onChange={set('tts_speed')} className={selectCls}>
+                      <option value="slowest">Slowest</option>
+                      <option value="slow">Slow — calm, unhurried</option>
+                      <option value="normal">Normal</option>
+                      <option value="fast">Fast</option>
+                      <option value="fastest">Fastest</option>
+                    </select>
+                  </div>
                 )}
               </div>
 
