@@ -333,7 +333,11 @@ export class DeepgramAgent {
 
         case "end_call":
           if (this.onEndCallRequest) {
-            this.onEndCallRequest(args.outcome || "completed", args.notes || "");
+            this.onEndCallRequest(args.outcome || "completed", args.notes || "", {
+              wants: args.wants || "",
+              callbackTime: args.callback_time || "",
+              emailRequested: args.email_requested === true || args.email_requested === "true",
+            });
           }
           this._sendFunctionResponse(id, name, "Call will end in a few seconds. Speak your final goodbye message now.");
           break;

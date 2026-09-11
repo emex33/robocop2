@@ -23,7 +23,7 @@
 import { Router } from "express";
 import { getDb } from "../db/schema.js";
 import { noteActivity } from "../utils/loop-monitor.js";
-import { queryAll } from "../db/read-pool.js";
+import { queryAll, queryGet } from "../db/read-pool.js";
 import { getUserBalance, getCampaignCallableLeadCount } from "../db/helpers.js";
 import { evaluateBalances, getTrunkState } from "../billing/balance-guard.js";
 import { getLastOfflineGap } from "../utils/heartbeat.js";
@@ -660,12 +660,26 @@ router.get("/overview", async (req, res) => {
 // ---------------------------------------------------------------------------
 // GET /live — cheap, polled every few seconds
 // ---------------------------------------------------------------------------
-router.get("/live", (req, res) => {
+router.get("/live", async (req, res) => {
   const userId = req.user.userId;
-  const db = getDb();
   const runners = req.app.locals.campaignRunners || new Map();
 
-  const meta = new Map(db.prepare("SELECT id, name, max_concurrent_calls FROM campaigns WHERE user_id = ?").all(userId).map((r) => [r.id, r]));
+  // Polled every few seconds by the Command Center; every query here runs on
+  // the read pool so it can never stall the RTP send loop of live calls.
+  const m5 = new Date(Date.now() - 5 * 60e3).toISOString();
+  const m1 = new Date(Date.now() - 60e3).toISOString();
+  const [metaRows, last5Row, last1Row, recent] = await Promise.all([
+    queryAll("SELECT id, name, max_concurrent_calls FROM campaigns WHERE user_id = ?", [userId]),
+    queryGet(`SELECT ${AGG} FROM call_records WHERE user_id = ? AND started_at >= ?`, [userId, m5]),
+    queryGet("SELECT COUNT(*) n FROM call_records WHERE user_id = ? AND started_at >= ?", [userId, m1]),
+    queryAll(`
+      SELECT cr.id, cr.call_id, cr.phone, cr.lead_name, cr.outcome, cr.duration_seconds, cr.started_at,
+             cr.call_cost, cr.error_message, c.name AS campaign
+      FROM call_records cr LEFT JOIN campaigns c ON c.id = cr.campaign_id
+      WHERE cr.user_id = ? ORDER BY cr.started_at DESC LIMIT 25
+    `, [userId]),
+  ]);
+  const meta = new Map(metaRows.map((r) => [r.id, r]));
 
   const active = [];
   const runnerSummary = [];
@@ -686,17 +700,8 @@ router.get("/live", (req, res) => {
     for (const c of calls) active.push({ campaignId, campaign: m.name, ...c });
   }
 
-  const m5 = new Date(Date.now() - 5 * 60e3).toISOString();
-  const m1 = new Date(Date.now() - 60e3).toISOString();
-  const last5 = deriveRates(db.prepare(`SELECT ${AGG} FROM call_records WHERE user_id = ? AND started_at >= ?`).get(userId, m5));
-  const last1 = db.prepare("SELECT COUNT(*) n FROM call_records WHERE user_id = ? AND started_at >= ?").get(userId, m1).n;
-
-  const recent = db.prepare(`
-    SELECT cr.id, cr.call_id, cr.phone, cr.lead_name, cr.outcome, cr.duration_seconds, cr.started_at,
-           cr.call_cost, cr.error_message, c.name AS campaign
-    FROM call_records cr LEFT JOIN campaigns c ON c.id = cr.campaign_id
-    WHERE cr.user_id = ? ORDER BY cr.started_at DESC LIMIT 25
-  `).all(userId);
+  const last5 = deriveRates(last5Row);
+  const last1 = last1Row ? last1Row.n : 0;
 
   const t = getTrunkState();
   res.json({

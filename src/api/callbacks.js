@@ -65,6 +65,7 @@ router.get("/", (req, res) => {
     SELECT cr.id, cr.call_id, cr.phone, cr.lead_name, cr.duration_seconds,
       cr.call_summary, cr.notes, cr.started_at, cr.campaign_id, cr.agent_id,
       cr.callback_status, cr.callback_notes, cr.callback_at,
+      cr.client_wants, cr.requested_callback,
       cr.recording_url, cr.transcript_json,
       c.name AS campaign_name, a.name AS agent_name,
       l.first_name, l.last_name, l.email, l.company AS lead_company, l.country

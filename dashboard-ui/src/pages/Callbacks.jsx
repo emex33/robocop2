@@ -6,6 +6,17 @@ import {
   MessageSquare, Phone, User, Building2, Globe
 } from 'lucide-react';
 
+const WANTS_LABEL = {
+  callback: 'Call back',
+  email_first: 'Email first, then call',
+  appointment: 'Specialist call booked',
+  info_only: 'Information only',
+  not_interested: 'Not interested',
+  not_qualified: 'Not qualified',
+  wrong_number: 'Wrong number',
+  other: 'Other',
+};
+
 const STATUS_CONFIG = {
   pending:        { label: 'Pending',        color: 'bg-amber-100 text-amber-700',   icon: Clock },
   called_back:    { label: 'Called Back',     color: 'bg-blue-100 text-blue-700',     icon: Phone },
@@ -175,6 +186,7 @@ export default function Callbacks() {
                   <th className="text-left px-4 py-3 font-medium text-gray-600">Lead</th>
                   <th className="text-left px-4 py-3 font-medium text-gray-600">Phone</th>
                   <th className="text-left px-4 py-3 font-medium text-gray-600">Campaign</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600">Client asked for</th>
                   <th className="text-left px-4 py-3 font-medium text-gray-600">Call Duration</th>
                   <th className="text-left px-4 py-3 font-medium text-gray-600">Date</th>
                   <th className="text-left px-4 py-3 font-medium text-gray-600">Status</th>
@@ -193,6 +205,15 @@ export default function Callbacks() {
                       </td>
                       <td className="px-4 py-3 font-mono text-gray-600">{cb.phone}</td>
                       <td className="px-4 py-3 text-gray-600">{cb.campaign_name || '—'}</td>
+                      <td className="px-4 py-3">
+                        {cb.requested_callback ? (
+                          <div className="font-medium text-gray-900">Call back: {cb.requested_callback}</div>
+                        ) : (
+                          <div className="text-gray-700">{WANTS_LABEL[cb.client_wants] || (cb.client_wants ? cb.client_wants.replace(/_/g, ' ') : 'Call back (no time given)')}</div>
+                        )}
+                        {/\bEMAIL REQUESTED\b/.test(cb.notes || '') && <div className="text-xs text-amber-700">Wants an email</div>}
+                        {cb.notes && <div className="text-xs text-gray-500 max-w-xs truncate" title={cb.notes}>{cb.notes.replace(/^\[[^\]]*\]\s*/, '')}</div>}
+                      </td>
                       <td className="px-4 py-3 text-gray-600">{formatDuration(cb.duration_seconds)}</td>
                       <td className="px-4 py-3 text-gray-500">{formatDate(cb.started_at)}</td>
                       <td className="px-4 py-3">
@@ -291,6 +312,19 @@ export default function Callbacks() {
                   <div><span className="text-gray-400">Called At:</span> <span className="text-gray-700">{formatDate(selected.started_at)}</span></div>
                 </div>
               </div>
+
+              {/* What the client asked for + what the agent collected */}
+              {(selected.requested_callback || selected.client_wants || selected.notes) && (
+                <div>
+                  <h4 className="text-sm font-medium text-gray-700 mb-2">Client asked for</h4>
+                  <div className="bg-amber-50 border border-amber-100 rounded-lg p-3 text-sm text-gray-800 space-y-1">
+                    {selected.requested_callback && <div><span className="font-medium">Call back:</span> {selected.requested_callback}</div>}
+                    {selected.client_wants && <div><span className="font-medium">Type:</span> {WANTS_LABEL[selected.client_wants] || selected.client_wants.replace(/_/g, ' ')}</div>}
+                    {/\bEMAIL REQUESTED\b/.test(selected.notes || '') && <div className="font-medium text-amber-800">Client wants an email with the details</div>}
+                    {selected.notes && <div className="whitespace-pre-wrap pt-1 border-t border-amber-100">{selected.notes.replace(/^\[[^\]]*\]\s*/, '')}</div>}
+                  </div>
+                </div>
+              )}
 
               {/* AI Summary */}
               {selected.call_summary && (

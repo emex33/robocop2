@@ -546,6 +546,16 @@ function initSchema() {
   if (!callCols.includes("callback_at")) {
     db.exec("ALTER TABLE call_records ADD COLUMN callback_at TEXT DEFAULT ''");
   }
+  // What the client asked for, as classified by the agent at the end of the
+  // call (callback / email_first / appointment / ...), and the callback time
+  // they gave, in their own words. Lets callbacks and follow-ups be triaged
+  // without reading the transcript.
+  if (!callCols.includes("client_wants")) {
+    db.exec("ALTER TABLE call_records ADD COLUMN client_wants TEXT DEFAULT ''");
+  }
+  if (!callCols.includes("requested_callback")) {
+    db.exec("ALTER TABLE call_records ADD COLUMN requested_callback TEXT DEFAULT ''");
+  }
 
   // Migration: track dial attempts per lead so numbers that permanently fail
   // (disconnected, carrier-rejected) get retired instead of being re-dialed on
@@ -580,6 +590,10 @@ function initSchema() {
   db.exec("CREATE INDEX IF NOT EXISTS idx_call_records_user_created ON call_records(user_id, created_at)");
   db.exec("CREATE INDEX IF NOT EXISTS idx_call_records_campaign_started ON call_records(campaign_id, started_at, outcome, user_id)");
   db.exec("CREATE INDEX IF NOT EXISTS idx_call_records_user_outcome_started ON call_records(user_id, outcome, started_at)");
+  //  - idx_call_records_user_started: Command Center "live" feed (latest 25
+  //    calls, last-5-minute rates) was sorting all rows by started_at through
+  //    the (user_id, created_at) index — 0.7s on the main thread every 5s.
+  db.exec("CREATE INDEX IF NOT EXISTS idx_call_records_user_started ON call_records(user_id, started_at)");
   // appointments.call_id → call_records.call_id (recording / summary behind a booking)
   db.exec("CREATE INDEX IF NOT EXISTS idx_call_records_call_id ON call_records(call_id)");
   db.exec("CREATE INDEX IF NOT EXISTS idx_appointments_user_created ON appointments(user_id, created_at)");

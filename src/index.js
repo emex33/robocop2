@@ -802,6 +802,8 @@ async function runCampaign(campaignId, userId, runner) {
         outcome: result.outcome,
         duration_seconds: durationSeconds,
         notes: result.notes || "",
+        client_wants: result.clientWants || "",
+        requested_callback: result.requestedCallback || "",
         transcript: result.transcript || [],
         transferred_to: result.outcome === "transferred" ? (result.transferredTo || extensions[0] || "") : "",
         error_message: result.outcome === "error" ? (result.notes || "") : "",

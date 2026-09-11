@@ -419,47 +419,27 @@ export function getCampaignCallableLeadCount(campaignId) {
  * Generate an AI-style call summary from the transcript.
  * Extracts key info: KYC data (age, job, income, goal), interest level, and outcome.
  */
-export function generateCallSummary(transcript, leadName, outcome) {
+export function generateCallSummary(transcript, leadName, outcome, notes = "") {
   if (!transcript || transcript.length === 0) return "";
 
-  const lines = transcript.map(t => `${t.role}: ${t.text}`);
-  const fullText = lines.join(" ");
+  const OUTCOME_LABEL = {
+    appointment_set: "Appointment booked", callback: "Client asked to be called back",
+    not_interested: "Not interested", not_qualified: "Not qualified", do_not_call: "Asked not to be contacted again",
+    transferred: "Transferred to an advisor", interested: "Interested", wrong_number: "Wrong number",
+    voicemail: "Voicemail", lead_hangup: "Client hung up", timeout: "Timed out", error: "Error",
+  };
+  const parts = [`${OUTCOME_LABEL[outcome] || outcome}${leadName ? ` — ${leadName}` : ""}.`];
+  if (notes) parts.push(notes.trim());
 
-  // Extract KYC data from conversation
-  const agentLines = transcript.filter(t => t.role === "agent").map(t => t.text).join(" ");
-  const userLines = transcript.filter(t => t.role === "user").map(t => t.text).join(" ");
+  // The client's own words carry the facts (platform, amount, email, time).
+  // Keep the informative lines: skip one-word answers, prefer lines that
+  // mention money, dates, platforms, contact details or requests.
+  const user = transcript.filter(t => t.role === "user" && (t.text || "").trim().length > 12).map(t => t.text.trim());
+  const informative = user.filter(t => /\d|\$|thousand|hundred|dollar|euro|pound|bitcoin|crypto|wallet|coin|platform|email|call (me )?back|later|tomorrow|morning|afternoon|evening|o'clock|bank|card|transfer|withdraw|police|report|@/i.test(t));
+  const picked = (informative.length ? informative : user).slice(0, 6);
+  if (picked.length) parts.push(`Client said: ${picked.map(t => `"${t.length > 160 ? t.slice(0, 157) + "…" : t}"`).join(" ")}`);
 
-  // Build summary parts
-  const parts = [];
-  parts.push(`The agent contacted ${leadName || "the lead"}`);
-
-  // Try to detect discussion topics
-  if (/trad/i.test(fullText)) parts.push("to discuss trading/investment opportunities");
-  if (/online/i.test(fullText)) parts.push("regarding online trading");
-
-  // Detect KYC info shared
-  const kycParts = [];
-  const ageMatch = userLines.match(/\b(\d{2,3})\b.*(?:year|old|age)/i) || userLines.match(/(?:age|year|old).*?\b(\d{2,3})\b/i);
-  if (ageMatch) kycParts.push(`age: ${ageMatch[1]}`);
-
-  // Detect interest
-  if (outcome === "transferred") {
-    parts.push("The client showed interest and was successfully transferred to an advisor.");
-  } else if (outcome === "interested") {
-    parts.push("The client expressed interest.");
-  } else if (outcome === "not_interested") {
-    parts.push("The client was not interested.");
-  } else if (outcome === "callback") {
-    parts.push("The client requested a callback.");
-  } else if (outcome === "do_not_call") {
-    parts.push("The client requested not to be contacted again.");
-  }
-
-  // Count exchanges
-  const exchanges = transcript.length;
-  parts.push(`Conversation had ${exchanges} exchanges over the call.`);
-
-  return parts.join(". ") + ".";
+  return parts.join(" ");
 }
 
 /**
@@ -471,12 +451,12 @@ export function recordCall(data) {
 
   // Generate call summary if not provided
   const summary = data.call_summary || generateCallSummary(
-    data.transcript || [], data.lead_name || "", data.outcome || "unknown"
+    data.transcript || [], data.lead_name || "", data.outcome || "unknown", data.notes || ""
   );
 
   db.prepare(`
-    INSERT INTO call_records (id, campaign_id, agent_id, lead_id, user_id, call_id, phone, lead_name, outcome, duration_seconds, notes, transcript_json, transferred_to, error_message, call_summary, started_at, ended_at, recording_path, recording_url, ai_duration_seconds, call_cost, voip_cost, ai_cost)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO call_records (id, campaign_id, agent_id, lead_id, user_id, call_id, phone, lead_name, outcome, duration_seconds, notes, transcript_json, transferred_to, error_message, call_summary, started_at, ended_at, recording_path, recording_url, ai_duration_seconds, call_cost, voip_cost, ai_cost, client_wants, requested_callback)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     id,
     data.campaign_id || null,
@@ -500,7 +480,9 @@ export function recordCall(data) {
     data.ai_duration_seconds || 0,
     data.call_cost || 0,
     data.voip_cost || 0,
-    data.ai_cost || 0
+    data.ai_cost || 0,
+    data.client_wants || "",
+    data.requested_callback || ""
   );
   return id;
 }

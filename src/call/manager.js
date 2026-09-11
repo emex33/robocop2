@@ -134,10 +134,17 @@ export class CallManager {
         },
 
         // Lead interrupted — Deepgram stops old TTS and generates new response.
-        // We just flush queued audio so leftover words don't play.
+        // Deepgram's VAD fires on "yes", "okay", breaths and room noise too, and
+        // a hard flush made Emma stop mid-word every time ("you're cut off").
+        // Let up to BARGE_GRACE_FRAMES of the queued audio finish (the tail of
+        // the phrase she is on), drop the rest. Short sentences complete; long
+        // ones stop within a second like a person who yields the floor.
         onBargeIn: () => {
           emit("barge_in", { status: "user_interrupted" });
-          audioBridge.sendQueue = [];
+          const BARGE_GRACE_FRAMES = 50; // 20 ms frames → 1.0 s
+          if (audioBridge.sendQueue.length > BARGE_GRACE_FRAMES) {
+            audioBridge.sendQueue.length = BARGE_GRACE_FRAMES;
+          }
           audioBridge.audioOutBuffer = Buffer.alloc(0);
         },
 
@@ -224,11 +231,19 @@ export class CallManager {
         },
 
         // AI wants to end the call
-        onEndCallRequest: async (outcome, notes) => {
-          logger.info(`[${callId}] End call requested: ${outcome} - ${notes}`);
-          emit("function_call", { function: "end_call", outcome, notes });
+        onEndCallRequest: async (outcome, notes, extra = {}) => {
+          logger.info(`[${callId}] End call requested: ${outcome} - ${notes}` +
+            (extra.wants ? ` | wants: ${extra.wants}` : "") + (extra.callbackTime ? ` | callback: ${extra.callbackTime}` : ""));
+          emit("function_call", { function: "end_call", outcome, notes, wants: extra.wants, callback_time: extra.callbackTime });
           callResult.outcome = outcome;
-          callResult.notes = notes;
+          callResult.clientWants = extra.wants || (outcome === "callback" ? "callback" : "");
+          callResult.requestedCallback = extra.callbackTime || "";
+          // Put the classification in front of the free-text notes so it is
+          // visible everywhere notes are shown, even in old UI views.
+          const head = [];
+          if (extra.callbackTime) head.push(`CALL BACK: ${extra.callbackTime}`);
+          if (extra.emailRequested) head.push("EMAIL REQUESTED");
+          callResult.notes = head.length ? `[${head.join(" | ")}] ${notes}` : notes;
           // Give the AI 8 seconds to finish saying goodbye, then hang up
           // This delay allows the AI to speak its final message before disconnecting
           setTimeout(async () => {
