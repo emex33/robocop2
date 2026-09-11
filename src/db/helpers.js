@@ -24,14 +24,20 @@ export function buildAgentSettingsFromDb(agent, lead = {}) {
     lead.saludo = hour < 12 ? "good morning" : hour < 18 ? "good afternoon" : "good evening";
   }
 
+  // Leads from cold lists often have no name ("Unknown" or blank). Never let
+  // the raw "{{first_name}}" template reach the TTS — it was being read aloud.
+  const isBlankName = (v) => !v || typeof v !== "string" || !v.trim() || /^(unknown|n\/?a|null|undefined|-+)$/i.test(v.trim());
+  const hasName = !isBlankName(lead.first_name) || !isBlankName(lead.name) || !isBlankName(lead.full_name);
   const interpolate = (str) => {
     if (!str) return str;
     return str.replace(/\{\{(\w+)\}\}/g, (match, key) => {
-      let val = lead[key] || lead.extra?.[key] || match;
-      if (NAME_FIELDS.has(key) && typeof val === "string" && val !== match) {
-        val = toTitleCase(val);
+      let val = lead[key] || lead.extra?.[key];
+      if (NAME_FIELDS.has(key)) {
+        if (isBlankName(val)) return "[their name]";
+        return toTitleCase(val);
       }
-      return val;
+      if (key === "email" && (val == null || !String(val).trim())) return "(no email on file)";
+      return val == null ? "" : String(val);
     });
   };
 
@@ -88,7 +94,15 @@ IMPORTANT: When client says "el lunes" or "Monday", use the date for Next Monday
   const langInstruction = langName
     ? `\n\n[LANGUAGE RULE] You MUST speak ONLY in ${langName}. Every word you say must be in ${langName}. Never mix languages. Never switch to English or any other language, even if the user speaks a different language. This rule overrides all other instructions.`
     : "";
-  const fullPrompt = userPrompt + dateReference + langInstruction;
+  // No name on file: open by asking who we're speaking with, and tell the LLM
+  // to use (and save) whatever name the client gives.
+  let greeting = interpolate(agent.greeting || "");
+  let noNameInstruction = "";
+  if (!hasName && /\{\{(first_name|name|full_name|lead_name)\}\}/.test(agent.greeting || "")) {
+    greeting = lang === "es" ? "Hola, ¿con quién hablo?" : lang === "fr" ? "Bonjour, à qui ai-je l'honneur ?" : "Hi, who am I speaking with?";
+    noNameInstruction = `\n\n[NO NAME ON FILE] You do not have this client's name. The greeting already spoken was: "${greeting}". Wherever the script says "[their name]", use the name they give you (first name only), and save it with update_lead_info as soon as you hear it. If they won't give a name, simply don't use one — never say "[their name]" aloud.`;
+  }
+  const fullPrompt = userPrompt + dateReference + langInstruction + noNameInstruction;
 
   // Determine STT model and version (Flux requires v2)
   const sttModel = agent.stt_model || "nova-3";
@@ -135,7 +149,7 @@ IMPORTANT: When client says "el lunes" or "Monday", use the date for Next Monday
       speak: {
         provider: buildSpeakProvider(agent),
       },
-      greeting: interpolate(agent.greeting || ""),
+      greeting,
     },
   };
 }
