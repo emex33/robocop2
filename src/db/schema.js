@@ -72,8 +72,17 @@ export function getDb() {
     // stale sqlite_stat1 is how the planner picked a 114-second index).
     setInterval(() => {
       try { db.pragma("wal_checkpoint(PASSIVE)"); } catch (_) {}
-      try { db.pragma("optimize"); } catch (_) {}
     }, 5 * 60 * 1000).unref();
+    // `optimize` may run ANALYZE on a busy 1.3M-row table, which blocks the
+    // main thread (and every live call's audio) for seconds — once a day, at
+    // ~04:00 when no campaign is dialing, is plenty.
+    const optimizeAt4 = () => {
+      const now = new Date();
+      const next = new Date(now); next.setHours(4, 0, 0, 0);
+      if (next <= now) next.setDate(next.getDate() + 1);
+      setTimeout(() => { try { db.pragma("optimize"); } catch (_) {} optimizeAt4(); }, next - now).unref();
+    };
+    optimizeAt4();
   }
   return db;
 }

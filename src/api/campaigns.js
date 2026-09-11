@@ -6,6 +6,8 @@
 import { Router } from "express";
 import { getDb, generateId } from "../db/schema.js";
 import { resetCampaignForRerun } from "../db/helpers.js";
+import { queryAll, queryGet } from "../db/read-pool.js";
+import logger from "../utils/logger.js";
 import fs from "fs";
 import path from "path";
 
@@ -51,6 +53,35 @@ function getCached(key, compute) {
   return value;
 }
 
+// Same policy for counters computed off-thread (read-pool). The heavy SQL runs
+// in a worker, so neither the cold path nor the refresh touches the main
+// thread — which is what keeps live-call audio smooth while people browse.
+function getCachedAsync(key, computeAsync) {
+  const hit = statsCache.get(key);
+  const now = Date.now();
+  if (hit && now - hit.ts < STATS_TTL_MS) return Promise.resolve(hit.value);
+  if (hit && now - hit.ts < STATS_MAX_AGE_MS) {
+    if (!hit.refreshing) {
+      hit.refreshing = true;
+      computeAsync().then((value) => statsCache.set(key, { ts: Date.now(), value }))
+        .catch(() => { hit.refreshing = false; });
+    }
+    return Promise.resolve(hit.value);
+  }
+  if (hit && hit.inflight) return hit.inflight;
+  const inflight = computeAsync().then((value) => {
+    statsCache.set(key, { ts: Date.now(), value });
+    if (statsCache.size > 200) {
+      const cutoff = Date.now() - STATS_MAX_AGE_MS;
+      for (const [k, v] of statsCache) if (v.ts < cutoff && !v.inflight) statsCache.delete(k);
+    }
+    return value;
+  });
+  statsCache.set(key, { ts: 0, value: undefined, inflight });
+  inflight.catch(() => statsCache.delete(key));
+  return inflight;
+}
+
 /** Drop every cached counter for one campaign (after a reset or bulk change). */
 function invalidateCampaignCaches(campaignId) {
   for (const k of statsCache.keys()) {
@@ -67,12 +98,12 @@ function getStatsSince(db, campaignId) {
 }
 
 function getCallCountsByCampaign(db, campaignIds) {
-  if (!campaignIds.length) return {};
+  if (!campaignIds.length) return Promise.resolve({});
   const key = `calls:${campaignIds.slice().sort().join(",")}`;
-  return getCached(key, () => {
+  return getCachedAsync(key, async () => {
     const callCounts = {};
     const placeholders = campaignIds.map(() => "?").join(",");
-    db.prepare(`
+    const rows = await queryAll(`
       SELECT cr.campaign_id,
         COUNT(*) as total_calls,
         SUM(CASE WHEN cr.outcome = 'transferred' THEN 1 ELSE 0 END) as answered_leads,
@@ -80,29 +111,31 @@ function getCallCountsByCampaign(db, campaignIds) {
       FROM call_records cr JOIN campaigns c ON c.id = cr.campaign_id
       WHERE cr.campaign_id IN (${placeholders}) AND cr.started_at >= COALESCE(c.stats_since, '')
       GROUP BY cr.campaign_id
-    `).all(...campaignIds).forEach(r => { callCounts[r.campaign_id] = r; });
+    `, campaignIds);
+    rows.forEach(r => { callCounts[r.campaign_id] = r; });
     return callCounts;
   });
 }
 
 function getCampaignCallStats(db, campaignId) {
-  return getCached(`cstats:${campaignId}`, () => db.prepare(`
+  return getCachedAsync(`cstats:${campaignId}`, () => queryGet(`
     SELECT
       COUNT(*) as total_calls,
       COALESCE(SUM(CASE WHEN outcome = 'transferred' THEN 1 ELSE 0 END), 0) as transferred_calls,
       COALESCE(SUM(CASE WHEN outcome IN ('interested','transferred','appointment_set') THEN 1 ELSE 0 END), 0) as answered_leads,
       COALESCE(SUM(CASE WHEN outcome = 'not_interested' THEN 1 ELSE 0 END), 0) as rejected_leads
     FROM call_records WHERE campaign_id = ? AND started_at >= ?
-  `).get(campaignId, getStatsSince(db, campaignId)));
+  `, [campaignId, getStatsSince(db, campaignId)]));
 }
 
 function getCampaignDncCount(db, campaignId) {
-  return getCached(`dnc:${campaignId}`, () => {
+  return getCachedAsync(`dnc:${campaignId}`, async () => {
     const lists = db.prepare("SELECT list_id FROM campaign_lists WHERE campaign_id = ?").all(campaignId);
     if (lists.length === 0) return 0;
     let total = 0;
-    const stmt = db.prepare("SELECT COUNT(*) as cnt FROM leads WHERE list_id = ? AND do_not_call = 1");
-    for (const row of lists) total += stmt.get(row.list_id).cnt;
+    for (const row of lists) {
+      total += (await queryGet("SELECT COUNT(*) as cnt FROM leads WHERE list_id = ? AND do_not_call = 1", [row.list_id])).cnt;
+    }
     return total;
   });
 }
@@ -122,17 +155,17 @@ export function warmCampaignCaches() {
   const byUser = new Map();
   for (const r of rows) byUser.set(r.user_id, [...(byUser.get(r.user_id) || []), r.id]);
   let i = 0;
-  const step = () => {
+  const step = async () => {
     if (i < rows.length) {
       const c = rows[i++];
-      try { getCampaignCallStats(db, c.id); getCampaignDncCount(db, c.id); } catch {}
+      try { await getCampaignCallStats(db, c.id); await getCampaignDncCount(db, c.id); } catch {}
       setTimeout(step, 150);
     } else {
       // The list page keys its cache by the user's full campaign id set.
       for (const userId of byUser.keys()) {
         try {
           const ids = db.prepare("SELECT id FROM campaigns WHERE user_id = ?").all(userId).map(r => r.id);
-          getCallCountsByCampaign(db, ids);
+          await getCallCountsByCampaign(db, ids);
         } catch {}
       }
     }
@@ -141,7 +174,7 @@ export function warmCampaignCaches() {
 }
 
 // List all campaigns for current user
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   const db = getDb();
   const campaigns = db.prepare(`
     SELECT c.*, a.name as agent_name, a.mode as agent_mode
@@ -164,7 +197,9 @@ router.get("/", (req, res) => {
     GROUP BY cl.campaign_id
   `).all(...campaignIds).forEach(r => { leadCounts[r.campaign_id] = r.cnt; });
 
-  const callCounts = getCallCountsByCampaign(db, campaignIds);
+  let callCounts = {};
+  try { callCounts = await getCallCountsByCampaign(db, campaignIds); }
+  catch (e) { logger.warn(`campaign counters unavailable: ${e.message}`); }
 
   const result = campaigns.map(c => ({
     ...c,
@@ -178,7 +213,7 @@ router.get("/", (req, res) => {
 });
 
 // Get single campaign with full details
-router.get("/:id", (req, res) => {
+router.get("/:id", async (req, res) => {
   const db = getDb();
   const campaign = db.prepare(`
     SELECT c.*, a.name as agent_name, a.mode as agent_mode
@@ -195,8 +230,10 @@ router.get("/:id", (req, res) => {
     WHERE cl.campaign_id = ?
   `).get(req.params.id);
 
-  const callStats = getCampaignCallStats(db, req.params.id);
-  const dncCount = getCampaignDncCount(db, req.params.id);
+  let callStats = { total_calls: 0, transferred_calls: 0, answered_leads: 0, rejected_leads: 0 }, dncCount = 0;
+  try {
+    [callStats, dncCount] = await Promise.all([getCampaignCallStats(db, req.params.id), getCampaignDncCount(db, req.params.id)]);
+  } catch (e) { logger.warn(`campaign counters unavailable: ${e.message}`); }
 
   campaign.total_leads = leadStats.total_leads;
   campaign.total_calls = callStats.total_calls;
@@ -498,25 +535,26 @@ router.get("/:id/leads", (req, res) => {
 });
 
 // Get call records for a campaign
-router.get("/:id/calls", (req, res) => {
+router.get("/:id/calls", async (req, res) => {
   const db = getDb();
   const page = parseInt(req.query.page) || 1;
   const limit = Math.min(parseInt(req.query.limit) || 50, 200);
   const offset = (page - 1) * limit;
 
   const since = getStatsSince(db, req.params.id);
-  const total = getCached(`ccount:${req.params.id}`, () =>
-    db.prepare("SELECT COUNT(*) as cnt FROM call_records WHERE campaign_id = ? AND started_at >= ?").get(req.params.id, since).cnt
-  );
-
-  const calls = db.prepare(`
-    SELECT id, call_id, phone, lead_name, outcome, duration_seconds, notes,
-           recording_path, recording_url, started_at, ended_at, created_at
-    FROM call_records
-    WHERE campaign_id = ? AND started_at >= ?
-    ORDER BY created_at DESC
-    LIMIT ? OFFSET ?
-  `).all(req.params.id, since, limit, offset);
+  const [total, calls] = await Promise.all([
+    getCachedAsync(`ccount:${req.params.id}`, async () =>
+      (await queryGet("SELECT COUNT(*) as cnt FROM call_records WHERE campaign_id = ? AND started_at >= ?", [req.params.id, since])).cnt
+    ),
+    queryAll(`
+      SELECT id, call_id, phone, lead_name, outcome, duration_seconds, notes,
+             recording_path, recording_url, started_at, ended_at, created_at
+      FROM call_records
+      WHERE campaign_id = ? AND started_at >= ?
+      ORDER BY created_at DESC
+      LIMIT ? OFFSET ?
+    `, [req.params.id, since, limit, offset]),
+  ]);
 
   res.json({
     calls,
@@ -527,13 +565,13 @@ router.get("/:id/calls", (req, res) => {
 });
 
 // Get campaign analytics
-router.get("/:id/analytics", (req, res) => {
+router.get("/:id/analytics", async (req, res) => {
   const db = getDb();
   const campaignId = req.params.id;
 
-  const payload = getCached(`analytics:${campaignId}`, () => {
+  const payload = await getCachedAsync(`analytics:${campaignId}`, async () => {
     const since = getStatsSince(db, campaignId);
-    const summary = db.prepare(`
+    const summary = await queryGet(`
       SELECT
         COUNT(*) as total_calls,
         SUM(CASE WHEN outcome = 'transferred' THEN 1 ELSE 0 END) as transfers,
@@ -547,26 +585,27 @@ router.get("/:id/analytics", (req, res) => {
         AVG(duration_seconds) as avg_duration,
         SUM(duration_seconds) as total_duration
       FROM call_records WHERE campaign_id = ? AND started_at >= ?
-    `).get(campaignId, since);
+    `, [campaignId, since]);
 
-    const callsByDay = db.prepare(`
+    const callsByDay = await queryAll(`
       SELECT date(started_at) as day, COUNT(*) as count,
         SUM(CASE WHEN outcome = 'transferred' THEN 1 ELSE 0 END) as transfers
       FROM call_records
       WHERE campaign_id = ? AND started_at >= datetime('now', '-30 days') AND started_at >= ?
       GROUP BY date(started_at)
       ORDER BY day
-    `).all(campaignId, since);
+    `, [campaignId, since]);
 
-    const outcomes = db.prepare(`
+    const outcomes = await queryAll(`
       SELECT outcome, COUNT(*) as count
       FROM call_records WHERE campaign_id = ? AND started_at >= ?
       GROUP BY outcome
-    `).all(campaignId, since);
+    `, [campaignId, since]);
 
     return { summary, callsByDay, outcomes };
-  });
+  }).catch((e) => { logger.warn(`campaign analytics unavailable: ${e.message}`); return null; });
 
+  if (!payload) return res.status(503).json({ error: "Analytics temporarily unavailable" });
   res.json(payload);
 });
 

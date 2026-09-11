@@ -13,6 +13,7 @@ import { fileURLToPath } from "url";
 import { WebSocketServer } from "ws";
 import jwt from "jsonwebtoken";
 import logger from "../utils/logger.js";
+import { activityMiddleware } from "../utils/loop-monitor.js";
 
 import authRoutes from "../api/auth.js";
 import agentRoutes from "../api/agents.js";
@@ -63,6 +64,7 @@ export class DashboardServer {
 
   _setupMiddleware() {
     this.app.use(cors());
+    this.app.use(activityMiddleware);
     this.app.use(express.json({ limit: "10mb" }));
     // Serve React build
     this.app.use(express.static(path.join(__dirname, "public", "dist")));

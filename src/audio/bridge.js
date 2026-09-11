@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import { execFile } from "child_process";
 import logger from "../utils/logger.js";
+import { EchoGate, pcmDb } from "./echo-gate.js";
 
 /**
  * Audio Bridge
@@ -87,6 +88,15 @@ export class AudioBridge {
     // Keepalive tracking
     this.lastRtpReceivedTime = null;
     this.keepaliveInterval = null;
+
+    // Echo gate: stops our own voice (leaked back by speakerphones) reaching Deepgram
+    this.echoGate = options.enableEchoGate === false ? null : new EchoGate(callId);
+
+    // Send-loop health: event-loop stalls show up here as skipped frames
+    this.stalls = 0;         // ticks that arrived > 100 ms late
+    this.maxStallMs = 0;
+    this.skippedFrames = 0;  // frames dropped because a stall exceeded the catch-up cap
+    this.lastTickMs = 0;
   }
 
   /**
@@ -121,7 +131,11 @@ export class AudioBridge {
         this.recLeadQueue.push(payload);
       }
       
-      const pcm16 = pt === 0 ? mulawToLinear16(payload) : alawToLinear16(payload);
+      let pcm16 = pt === 0 ? mulawToLinear16(payload) : alawToLinear16(payload);
+      if (this.echoGate && this.echoGate.isEcho(pcmDb(pcm16))) {
+        // Our own voice coming back — feed Deepgram silence instead
+        pcm16 = Buffer.alloc(pcm16.length, 0);
+      }
       if (this.onAudioFromLead) {
         this.onAudioFromLead(pcm16);
       }
@@ -243,14 +257,16 @@ export class AudioBridge {
   _finalizeRecording() {
     if (!this.recordingEnabled || !this.recordingPath) return null;
 
-    if (this.recStream) { this.recStream.end(); this.recStream = null; }
+    // stop() can run twice (abort path + cleanup path); convert only once.
+    if (this.recFinalized) return this.recordingPath;
+    this.recFinalized = true;
 
     const rawFile = this.recRawPath;
     const outFile = this.recordingPath;
     const callId = this.callId;
 
-    if (!rawFile || !fs.existsSync(rawFile) || fs.statSync(rawFile).size === 0) {
-      try { if (rawFile) fs.unlinkSync(rawFile); } catch (e) {}
+    if (!rawFile || !fs.existsSync(rawFile)) {
+      if (this.recStream) { this.recStream.end(); this.recStream = null; }
       return null;
     }
 
@@ -261,7 +277,11 @@ export class AudioBridge {
       outFile
     ];
 
-    execFile("ffmpeg", args, { timeout: 30000 }, (err, stdout, stderr) => {
+    const convert = () => {
+      let size = 0;
+      try { size = fs.statSync(rawFile).size; } catch (e) {}
+      if (size === 0) { try { fs.unlinkSync(rawFile); } catch (e) {} return; }
+      execFile("ffmpeg", args, { timeout: 30000 }, (err, stdout, stderr) => {
       try { fs.unlinkSync(rawFile); } catch (e) {}
       if (err) {
         logger.error(`ffmpeg recording failed: ${err.message}`, { callId });
@@ -274,7 +294,18 @@ export class AudioBridge {
       } catch (e) {
         logger.info(`Recording saved: ${outFile}`, { callId });
       }
-    });
+      });
+    };
+
+    // Wait for the write stream to flush before ffmpeg reads the raw file,
+    // otherwise the tail of the call is cut off.
+    if (this.recStream) {
+      const stream = this.recStream;
+      this.recStream = null;
+      stream.end(convert);
+    } else {
+      convert();
+    }
 
     return this.recordingPath;
   }
@@ -400,12 +431,22 @@ export class AudioBridge {
     // to answer before the lead spoke. Now every tick processes exactly as many
     // 20 ms frames as wall-clock time says are due.
     this.loopStartMs = Date.now();
+    this.lastTickMs = this.loopStartMs;
     this.framesDone = 0;
     this.sendInterval = setInterval(() => {
-      let due = Math.floor((Date.now() - this.loopStartMs) / PTIME) - this.framesDone;
+      const now = Date.now();
+      const gap = now - this.lastTickMs;
+      this.lastTickMs = now;
+      if (gap > 100) {
+        this.stalls++;
+        if (gap > this.maxStallMs) this.maxStallMs = gap;
+        if (gap > 400) logger.warn(`Event loop stalled ${gap} ms during call — audio to the lead was interrupted`, { callId: this.callId });
+      }
+      let due = Math.floor((now - this.loopStartMs) / PTIME) - this.framesDone;
       if (due > MAX_CATCHUP_FRAMES) {
         // Pathological stall (GC pause, blocked loop): don't burst-flood the
         // network; give up on the missed time instead.
+        this.skippedFrames += due - MAX_CATCHUP_FRAMES;
         this.framesDone += due - MAX_CATCHUP_FRAMES;
         due = MAX_CATCHUP_FRAMES;
       }
@@ -459,10 +500,15 @@ export class AudioBridge {
     }
 
     // --- Send AI RTP packet ---
-    if (this.isMuted || this.sendQueue.length === 0) return;
-    if (!this.remoteRtpHost || !this.remoteRtpPort) return;
+    if (this.isMuted || this.sendQueue.length === 0 || !this.remoteRtpHost || !this.remoteRtpPort) {
+      if (this.echoGate) this.echoGate.pushOutbound(-100);
+      return;
+    }
 
     const pcmPayload = this.sendQueue.shift();
+    if (this.echoGate) {
+      this.echoGate.pushOutbound(pcmDb(this.negotiatedCodec === 0 ? mulawDecode8k(pcmPayload) : alawDecode8k(pcmPayload)));
+    }
     const rtpPacket = this._createRtpPacket(pcmPayload);
 
     this.udpSocket.send(rtpPacket, this.remoteRtpPort, this.remoteRtpHost, (err) => {
@@ -546,6 +592,15 @@ export class AudioBridge {
       recordingPath = this._finalizeRecording();
     } catch (e) {
       logger.error(`Error finalizing recording: ${e.message}`, { callId: this.callId });
+    }
+
+    if (this.sendInterval) {
+      // Once per call: how healthy was the audio path?
+      const life = ((Date.now() - this.loopStartMs) / 1000).toFixed(1);
+      const lost = (this.skippedFrames * PTIME / 1000).toFixed(1);
+      const level = this.stalls || this.skippedFrames ? "warn" : "info";
+      logger[level](`Audio path: ${life}s, ${this.stalls} stalls >100ms (max ${this.maxStallMs} ms), ${lost}s lost to stalls` +
+        (this.echoGate && this.echoGate.summary() ? `; echo gate: ${this.echoGate.summary()}` : ""), { callId: this.callId });
     }
 
     try {

@@ -5,13 +5,13 @@
 
 import { Router } from "express";
 import { getDb, generateId } from "../db/schema.js";
+import { queryAll } from "../db/read-pool.js";
 import { pushAppointmentToSheet, updateAppointmentInSheet } from "../services/google-sheets.js";
 
 const router = Router();
 
 // List all appointments for current user
-router.get("/", (req, res) => {
-  const db = getDb();
+router.get("/", async (req, res) => {
   const { status, from, to, campaign_id } = req.query;
   
   let query = `
@@ -44,9 +44,14 @@ router.get("/", (req, res) => {
   }
   
   query += " ORDER BY a.appointment_date ASC, a.appointment_time ASC";
-  
-  const appointments = db.prepare(query).all(...params);
-  res.json(appointments);
+
+  // Off the main thread: this join over every appointment blocked the loop
+  // ~1.7 s per page load, freezing live-call audio.
+  try {
+    res.json(await queryAll(query, params));
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
 // Get single appointment

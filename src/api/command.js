@@ -22,6 +22,8 @@
 
 import { Router } from "express";
 import { getDb } from "../db/schema.js";
+import { noteActivity } from "../utils/loop-monitor.js";
+import { queryAll } from "../db/read-pool.js";
 import { getUserBalance, getCampaignCallableLeadCount } from "../db/helpers.js";
 import { evaluateBalances, getTrunkState } from "../billing/balance-guard.js";
 import { getLastOfflineGap } from "../utils/heartbeat.js";
@@ -53,6 +55,31 @@ function cached(key, compute) {
   const value = compute();
   cache.set(key, { ts: Date.now(), value });
   return value;
+}
+
+/**
+ * Async variant, stale-while-revalidate. `compute` runs its SQL in the
+ * read-pool worker, so a Command Center refresh never freezes the main thread
+ * (the live GROUP BY over a day of call_records took ~1.2 s there, every 20 s
+ * while the page was open — one burst of broken audio per refresh on every line).
+ */
+const STALE_MAX_MS = 10 * 60_000;
+function cachedAsync(key, compute) {
+  const hit = cache.get(key);
+  const now = Date.now();
+  if (hit && hit.inflight) return hit.inflight;
+  if (hit && now - hit.ts < TTL_MS) return Promise.resolve(hit.value);
+  if (hit && now - hit.ts < STALE_MAX_MS) {
+    if (!hit.refreshing) {
+      hit.refreshing = true;
+      compute().then((value) => cache.set(key, { ts: Date.now(), value })).catch(() => { hit.refreshing = false; });
+    }
+    return Promise.resolve(hit.value);
+  }
+  const inflight = compute().then((value) => { cache.set(key, { ts: Date.now(), value }); return value; });
+  inflight.catch(() => cache.delete(key));
+  cache.set(key, { ts: 0, inflight });
+  return inflight;
 }
 
 // ---------------------------------------------------------------------------
@@ -278,6 +305,7 @@ function warmRollups(userId, days) {
     const day = queue.shift();
     if (!day) { warming.delete(userId); cache.clear(); logger.info(`[command] rollups complete for user ${userId}`); return; }
     try {
+      noteActivity(`job: command rollup ${day}`);
       const t0 = Date.now();
       const n = rollupDay(getDb(), userId, day);
       logger.info(`[command] rolled up ${day}: ${n} cells in ${Date.now() - t0}ms (${queue.length} days left)`);
@@ -324,10 +352,10 @@ export function scheduleRollupWarmup(delayMs = 15_000) {
  * A cell is { day, hour (UTC), q (quarter, live only), campaign_id, agent_id, region, ...counters }.
  * Live cells for the current day come from call_records; older days from the rollup.
  */
-function liveCells(db, userId, sinceIso, campaignId) {
+async function liveCells(db, userId, sinceIso, campaignId) {
   const scope = campaignId ? "AND campaign_id = ?" : "";
   const params = campaignId ? [userId, sinceIso, campaignId] : [userId, sinceIso];
-  const rows = db.prepare(`
+  const rows = await queryAll(`
     SELECT substr(started_at, 1, 10) AS day,
            CAST(substr(started_at, 12, 2) AS INTEGER) AS hour,
            CAST(substr(started_at, 15, 2) AS INTEGER) / 15 AS q,
@@ -336,7 +364,7 @@ function liveCells(db, userId, sinceIso, campaignId) {
     FROM call_records
     WHERE user_id = ? AND started_at >= ? ${scope}
     GROUP BY day, hour, q, campaign_id, agent_id, p4
-  `).all(...params);
+  `, params);
   const merged = new Map();
   for (const r of rows) {
     const region = regionOf(r.p4);
@@ -344,25 +372,25 @@ function liveCells(db, userId, sinceIso, campaignId) {
     const cur = merged.get(key) || { day: r.day, hour: r.hour, q: r.q, campaign_id: r.campaign_id, agent_id: r.agent_id, region, ...emptyCounters() };
     merged.set(key, addInto(cur, r));
   }
-  const errs = db.prepare(`
+  const errs = (await queryAll(`
     SELECT COALESCE(campaign_id, '') AS campaign_id, error_message, COUNT(*) AS n
     FROM call_records
     WHERE user_id = ? AND started_at >= ? ${scope} AND +outcome = 'error'
     GROUP BY campaign_id, error_message
-  `).all(...params).map((r) => ({ campaign_id: r.campaign_id, code: errorCode(r.error_message), n: r.n }));
+  `, params)).map((r) => ({ campaign_id: r.campaign_id, code: errorCode(r.error_message), n: r.n }));
   return { cells: [...merged.values()], errs };
 }
 
-function rollupCells(db, userId, firstDay, lastDay, campaignId) {
+async function rollupCells(db, userId, firstDay, lastDay, campaignId) {
   const scope = campaignId ? "AND campaign_id = ?" : "";
   const params = campaignId ? [userId, firstDay, lastDay, campaignId] : [userId, firstDay, lastDay];
-  const cells = db.prepare(`
+  const cells = await queryAll(`
     SELECT day, hour, 0 AS q, campaign_id, agent_id, region, ${COUNTERS.join(",")}
     FROM cr_rollup_hourly WHERE user_id = ? AND day >= ? AND day <= ? ${scope}
-  `).all(...params);
-  const errs = db.prepare(`
+  `, params);
+  const errs = await queryAll(`
     SELECT campaign_id, code, n FROM cr_rollup_errors WHERE user_id = ? AND day >= ? AND day <= ? ${scope}
-  `).all(...params);
+  `, params);
   return { cells, errs };
 }
 
@@ -385,7 +413,7 @@ const SIP_LABEL = {
   "NET": "Network / Deepgram unreachable", "other": "Other",
 };
 
-function buildOverview(userId, range, campaignId) {
+async function buildOverview(userId, range, campaignId) {
   const db = getDb();
   ensureRollupSchema(db);
 
@@ -396,7 +424,7 @@ function buildOverview(userId, range, campaignId) {
   if (range === "today") {
     since = startOfDayIso(HOUSE_TZ);
     bucket = "15min";
-    ({ cells, errs } = liveCells(db, userId, since, campaignId));
+    ({ cells, errs } = await liveCells(db, userId, since, campaignId));
   } else {
     const days = range === "7d" ? 7 : 30;
     bucket = range === "7d" ? "hour" : "day";
@@ -409,9 +437,9 @@ function buildOverview(userId, range, campaignId) {
       warmRollups(userId, missing);
       warmingInfo = { missing_days: missing.length };
     }
-    const past = rollupCells(db, userId, firstDay, lastRolled, campaignId);
+    const past = await rollupCells(db, userId, firstDay, lastRolled, campaignId);
     // Everything after the last rolled day is live (yesterday-not-yet-settled + today).
-    const live = liveCells(db, userId, `${addDays(lastRolled, 1)}T00:00:00.000Z`, campaignId);
+    const live = await liveCells(db, userId, `${addDays(lastRolled, 1)}T00:00:00.000Z`, campaignId);
     cells = [...past.cells, ...live.cells];
     errs = [...past.errs, ...live.errs];
   }
@@ -597,7 +625,7 @@ router.get("/overview", async (req, res) => {
   const campaignId = req.query.campaign_id || "";
 
   try {
-    const data = cached(`ov:${userId}:${range}:${campaignId}`, () => buildOverview(userId, range, campaignId));
+    const data = await cachedAsync(`ov:${userId}:${range}:${campaignId}`, () => buildOverview(userId, range, campaignId));
 
     // Provider state: answer with the last known verdict immediately and let
     // the (HTTP-bound) evaluation refresh it in the background. Only the very
@@ -695,22 +723,22 @@ function rangeSinceIso(range) {
   return `${addDays(utcDay(new Date()), -days)}T00:00:00.000Z`;
 }
 
-router.get("/appointments", (req, res) => {
+router.get("/appointments", async (req, res) => {
   const userId = req.user.userId;
   const range = ["today", "7d", "30d"].includes(req.query.range) ? req.query.range : "today";
   const campaignId = req.query.campaign_id || "";
-  const db = getDb();
 
-  // Not cached: every query here walks a small index range (≤300 rows), and the
-  // panel must reflect a status change or a fresh booking on the next fetch.
-  const data = (() => {
+  // Not cached: the panel must reflect a status change or a fresh booking on
+  // the next fetch. Runs in the read-pool worker (measured 1.7 s on the main
+  // thread with 30 days of appointments joined to call_records).
+  const data = await (async () => {
     const sinceIso = rangeSinceIso(range);
     // appointments.created_at is SQLite datetime('now') → "YYYY-MM-DD HH:MM:SS" (UTC).
     const sinceSql = sinceIso.slice(0, 19).replace("T", " ");
     const scope = campaignId ? "AND a.campaign_id = ?" : "";
     const params = campaignId ? [userId, sinceSql, campaignId] : [userId, sinceSql];
 
-    const appointments = db.prepare(`
+    const appointments = (await queryAll(`
       SELECT a.id, a.campaign_id, a.lead_id, a.call_id, a.lead_name, a.phone, a.email,
              a.appointment_date, a.appointment_time, a.timezone, a.notes, a.status, a.created_at,
              c.name AS campaign,
@@ -724,7 +752,7 @@ router.get("/appointments", (req, res) => {
       WHERE a.user_id = ? AND a.created_at >= ? ${scope}
       ORDER BY a.created_at DESC
       LIMIT 300
-    `).all(...params).map((r) => ({
+    `, params)).map((r) => ({
       ...r,
       created_at_iso: r.created_at ? new Date(r.created_at.replace(" ", "T") + "Z").toISOString() : null,
       email: r.email || r.lead_email || "",
@@ -736,7 +764,7 @@ router.get("/appointments", (req, res) => {
 
     const hotScope = campaignId ? "AND cr.campaign_id = ?" : "";
     const hotParams = campaignId ? [userId, sinceIso, campaignId] : [userId, sinceIso];
-    const hot_leads = db.prepare(`
+    const hot_leads = (await queryAll(`
       SELECT cr.id, cr.call_id, cr.campaign_id, cr.lead_id, cr.phone, cr.lead_name, cr.outcome, cr.duration_seconds,
              cr.started_at, cr.notes, cr.call_summary, cr.recording_url, cr.recording_path,
              c.name AS campaign, l.email, l.company, l.country
@@ -746,35 +774,40 @@ router.get("/appointments", (req, res) => {
       WHERE cr.user_id = ? AND cr.outcome IN ('callback','interested','transferred') AND cr.started_at >= ? ${hotScope}
       ORDER BY cr.started_at DESC
       LIMIT 100
-    `).all(...hotParams).map((r) => ({ ...r, has_recording: !!(r.recording_url || r.recording_path) }));
+    `, hotParams)).map((r) => ({ ...r, has_recording: !!(r.recording_url || r.recording_path) }));
 
     return { range, since: sinceIso, appointments, by_status, hot_leads };
-  })();
+  })().catch((e) => { logger.error(`[command] appointments failed: ${e.message}`); return null; });
 
+  if (!data) return res.status(500).json({ error: "Appointments temporarily unavailable" });
   res.json(data);
 });
 
 // ---------------------------------------------------------------------------
 // GET /inventory/:campaignId — lead pool state
 // ---------------------------------------------------------------------------
-router.get("/inventory/:campaignId", (req, res) => {
+router.get("/inventory/:campaignId", async (req, res) => {
   const userId = req.user.userId;
   const db = getDb();
   const camp = db.prepare("SELECT id, name FROM campaigns WHERE id = ? AND user_id = ?").get(req.params.campaignId, userId);
   if (!camp) return res.status(404).json({ error: "Campaign not found" });
 
-  const data = cached(`inv:${camp.id}`, () => {
-    const lists = db.prepare("SELECT list_id FROM campaign_lists WHERE campaign_id = ?").all(camp.id).map((r) => r.list_id);
-    if (!lists.length) return { total: 0, by_status: [], by_attempts: [], dnc: 0, callable: 0 };
-    const ph = lists.map(() => "?").join(",");
-    const by_status = db.prepare(`SELECT status, COUNT(*) n FROM leads WHERE list_id IN (${ph}) GROUP BY status ORDER BY n DESC`).all(...lists);
-    const by_attempts = db.prepare(`SELECT attempts, COUNT(*) n FROM leads WHERE list_id IN (${ph}) GROUP BY attempts ORDER BY attempts`).all(...lists);
-    const dnc = db.prepare(`SELECT COUNT(*) n FROM leads WHERE list_id IN (${ph}) AND do_not_call = 1`).get(...lists).n;
-    const total = by_status.reduce((s, r) => s + r.n, 0);
-    return { total, by_status, by_attempts, dnc, callable: getCampaignCallableLeadCount(camp.id) };
-  });
-
-  res.json({ campaign: camp, ...data });
+  try {
+    const data = await cachedAsync(`inv:${camp.id}`, async () => {
+      const lists = db.prepare("SELECT list_id FROM campaign_lists WHERE campaign_id = ?").all(camp.id).map((r) => r.list_id);
+      if (!lists.length) return { total: 0, by_status: [], by_attempts: [], dnc: 0, callable: 0 };
+      const ph = lists.map(() => "?").join(",");
+      const by_status = await queryAll(`SELECT status, COUNT(*) n FROM leads WHERE list_id IN (${ph}) GROUP BY status ORDER BY n DESC`, lists);
+      const by_attempts = await queryAll(`SELECT attempts, COUNT(*) n FROM leads WHERE list_id IN (${ph}) GROUP BY attempts ORDER BY attempts`, lists);
+      const dnc = (await queryAll(`SELECT COUNT(*) n FROM leads WHERE list_id IN (${ph}) AND do_not_call = 1`, lists))[0].n;
+      const total = by_status.reduce((s, r) => s + r.n, 0);
+      return { total, by_status, by_attempts, dnc, callable: getCampaignCallableLeadCount(camp.id) };
+    });
+    res.json({ campaign: camp, ...data });
+  } catch (err) {
+    logger.error(`[command] inventory failed: ${err.message}`);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 export default router;

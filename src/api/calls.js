@@ -5,6 +5,7 @@
 
 import { Router } from "express";
 import { getDb } from "../db/schema.js";
+import { queryAll, queryGet } from "../db/read-pool.js";
 
 const router = Router();
 
@@ -19,22 +20,21 @@ const COUNT_MAX_AGE_MS = 10 * 60_000;
 // Stale-while-revalidate: a known total is returned at once and refreshed
 // after the response when older than the TTL; only a never-seen filter shape
 // counts inline.
-function getCachedCount(key, compute) {
+// `compute` returns a promise — the COUNT runs in the read-pool worker, so
+// even a cold filter shape never blocks the main thread (and live-call audio).
+async function getCachedCount(key, compute) {
   const hit = countCache.get(key);
   const now = Date.now();
   if (hit && now - hit.ts < COUNT_TTL_MS) return hit.value;
   if (hit && now - hit.ts < COUNT_MAX_AGE_MS) {
     if (!hit.refreshing) {
       hit.refreshing = true;
-      setTimeout(() => {
-        try { countCache.set(key, { ts: Date.now(), value: compute() }); }
-        catch { hit.refreshing = false; }
-      }, 0);
+      compute().then((value) => countCache.set(key, { ts: Date.now(), value })).catch(() => { hit.refreshing = false; });
     }
     return hit.value;
   }
-  const value = compute();
-  countCache.set(key, { ts: now, value });
+  const value = await compute();
+  countCache.set(key, { ts: Date.now(), value });
   // Prevent unbounded growth from many distinct filter combinations.
   if (countCache.size > 500) {
     const cutoff = now - COUNT_MAX_AGE_MS;
@@ -49,8 +49,7 @@ function getCachedCount(key, compute) {
 const SEARCH_COUNT_CAP = 2000;
 
 // GET /api/calls - paginated call logs with filters
-router.get("/", (req, res) => {
-  const db = getDb();
+router.get("/", async (req, res) => {
   const userId = req.user.userId;
   const {
     campaign_id,
@@ -135,15 +134,16 @@ router.get("/", (req, res) => {
   // Total count (cached — see countCache above). Keyed by the filter shape so
   // different filters/searches get their own cached total.
   const countKey = `${userId}|${where}|${JSON.stringify(params)}`;
-  const total = getCachedCount(countKey, () => term
-    ? db.prepare(`SELECT COUNT(*) as cnt FROM (SELECT 1 FROM call_records cr WHERE ${where} LIMIT ${SEARCH_COUNT_CAP})`).get(...params).cnt
-    : db.prepare(`SELECT COUNT(*) as cnt FROM call_records cr WHERE ${where}`).get(...params).cnt
+  const totalPromise = getCachedCount(countKey, async () => term
+    ? (await queryGet(`SELECT COUNT(*) as cnt FROM (SELECT 1 FROM call_records cr WHERE ${where} LIMIT ${SEARCH_COUNT_CAP})`, params)).cnt
+    : (await queryGet(`SELECT COUNT(*) as cnt FROM call_records cr WHERE ${where}`, params)).cnt
   );
 
   // Fetch records
   const dataParams = [...params, limit, offset];
-  const records = db
-    .prepare(
+  let total, records;
+  try {
+    [total, records] = await Promise.all([totalPromise, queryAll(
       `SELECT
         cr.id, cr.call_id, cr.phone, cr.lead_name, cr.outcome,
         cr.duration_seconds, cr.ai_duration_seconds, cr.notes,
@@ -160,9 +160,12 @@ router.get("/", (req, res) => {
       LEFT JOIN leads l ON cr.lead_id = l.id
       WHERE ${where}
       ORDER BY ${sortCol} ${sortOrder}
-      LIMIT ? OFFSET ?`
-    )
-    .all(...dataParams);
+      LIMIT ? OFFSET ?`,
+      dataParams,
+    )]);
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
 
   const calls = records.map((r) => ({
     id: r.id,

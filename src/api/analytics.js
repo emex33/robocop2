@@ -6,6 +6,7 @@
 
 import { Router } from "express";
 import { getDb } from "../db/schema.js";
+import { queryAll, queryGet } from "../db/read-pool.js";
 
 const router = Router();
 
@@ -16,6 +17,10 @@ const CACHE_MAX_AGE_MS = 15 * 60_000;
 // Stale-while-revalidate: serve the last result instantly and rebuild it
 // right after responding when it is older than the TTL. Only a cold cache
 // (first request after a restart) computes inline.
+// All SQL runs in the read-pool worker (see db/read-pool.js): a rebuild is ten
+// aggregates over 30 days of call_records and used to freeze the main thread —
+// and with it every live call's audio — for a second or more every 30 s while
+// the dashboard was open.
 function getCached(userId, rebuild) {
   const entry = analyticsCache.get(userId);
   if (!entry) return null;
@@ -23,47 +28,54 @@ function getCached(userId, rebuild) {
   if (age >= CACHE_MAX_AGE_MS) return null;
   if (age >= CACHE_TTL_MS && !entry.refreshing) {
     entry.refreshing = true;
-    setTimeout(() => {
-      try { analyticsCache.set(userId, { ts: Date.now(), data: rebuild() }); }
-      catch { entry.refreshing = false; }
-    }, 0);
+    rebuild().then((data) => analyticsCache.set(userId, { ts: Date.now(), data }))
+      .catch(() => { entry.refreshing = false; });
   }
   return entry.data;
 }
 
 /** Pre-compute the dashboard for a user so the first click after boot is warm. */
 export function warmDashboard(userId) {
-  try { analyticsCache.set(userId, { ts: Date.now(), data: buildDashboard(userId) }); } catch {}
+  buildDashboard(userId).then((data) => analyticsCache.set(userId, { ts: Date.now(), data })).catch(() => {});
 }
 
-router.get("/dashboard", (req, res) => {
+const inflight = new Map();
+router.get("/dashboard", async (req, res) => {
   const userId = req.user.userId;
 
   const cached = getCached(userId, () => buildDashboard(userId));
   if (cached) return res.json(cached);
 
-  const result = buildDashboard(userId);
-  analyticsCache.set(userId, { ts: Date.now(), data: result });
-  res.json(result);
+  try {
+    let p = inflight.get(userId);
+    if (!p) {
+      p = buildDashboard(userId).finally(() => inflight.delete(userId));
+      inflight.set(userId, p);
+    }
+    const result = await p;
+    analyticsCache.set(userId, { ts: Date.now(), data: result });
+    res.json(result);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
-function buildDashboard(userId) {
-  const db = getDb();
+async function buildDashboard(userId) {
 
-  const stats = db.prepare(`
+  const stats = await queryGet(`
     SELECT
       (SELECT COUNT(*) FROM campaigns WHERE user_id = ?) as total_campaigns,
       (SELECT COUNT(*) FROM campaigns WHERE user_id = ? AND status = 'running') as active_campaigns,
       (SELECT COUNT(*) FROM agents WHERE user_id = ?) as total_agents
-  `).get(userId, userId, userId);
+  `, [userId, userId, userId]);
 
-  const leadCount = db.prepare(`
+  const leadCount = await queryGet(`
     SELECT COALESCE(SUM(total_leads), 0) as total_leads FROM lists WHERE user_id = ?
-  `).get(userId);
+  `, [userId]);
   stats.total_leads = leadCount.total_leads;
 
   // Single combined query for today + 7-day stats (avoids two full scans)
-  const todayStats = db.prepare(`
+  const todayStats = await queryGet(`
     SELECT
       COUNT(*) as calls_today,
       SUM(CASE WHEN outcome NOT IN ('error','no_answer') THEN 1 ELSE 0 END) as answered_today,
@@ -77,10 +89,10 @@ function buildDashboard(userId) {
       SUM(call_cost) as cost_today
     FROM call_records
     WHERE user_id = ? AND started_at >= date('now')
-  `).get(userId);
+  `, [userId]);
 
   // Combined 30-day stats + outcome counts + duration buckets in ONE query
-  const combined = db.prepare(`
+  const combined = await queryGet(`
     SELECT
       COUNT(*) as total_calls,
       SUM(CASE WHEN outcome NOT IN ('error','no_answer') THEN 1 ELSE 0 END) as answered_calls,
@@ -108,7 +120,7 @@ function buildDashboard(userId) {
       SUM(CASE WHEN duration_seconds > 120 AND duration_seconds <= 300 THEN 1 ELSE 0 END) as "bucket_2_5m",
       SUM(CASE WHEN duration_seconds > 300 THEN 1 ELSE 0 END) as "bucket_5m_plus"
     FROM call_records WHERE user_id = ? AND started_at >= datetime('now', '-30 days')
-  `).get(userId);
+  `, [userId]);
 
   const callStats = { ...combined };
   delete callStats.bucket_0_10; delete callStats.bucket_11_30; delete callStats.bucket_31_60;
@@ -143,7 +155,7 @@ function buildDashboard(userId) {
     { outcome: "do_not_call", count: combined.total_dnc },
   ].filter(o => o.count > 0).sort((a, b) => b.count - a.count);
 
-  const callsByDay = db.prepare(`
+  const callsByDay = await queryAll(`
     SELECT date(started_at) as day, COUNT(*) as calls,
       SUM(CASE WHEN outcome = 'transferred' THEN 1 ELSE 0 END) as transfers,
       SUM(CASE WHEN outcome = 'appointment_set' THEN 1 ELSE 0 END) as appointments,
@@ -153,23 +165,23 @@ function buildDashboard(userId) {
     FROM call_records
     WHERE user_id = ? AND started_at >= datetime('now', '-30 days')
     GROUP BY day ORDER BY day
-  `).all(userId);
+  `, [userId]);
 
-  const callsByHour = db.prepare(`
+  const callsByHour = await queryAll(`
     SELECT strftime('%H', started_at) as hour, COUNT(*) as calls,
       SUM(CASE WHEN outcome NOT IN ('error','no_answer') THEN 1 ELSE 0 END) as answered
     FROM call_records
     WHERE user_id = ? AND started_at >= date('now')
     GROUP BY hour ORDER BY hour
-  `).all(userId);
+  `, [userId]);
 
-  const errorBreakdown = db.prepare(`
+  const errorBreakdown = await queryAll(`
     SELECT error_message, COUNT(*) as count
     FROM call_records WHERE user_id = ? AND started_at >= datetime('now', '-7 days') AND +outcome = 'error'
     GROUP BY error_message ORDER BY count DESC LIMIT 10
-  `).all(userId);
+  `, [userId]);
 
-  const topCampaigns = db.prepare(`
+  const topCampaigns = await queryAll(`
     SELECT c.name, c.id as campaign_id, COUNT(cr.id) as total_calls,
       SUM(CASE WHEN cr.outcome NOT IN ('error','no_answer') THEN 1 ELSE 0 END) as answered,
       SUM(CASE WHEN cr.outcome = 'transferred' THEN 1 ELSE 0 END) as transfers,
@@ -181,18 +193,18 @@ function buildDashboard(userId) {
     WHERE cr.user_id = ? AND cr.started_at >= datetime('now', '-30 days')
     GROUP BY cr.campaign_id
     ORDER BY total_calls DESC LIMIT 10
-  `).all(userId);
+  `, [userId]);
 
-  const recentCalls = db.prepare(`
+  const recentCalls = await queryAll(`
     SELECT cr.id, cr.call_id, cr.phone, cr.lead_name, cr.outcome, cr.duration_seconds,
       cr.started_at, cr.call_cost, cr.error_message, c.name as campaign_name
     FROM call_records cr
     LEFT JOIN campaigns c ON cr.campaign_id = c.id
     WHERE cr.user_id = ?
     ORDER BY cr.started_at DESC LIMIT 10
-  `).all(userId);
+  `, [userId]);
 
-  const appointmentStats = db.prepare(`
+  const appointmentStats = await queryGet(`
     SELECT
       COUNT(*) as total,
       SUM(CASE WHEN status = 'scheduled' THEN 1 ELSE 0 END) as scheduled,
@@ -200,7 +212,7 @@ function buildDashboard(userId) {
       SUM(CASE WHEN status = 'no_show' THEN 1 ELSE 0 END) as no_show,
       SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) as cancelled
     FROM appointments WHERE user_id = ?
-  `).get(userId);
+  `, [userId]);
 
   const result = {
     stats,

@@ -5,6 +5,7 @@
 import { Router } from "express";
 import { getDb } from "../db/schema.js";
 import { getUserBalance } from "../db/helpers.js";
+import { queryAll, queryGet } from "../db/read-pool.js";
 
 const router = Router();
 
@@ -49,7 +50,7 @@ router.get("/transactions", (req, res) => {
 });
 
 // GET /api/billing/usage — user's usage summary
-router.get("/usage", (req, res) => {
+router.get("/usage", async (req, res) => {
   const userId = req.user.userId;
 
   const cached = usageCache.get(userId);
@@ -58,9 +59,9 @@ router.get("/usage", (req, res) => {
     return res.json(cached.data);
   }
 
-  const db = getDb();
-
-  const totals = db.prepare(`
+  // Three aggregates over 30 days of call_records: run off-thread so the page
+  // load does not freeze live-call audio (measured 0.7 s on the main thread).
+  const totals = await queryGet(`
     SELECT
       COUNT(*) AS total_calls,
       COALESCE(SUM(duration_seconds), 0) AS total_duration,
@@ -69,9 +70,9 @@ router.get("/usage", (req, res) => {
       COALESCE(SUM(voip_cost), 0) AS total_voip_cost,
       COALESCE(SUM(ai_cost), 0) AS total_ai_cost
     FROM call_records WHERE user_id = ? AND started_at >= datetime('now', '-30 days')
-  `).get(userId);
+  `, [userId]);
 
-  const byDay = db.prepare(`
+  const byDay = await queryAll(`
     SELECT
       DATE(started_at) AS day,
       COUNT(*) AS calls,
@@ -82,9 +83,9 @@ router.get("/usage", (req, res) => {
     WHERE user_id = ? AND started_at >= datetime('now', '-30 days')
     GROUP BY DATE(started_at)
     ORDER BY day DESC
-  `).all(userId);
+  `, [userId]);
 
-  const byCampaign = db.prepare(`
+  const byCampaign = await queryAll(`
     SELECT
       c.name AS campaign_name,
       COUNT(*) AS calls,
@@ -97,7 +98,7 @@ router.get("/usage", (req, res) => {
     GROUP BY cr.campaign_id
     ORDER BY cost DESC
     LIMIT 20
-  `).all(userId);
+  `, [userId]);
 
   const balance = getUserBalance(userId);
 

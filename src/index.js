@@ -27,6 +27,8 @@ import { evaluateBalances, describeBalances } from "./billing/balance-guard.js";
 import { startHeartbeat } from "./utils/heartbeat.js";
 import { scheduleNightlyBackup } from "./db/backup.js";
 import { scheduleRecordingRetention } from "./services/recording-retention.js";
+import { startLoopMonitor, noteActivity } from "./utils/loop-monitor.js";
+import { startReadPool } from "./db/read-pool.js";
 
 /**
  * ROBOCOP - AI Robot Caller (Enterprise Edition)
@@ -112,9 +114,15 @@ async function main() {
   // Initialize database
   getDb();
   logger.info("Database initialized");
+  // Worker threads for heavy dashboard reads, so they never block live-call audio.
+  startReadPool();
 
   // Detect and record how long the process was gone (host reboot / Docker down).
   const offlineGap = startHeartbeat();
+
+  // Log every main-thread stall >250 ms with the request/job that caused it —
+  // stalls freeze the RTP send loop of every live call.
+  startLoopMonitor();
 
   // Nightly copy of the (volume-resident) database back to ./data/backups.
   scheduleNightlyBackup();
@@ -162,7 +170,7 @@ async function main() {
   // their window opens and pause them when it closes. Runs every minute, plus
   // once now so any campaign left "running" across a restart is re-evaluated.
   // The same tick enforces provider balances (Deepgram / VoIP).
-  setInterval(() => { tickScheduler().catch(e => logger.error(`Scheduler tick error: ${e.message}`)); }, 60_000);
+  setInterval(() => { noteActivity("job: scheduler tick"); tickScheduler().catch(e => logger.error(`Scheduler tick error: ${e.message}`)); }, 60_000);
   tickScheduler().catch(e => logger.error(`Scheduler tick error: ${e.message}`));
   logger.info("Campaign scheduler started (checks calling windows + provider balances every 60s)");
 
