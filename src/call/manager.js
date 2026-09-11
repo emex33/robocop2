@@ -237,7 +237,9 @@ export class CallManager {
           emit("function_call", { function: "end_call", outcome, notes, wants: extra.wants, callback_time: extra.callbackTime });
           callResult.outcome = outcome;
           callResult.clientWants = extra.wants || (outcome === "callback" ? "callback" : "");
-          callResult.requestedCallback = extra.callbackTime || "";
+          // The model writes "unknown"/"none" when the client gave no time.
+          if (/^(unknown|none|n\/a|not given|-)?$/i.test((extra.callbackTime || "").trim())) extra.callbackTime = "";
+          callResult.requestedCallback = extra.callbackTime;
           // Put the classification in front of the free-text notes so it is
           // visible everywhere notes are shown, even in old UI views.
           const head = [];
