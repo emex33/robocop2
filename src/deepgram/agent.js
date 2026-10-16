@@ -1,5 +1,6 @@
 import WebSocket from "ws";
 import logger from "../utils/logger.js";
+import { getOutboundProxyUrl, isTransientProxyError, newProxyAgent, proxyDescription } from "../net/outbound-proxy.js";
 
 /**
  * Deepgram Voice Agent API client.
@@ -104,7 +105,20 @@ export class DeepgramAgent {
       this._settingsResolve = resolve;
       this._settingsReject = reject;
 
+      const maxAttempts = !isLocal && getOutboundProxyUrl() ? 3 : 1;
+      let attempt = 0;
+
+      const openSocket = () => {
+      attempt += 1;
       const wsOptions = isLocal ? {} : { headers: { authorization: `token ${apiKey}` } };
+      if (!isLocal) {
+        const agent = newProxyAgent();
+        if (agent) {
+          wsOptions.agent = agent;
+          const where = proxyDescription();
+          logger.info(`Deepgram using a new proxy exit via ${where ? where.host : "proxy"}`, { callId: this.callId });
+        }
+      }
       this.ws = new WebSocket(url, wsOptions);
 
       this.ws.on("open", () => {
@@ -125,6 +139,14 @@ export class DeepgramAgent {
       });
 
       this.ws.on("error", (err) => {
+        if (!this.isConnected && attempt < maxAttempts && isTransientProxyError(err)) {
+          logger.warn(`Deepgram proxy exit failed (${err.message}), trying another IP`, { callId: this.callId });
+          const failed = this.ws;
+          failed.removeAllListeners();
+          try { failed.terminate(); } catch { /* already closed */ }
+          openSocket();
+          return;
+        }
         logger.error(`Deepgram WebSocket error: ${err.message}`, { callId: this.callId });
         if (this.onError) this.onError(err);
         if (this._settingsReject) {
@@ -164,6 +186,8 @@ export class DeepgramAgent {
         }
         if (this.onClose) this.onClose(code, reason);
       });
+      };
+      openSocket();
     });
   }
 

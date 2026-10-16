@@ -4,6 +4,94 @@ import { api } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
 
+function ProxySettings() {
+  const [loading, setLoading] = useState(true);
+  const [enabled, setEnabled] = useState(false);
+  const [configured, setConfigured] = useState(false);
+  const [host, setHost] = useState('');
+  const [url, setUrl] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [testing, setTesting] = useState(false);
+  const [msg, setMsg] = useState('');
+  const [ips, setIps] = useState([]);
+
+  useEffect(() => {
+    api.getProxySettings().then(data => {
+      setEnabled(!!data.enabled);
+      setConfigured(!!data.configured);
+      setHost(data.host || '');
+    }).catch(() => {}).finally(() => setLoading(false));
+  }, []);
+
+  const apply = (data) => {
+    setEnabled(!!data.enabled);
+    setConfigured(!!data.configured);
+    setHost(data.host || '');
+    setUrl('');
+  };
+
+  const handleSave = async () => {
+    setSaving(true); setMsg(''); setIps([]);
+    try {
+      apply(await api.updateProxySettings({ enabled, url }));
+      setMsg('Proxy saved');
+    } catch (e) { setMsg(e.message); }
+    setSaving(false);
+  };
+
+  const handleTest = async () => {
+    setTesting(true); setMsg(''); setIps([]);
+    try {
+      const res = await api.testProxy();
+      setIps(res.ips || []);
+      setMsg(res.success ? 'Each request left from a different IP' : (res.error || 'Test failed'));
+    } catch (e) { setMsg(e.message); }
+    setTesting(false);
+  };
+
+  if (loading) return null;
+
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 p-6 mb-8">
+      <div className="flex items-center justify-between mb-1">
+        <h2 className="text-lg font-semibold text-gray-900">Rotating proxy</h2>
+        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${enabled && configured ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+          {enabled && configured ? 'On' : 'Off'}
+        </span>
+      </div>
+      <p className="text-sm text-gray-500 mb-4">
+        Each Deepgram connection opens through the proxy, so each call gets a new exit IP. The phone call itself stays on the SIP trunk. This proxy cannot carry SIP or call audio.
+      </p>
+      <label className="flex items-center gap-2 text-sm text-gray-700 mb-4">
+        <input type="checkbox" checked={enabled} onChange={(e) => setEnabled(e.target.checked)} />
+        Send Deepgram through the proxy
+      </label>
+      <label className="block text-xs font-medium text-gray-600 mb-1">HTTP proxy URL</label>
+      <input
+        type="password"
+        value={url}
+        onChange={(e) => setUrl(e.target.value)}
+        placeholder={configured ? `Saved (${host}). Paste a new URL to replace it.` : 'http://user:pass@host:port'}
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500 mb-3"
+      />
+      <div className="flex items-center gap-3">
+        <button onClick={handleSave} disabled={saving}
+          className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50">
+          {saving ? 'Saving...' : 'Save proxy'}
+        </button>
+        <button onClick={handleTest} disabled={testing || !configured}
+          className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50">
+          {testing ? 'Testing...' : 'Test rotation'}
+        </button>
+        {msg && <span className="text-sm text-gray-600">{msg}</span>}
+      </div>
+      {ips.length > 0 && (
+        <p className="text-xs text-gray-500 mt-3">Exit IPs: {ips.join('  →  ')}</p>
+      )}
+    </div>
+  );
+}
+
 function DeepgramSettings() {
   const [loading, setLoading] = useState(true);
   const [keys, setKeys] = useState([]);
@@ -285,7 +373,7 @@ function GoogleSheetsSettings() {
 
 const EMPTY_TRUNK = {
   name: '', mode: 'trunk', username: '', password: '', server: '', port: 5060,
-  transport: 'udp', callerId: '', trunkUsername: '', trunkHost: '', trunkPort: 5060,
+  transport: 'udp', callerId: '', trunkUsername: '', trunkAuth: 'ip', trunkHost: '', trunkPort: 5060,
   sourceIp: '', transferUri: '',
 };
 
@@ -314,7 +402,7 @@ function TrunkForm({ trunk, onSave, onCancel, saving }) {
           <button type="button" onClick={() => setForm({ ...form, mode: 'trunk' })}
             className={`px-4 py-3 rounded-lg border-2 text-left transition ${form.mode === 'trunk' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'}`}>
             <p className="text-sm font-semibold text-gray-800">SIP Trunk</p>
-            <p className="text-xs text-gray-500 mt-0.5">IP-based auth, no REGISTER</p>
+            <p className="text-xs text-gray-500 mt-0.5">IP whitelist, or username and password</p>
           </button>
         </div>
       </div>
@@ -339,24 +427,46 @@ function TrunkForm({ trunk, onSave, onCancel, saving }) {
       ) : (
         <div className="space-y-4">
           <div>
-            <label className={labelCls}>Trunk Username (From header)</label>
-            <input type="text" value={form.trunkUsername} onChange={set('trunkUsername')} className={inputCls} placeholder="Optional — leave empty for pure IP auth" />
+            <label className={labelCls}>Trunk authentication</label>
+            <div className="grid grid-cols-2 gap-3">
+              <button type="button" onClick={() => setForm({ ...form, trunkAuth: 'ip' })}
+                className={`px-4 py-3 rounded-lg border-2 text-left transition ${form.trunkAuth !== 'credentials' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                <p className="text-sm font-semibold text-gray-800">IP auth</p>
+                <p className="text-xs text-gray-500 mt-0.5">The trunk allows your source IP. No password is sent.</p>
+              </button>
+              <button type="button" onClick={() => setForm({ ...form, trunkAuth: 'credentials' })}
+                className={`px-4 py-3 rounded-lg border-2 text-left transition ${form.trunkAuth === 'credentials' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                <p className="text-sm font-semibold text-gray-800">Username and password</p>
+                <p className="text-xs text-gray-500 mt-0.5">The trunk challenges the call and Robocop answers with these credentials.</p>
+              </button>
+            </div>
           </div>
-          <div className="grid grid-cols-3 gap-4">
+          <div className={form.trunkAuth === 'credentials' ? 'grid grid-cols-2 gap-4' : 'grid grid-cols-3 gap-4'}>
             <div><label className={labelCls}>Trunk Host / IP</label><input type="text" value={form.trunkHost} onChange={set('trunkHost')} className={inputCls} placeholder="193.111.199.30" /></div>
             <div><label className={labelCls}>Trunk Port</label><input type="text" value={form.trunkPort} onChange={set('trunkPort')} className={inputCls} placeholder="5060" /></div>
-            <div><label className={labelCls}>Source IP (your server)</label><input type="text" value={form.sourceIp} onChange={set('sourceIp')} className={inputCls} placeholder="193.23.126.238" /></div>
+            {form.trunkAuth !== 'credentials' && (
+              <div><label className={labelCls}>Source IP (your server)</label><input type="text" value={form.sourceIp} onChange={set('sourceIp')} className={inputCls} placeholder="193.23.126.238" /></div>
+            )}
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div><label className={labelCls}>Username (optional)</label><input type="text" value={form.username} onChange={set('username')} className={inputCls} placeholder="Leave empty for IP auth" /></div>
-            <div><label className={labelCls}>Password (optional)</label><input type="password" value={form.password} onChange={set('password')} className={inputCls} placeholder="Leave empty for IP auth" /></div>
-          </div>
+          {form.trunkAuth === 'credentials' ? (
+            <div className="grid grid-cols-2 gap-4">
+              <div><label className={labelCls}>Username</label><input type="text" value={form.username} onChange={set('username')} className={inputCls} placeholder="Trunk username" /></div>
+              <div><label className={labelCls}>Password</label><input type="password" value={form.password} onChange={set('password')} className={inputCls} placeholder="Trunk password" /></div>
+            </div>
+          ) : (
+            <div>
+              <label className={labelCls}>Trunk username (From header)</label>
+              <input type="text" value={form.trunkUsername} onChange={set('trunkUsername')} className={inputCls} placeholder="Optional tech prefix" />
+            </div>
+          )}
           <div>
             <label className={labelCls}>Caller ID (optional)</label>
-            <input type="text" value={form.callerId} onChange={set('callerId')} className={inputCls} placeholder="+34600000000 — used in From header if no trunk username" />
+            <input type="text" value={form.callerId} onChange={set('callerId')} className={inputCls} placeholder="+34600000000" />
           </div>
           <p className="text-xs text-indigo-600 bg-indigo-50 px-3 py-2 rounded-lg">
-            INVITEs sent directly to the trunk IP. No REGISTER. Your Source IP must be whitelisted.
+            {form.trunkAuth === 'credentials'
+              ? 'Calls are sent to the trunk IP and signed with the username and password. No REGISTER.'
+              : 'Calls are sent to the trunk IP with no password. The source IP has to be allowed by the trunk.'}
           </p>
         </div>
       )}
@@ -367,7 +477,7 @@ function TrunkForm({ trunk, onSave, onCancel, saving }) {
       </div>
 
       <div className="flex items-center gap-3 pt-2">
-        <button onClick={() => onSave(form)} disabled={saving || !form.name.trim()}
+        <button onClick={() => onSave(form)} disabled={saving || !form.name.trim() || (form.mode === 'trunk' && form.trunkAuth === 'credentials' && (!form.username.trim() || !form.password))}
           className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition disabled:opacity-50">
           {saving ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           {trunk?.id ? 'Update Trunk' : 'Create Trunk'}
@@ -477,6 +587,7 @@ export default function Settings() {
       </div>
 
       <DeepgramSettings />
+      <ProxySettings />
 
       {message && <p className="text-sm text-green-600 mb-4">{message}</p>}
 
@@ -526,12 +637,12 @@ export default function Settings() {
                         </span>
                       )}
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${trunk.mode === 'trunk' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
-                        {trunk.mode === 'trunk' ? 'IP Trunk' : 'SIP Account'}
+                        {trunk.mode === 'trunk' ? (trunk.trunkAuth === 'credentials' ? 'Username + password' : 'IP auth') : 'SIP Account'}
                       </span>
                     </div>
                     <p className="text-xs text-gray-500 mt-0.5">
                       {trunk.mode === 'trunk'
-                        ? `${trunk.trunkHost}:${trunk.trunkPort} → Source: ${trunk.sourceIp || '(not set)'}`
+                        ? `${trunk.trunkHost}:${trunk.trunkPort} → ${trunk.trunkAuth === 'credentials' ? `user ${trunk.username || trunk.trunkUsername || '(not set)'}` : `Source: ${trunk.sourceIp || '(not set)'}`}`
                         : `${trunk.username}@${trunk.server}:${trunk.port}`
                       }
                     </p>

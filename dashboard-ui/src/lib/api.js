@@ -122,6 +122,9 @@ export const api = {
   deleteSipTrunk: (id) => request(`/settings/sip/${id}`, { method: 'DELETE' }),
   setDefaultSipTrunk: (id) => request(`/settings/sip/${id}/default`, { method: 'POST' }),
   testSipTrunk: (id) => request(`/settings/sip/${id}/test`, { method: 'POST' }),
+  getProxySettings: () => request('/settings/proxy'),
+  updateProxySettings: (data) => request('/settings/proxy', { method: 'PUT', body: JSON.stringify(data) }),
+  testProxy: () => request('/settings/proxy/test', { method: 'POST' }),
 
   // Legacy aliases
   getSipSettings: () => request('/settings/sip'),

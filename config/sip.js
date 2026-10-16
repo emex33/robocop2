@@ -11,12 +11,19 @@ export function getSipConfig(dbSettings) {
   }
 
   const mode = dbSettings.mode || "account";
+  const trunkAuth = dbSettings.trunk_auth === "credentials" ? "credentials" : "ip";
+  const useCreds = mode === "trunk" && trunkAuth === "credentials";
+  const trunkFrom = useCreds
+    ? (dbSettings.username || dbSettings.trunk_username || "")
+    : (dbSettings.trunk_username || "");
 
   return {
     mode,
-    // Account mode uses username, trunk mode uses trunk_username
-    username: mode === "trunk" ? (dbSettings.trunk_username || "") : (dbSettings.username || ""),
-    password: dbSettings.password || "",
+    trunkAuth: mode === "trunk" ? trunkAuth : "credentials",
+    username: mode === "trunk" ? trunkFrom : (dbSettings.username || ""),
+    authUsername: useCreds ? (dbSettings.username || dbSettings.trunk_username || "") : (dbSettings.username || ""),
+    // IP trunks must not send a password, even if one is still stored.
+    password: (mode === "account" || useCreds) ? (dbSettings.password || "") : "",
     server: dbSettings.server || "",
     port: dbSettings.port || 12835,
     transport: dbSettings.transport || "udp",

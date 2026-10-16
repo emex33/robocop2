@@ -6,6 +6,7 @@
 import { Router } from "express";
 import { getDb, generateId } from "../db/schema.js";
 import WebSocket from "ws";
+import { newProxyAgent } from "../net/outbound-proxy.js";
 
 const router = Router();
 
@@ -283,7 +284,10 @@ router.post("/test", async (req, res) => {
   try {
     const result = await new Promise((resolve, reject) => {
       const url = process.env.DEEPGRAM_VOICE_AGENT_URL || "wss://agent.deepgram.com/v1/agent/converse";
-      const ws = new WebSocket(url, { headers: { authorization: `token ${apiKey}` } });
+      const wsOptions = { headers: { authorization: `token ${apiKey}` } };
+      const agent = newProxyAgent();
+      if (agent) wsOptions.agent = agent;
+      const ws = new WebSocket(url, wsOptions);
 
       let welcomed = false;
       let settingsApplied = false;

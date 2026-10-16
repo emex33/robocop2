@@ -2,9 +2,11 @@ import { Router } from "express";
 import dgram from "dgram";
 import dns from "dns";
 import { getDb, generateId } from "../db/schema.js";
+import { getPlatformSetting, setPlatformSetting } from "../db/helpers.js";
 import { getSipConfig } from "../../config/sip.js";
 import { deepgramKeyManager } from "../deepgram/key-manager.js";
 import { testDeepgramKey } from "../billing/balance-guard.js";
+import { probeProxyRotation } from "../net/outbound-proxy.js";
 
 const router = Router();
 
@@ -38,6 +40,7 @@ function maskTrunk(row) {
     transport: row.transport || "udp",
     callerId: row.caller_id || "",
     trunkUsername: row.trunk_username || "",
+    trunkAuth: row.trunk_auth === "credentials" ? "credentials" : "ip",
     trunkHost: row.trunk_host || "",
     trunkPort: row.trunk_port || 5060,
     sourceIp: row.source_ip || "",
@@ -65,7 +68,7 @@ router.get("/sip/:trunkId", (req, res) => {
 router.post("/sip", (req, res) => {
   const db = getDb();
   const userId = req.user.userId;
-  const { name, mode, username, password, server, port, transport, callerId, trunkUsername, trunkHost, trunkPort, sourceIp, transferUri, is_default } = req.body;
+  const { name, mode, username, password, server, port, transport, callerId, trunkUsername, trunkAuth, trunkHost, trunkPort, sourceIp, transferUri, is_default } = req.body;
 
   if (!name) return res.status(400).json({ error: "Trunk name is required" });
   if (sourceIp && !isValidIp(sourceIp)) return res.status(400).json({ error: `Invalid Source IP: "${sourceIp}"` });
@@ -80,9 +83,9 @@ router.post("/sip", (req, res) => {
   }
 
   db.prepare(`
-    INSERT INTO sip_settings (id, user_id, name, is_default, mode, username, password, server, port, transport, caller_id, trunk_username, trunk_host, trunk_port, source_ip, transfer_uri)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `).run(id, userId, name, makeDefault, mode || "trunk", username || "", password || "", server || "", parseInt(port || "5060"), transport || "udp", callerId || "", trunkUsername || "", trunkHost || "", parseInt(trunkPort || "5060"), sourceIp || "", transferUri || "");
+    INSERT INTO sip_settings (id, user_id, name, is_default, mode, username, password, server, port, transport, caller_id, trunk_username, trunk_auth, trunk_host, trunk_port, source_ip, transfer_uri)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(id, userId, name, makeDefault, mode || "trunk", username || "", password || "", server || "", parseInt(port || "5060"), transport || "udp", callerId || "", trunkUsername || "", trunkAuth === "credentials" ? "credentials" : "ip", trunkHost || "", parseInt(trunkPort || "5060"), sourceIp || "", transferUri || "");
 
   const row = db.prepare("SELECT * FROM sip_settings WHERE id = ?").get(id);
   res.status(201).json(maskTrunk(row));
@@ -95,7 +98,7 @@ router.put("/sip/:trunkId", (req, res) => {
   const existing = db.prepare("SELECT * FROM sip_settings WHERE id = ? AND user_id = ?").get(req.params.trunkId, userId);
   if (!existing) return res.status(404).json({ error: "Trunk not found" });
 
-  const { name, mode, username, password, server, port, transport, callerId, trunkUsername, trunkHost, trunkPort, sourceIp, transferUri, is_default } = req.body;
+  const { name, mode, username, password, server, port, transport, callerId, trunkUsername, trunkAuth, trunkHost, trunkPort, sourceIp, transferUri, is_default } = req.body;
 
   if (sourceIp && !isValidIp(sourceIp)) return res.status(400).json({ error: `Invalid Source IP: "${sourceIp}"` });
   if (trunkHost && !isValidIp(trunkHost) && !/^[a-zA-Z0-9.-]+$/.test(trunkHost)) return res.status(400).json({ error: `Invalid Trunk Host: "${trunkHost}"` });
@@ -112,6 +115,7 @@ router.put("/sip/:trunkId", (req, res) => {
   if (transport !== undefined) { sets.push("transport = ?"); vals.push(transport); }
   if (callerId !== undefined) { sets.push("caller_id = ?"); vals.push(callerId); }
   if (trunkUsername !== undefined) { sets.push("trunk_username = ?"); vals.push(trunkUsername); }
+  if (trunkAuth !== undefined) { sets.push("trunk_auth = ?"); vals.push(trunkAuth === "credentials" ? "credentials" : "ip"); }
   if (trunkHost !== undefined) { sets.push("trunk_host = ?"); vals.push(trunkHost); }
   if (trunkPort !== undefined) { sets.push("trunk_port = ?"); vals.push(parseInt(trunkPort)); }
   if (sourceIp !== undefined) { sets.push("source_ip = ?"); vals.push(sourceIp); }
@@ -185,9 +189,17 @@ router.post("/sip/:trunkId/test", async (req, res) => {
     if (!sip.server) { log("error", "Server is required"); hasErrors = true; }
   } else {
     log("info", `Trunk Host: ${sip.trunkHost}:${sip.trunkPort}`);
-    log("info", `Source IP: ${sip.sourceIp || "(NOT SET)"}`);
+    const useCreds = sip.trunkAuth === "credentials";
+    log("info", `Auth: ${useCreds ? "username and password" : "IP"}`);
     if (!sip.trunkHost) { log("error", "Trunk Host is required"); hasErrors = true; }
-    if (!sip.sourceIp) { log("error", "Source IP is required for trunk mode"); hasErrors = true; }
+    if (useCreds) {
+      log("info", `Username: ${sip.username || "(NOT SET)"}`);
+      if (!sip.username) { log("error", "Username is required"); hasErrors = true; }
+      if (!sip.password) { log("error", "Password is required"); hasErrors = true; }
+    } else {
+      log("info", `Source IP: ${sip.sourceIp || "(NOT SET)"}`);
+      if (!sip.sourceIp) { log("error", "Source IP is required for IP authentication"); hasErrors = true; }
+    }
   }
 
   if (hasErrors) return res.json({ success: false, logs });
@@ -265,6 +277,63 @@ router.post("/sip/test", async (req, res) => {
   log("info", `Mode: ${sip.mode}, Host: ${sip.mode === "trunk" ? sip.trunkHost : sip.server}`);
   log("success", "Use the trunk-specific test button instead.");
   return res.json({ success: true, logs });
+});
+
+function requireSuperAdmin(req, res) {
+  if (!req.user?.isSuperAdmin) {
+    res.status(403).json({ error: "Super admin only" });
+    return false;
+  }
+  return true;
+}
+
+function proxyStatus() {
+  const raw = getPlatformSetting("proxy_url", "").trim();
+  let host = "";
+  try { if (raw) host = new URL(raw).host; } catch { /* stored value is not a URL */ }
+  return {
+    enabled: getPlatformSetting("proxy_enabled", "off") === "on",
+    configured: Boolean(raw),
+    host,
+  };
+}
+
+// GET /api/settings/proxy — rotating proxy used for Deepgram
+router.get("/proxy", (req, res) => {
+  if (!requireSuperAdmin(req, res)) return;
+  res.json(proxyStatus());
+});
+
+// PUT /api/settings/proxy — { enabled, url }. An empty url keeps the saved one.
+router.put("/proxy", (req, res) => {
+  if (!requireSuperAdmin(req, res)) return;
+  const { enabled, url } = req.body || {};
+  if (url !== undefined && String(url).trim() && String(url).trim() !== "********") {
+    let parsed;
+    try { parsed = new URL(String(url).trim()); } catch { return res.status(400).json({ error: "Proxy URL is not valid" }); }
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+      return res.status(400).json({ error: "Use the HTTP proxy URL (http://user:pass@host:port)" });
+    }
+    if (!parsed.hostname) return res.status(400).json({ error: "Proxy URL is missing a host" });
+    setPlatformSetting("proxy_url", parsed.toString());
+  }
+  if (enabled !== undefined) setPlatformSetting("proxy_enabled", enabled ? "on" : "off");
+  res.json(proxyStatus());
+});
+
+// POST /api/settings/proxy/test — two requests, two exit IPs when rotation works
+router.post("/proxy/test", async (req, res) => {
+  if (!requireSuperAdmin(req, res)) return;
+  try {
+    const result = await probeProxyRotation();
+    res.json({
+      success: result.rotated,
+      ips: result.ips,
+      error: result.rotated ? "" : "The proxy answered, but both requests came from the same IP",
+    });
+  } catch (err) {
+    res.json({ success: false, ips: [], error: err.message });
+  }
 });
 
 // ===== Deepgram API Keys (multi-key pool with 402 auto-rotation) =====

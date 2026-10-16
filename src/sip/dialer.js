@@ -1,8 +1,52 @@
 import Srf from "drachtio-srf";
+import net from "net";
 import os from "os";
 import logger from "../utils/logger.js";
 import { getDrachtioConfig, getSipConfig } from "../../config/sip.js";
 import { reportTrunkSuccess, reportTrunkFailure } from "../billing/balance-guard.js";
+
+function isPublicIpv4(ip) {
+  if (!ip || !/^\d{1,3}(\.\d{1,3}){3}$/.test(ip.trim())) return false;
+  const [a, b] = ip.trim().split(".").map(Number);
+  if (a === 10 || a === 127 || a === 0) return false;
+  if (a === 192 && b === 168) return false;
+  if (a === 169 && b === 254) return false;
+  if (a === 172 && b >= 16 && b <= 31) return false;
+  return true;
+}
+
+const sipLogBurst = { code: 0, count: 0, start: 0 };
+function logSipFailure(phoneNumber, err) {
+  const status = Number(err.status) || 0;
+  const line = `Failed to call ${phoneNumber}: ${err.status || err.message}${err.reason ? ` (${err.reason})` : ""}`;
+  if (status !== 486 && status !== 503) {
+    logger.error(line);
+    return;
+  }
+  const now = Date.now();
+  if (sipLogBurst.code !== status || now - sipLogBurst.start > 60_000) {
+    sipLogBurst.code = status;
+    sipLogBurst.count = 0;
+    sipLogBurst.start = now;
+  }
+  sipLogBurst.count++;
+  if (sipLogBurst.count === 1 || sipLogBurst.count === 8) logger.error(line);
+}
+
+function canReach(host, port, timeoutMs = 1000) {
+  return new Promise((resolve) => {
+    const socket = net.connect({ host, port });
+    const done = (ok) => {
+      socket.removeAllListeners();
+      socket.destroy();
+      resolve(ok);
+    };
+    socket.setTimeout(timeoutMs);
+    socket.once("connect", () => done(true));
+    socket.once("error", () => done(false));
+    socket.once("timeout", () => done(false));
+  });
+}
 
 /**
  * SIP Dialer - connects to drachtio-server and manages outbound SIP calls.
@@ -25,17 +69,22 @@ export class SipDialer {
   /**
    * Connect to drachtio-server.
    */
-  async connect() {
+  async connect({ timeoutMs = 5000 } = {}) {
     const config = getDrachtioConfig();
+    const reachable = await canReach(config.host, config.port, Math.min(timeoutMs, 1500));
+    if (!reachable) {
+      throw new Error(`drachtio not reachable at ${config.host}:${config.port}`);
+    }
 
     return new Promise((resolve, reject) => {
-      this.srf.connect({
-        host: config.host,
-        port: config.port,
-        secret: config.secret,
-      });
+      let settled = false;
 
-      this.srf.on("connect", (err, hostPort) => {
+      const onConnect = (err, hostPort) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        this.srf.removeListener("connect", onConnect);
+        this.srf.removeListener("error", onError);
         if (err) {
           logger.error(`Failed to connect to drachtio: ${err.message}`);
           return reject(err);
@@ -43,11 +92,31 @@ export class SipDialer {
         logger.info(`Connected to drachtio at ${hostPort}`);
         this.isConnected = true;
         resolve();
-      });
+      };
 
-      this.srf.on("error", (err) => {
-        logger.error(`Drachtio connection error: ${err.message}`);
+      const onError = (err) => {
         this.isConnected = false;
+        if (settled) return;
+        logger.error(`Drachtio connection error: ${err.message}`);
+      };
+
+      const timer = setTimeout(() => {
+        if (settled) return;
+        settled = true;
+        this.srf.removeListener("connect", onConnect);
+        this.srf.removeListener("error", onError);
+        try { this.srf.disconnect(); } catch { /* ignore */ }
+        reject(new Error(`Timed out connecting to drachtio at ${config.host}:${config.port}`));
+      }, timeoutMs);
+
+      this.srf.on("connect", onConnect);
+      this.srf.on("error", onError);
+
+      this.srf.connect({
+        host: config.host,
+        port: config.port,
+        secret: config.secret,
+        reconnect: { maxAttempts: 1 },
       });
     });
   }
@@ -61,7 +130,9 @@ export class SipDialer {
     const sip = sipConfig || getSipConfig();
 
     if (sip.mode === "trunk") {
-      logger.info(`SIP trunk mode — skipping REGISTER (IP auth via ${sip.trunkHost}:${sip.trunkPort})`);
+      logger.info(sip.trunkAuth === "credentials"
+        ? `SIP trunk mode — credentials auth via ${sip.trunkHost}:${sip.trunkPort} (no REGISTER)`
+        : `SIP trunk mode — IP auth via ${sip.trunkHost}:${sip.trunkPort} (no REGISTER)`);
       return;
     }
 
@@ -104,7 +175,15 @@ export class SipDialer {
    * @param {object} sdpOpts - SDP options from rtpengine offer
    * @returns {object} { dialog, sdpAnswer }
    */
+  async ensureConnected() {
+    if (this.isConnected) return;
+    await this.connect();
+  }
+
   async makeCall(phoneNumber, localSdp, sipConfig) {
+    if (!this.isConnected) {
+      await this.ensureConnected();
+    }
     const sip = sipConfig || getSipConfig();
 
     if (sip.mode === "trunk") {
@@ -158,7 +237,7 @@ export class SipDialer {
           await new Promise(r => setTimeout(r, backoffMs));
           continue;
         }
-        logger.error(`Failed to call ${phoneNumber}: ${err.status || err.message}${err.reason ? ` (${err.reason})` : ""}`);
+        logSipFailure(phoneNumber, err);
         // SipError.message is always "Sip non-success response: <code>". The
         // carrier's own explanation — including "low balance" — lives on
         // err.reason and sometimes in the response body.
@@ -184,7 +263,7 @@ export class SipDialer {
     const destPort = sip.trunkPort;
     const uri = `sip:${phoneNumber}@${destHost}:${destPort}`;
     const fromUser = sip.username || sip.callerId || phoneNumber;
-    const srcIp = sip.sourceIp || this._getLocalIp();
+    const srcIp = this._publicSourceIp(sip);
     const srcPort = 5060;
 
     const uacOptions = {
@@ -197,9 +276,11 @@ export class SipDialer {
       },
     };
 
-    if (sip.password && sip.password.trim() !== "") {
+    const authUser = (sip.authUsername || sip.username || "").trim();
+    const hasPassword = Boolean(sip.password && sip.password.trim() !== "");
+    if (hasPassword && authUser) {
       uacOptions.auth = {
-        username: sip.username,
+        username: authUser,
         password: sip.password,
       };
     }
@@ -212,7 +293,9 @@ export class SipDialer {
         logger.info(`[trunk] INVITE ${uri}`);
         logger.info(`[trunk] From: "${fromUser}" <sip:${fromUser}@${srcIp}>`);
         logger.info(`[trunk] To: <sip:${phoneNumber}@${destHost}:${destPort}>`);
-        logger.info(sip.password && sip.password.trim() !== "" ? `[trunk] Auth enabled for user: ${sip.username}` : `[trunk] IP-based auth (no password)`);
+        logger.info(hasPassword && authUser
+          ? `[trunk] Credentials auth as ${authUser}`
+          : `[trunk] IP auth (no username/password)`);
       } else {
         logger.info(`[trunk] INVITE retry ${attempt}/${MAX_RETRIES} for ${phoneNumber}`);
       }
@@ -236,7 +319,7 @@ export class SipDialer {
           await new Promise(r => setTimeout(r, backoffMs));
           continue;
         }
-        logger.error(`Failed to call ${phoneNumber}: ${err.status || err.message}${err.reason ? ` (${err.reason})` : ""}`);
+        logSipFailure(phoneNumber, err);
         // SipError.message is always "Sip non-success response: <code>". The
         // carrier's own explanation — including "low balance" — lives on
         // err.reason and sometimes in the response body.
@@ -294,6 +377,18 @@ export class SipDialer {
     } catch (err) {
       logger.error(`Hangup error: ${err.message}`);
     }
+  }
+
+  /**
+   * Address the trunk is allowed to see. A container NIC (172.18.x, 192.168.x)
+   * is not that address, and MMD answers 401 IP blocked when From uses it.
+   */
+  _publicSourceIp(sip) {
+    const candidates = [sip?.sourceIp, process.env.EXTERNAL_RTP_IP, process.env.SIP_EXTERNAL_IP, this._getLocalIp()];
+    for (const ip of candidates) {
+      if (isPublicIpv4(ip)) return ip.trim();
+    }
+    return (process.env.EXTERNAL_RTP_IP || "").trim() || this._getLocalIp();
   }
 
   /**

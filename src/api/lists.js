@@ -392,8 +392,12 @@ router.delete("/:listId/leads/:leadId", (req, res) => {
   res.json({ message: "Lead deleted" });
 });
 
-// Delete a list and all its leads (batched + deferred so the HTTP response
-// can flush and other requests aren't blocked for the entire delete).
+// Delete a list and all its leads.
+//
+// Each lead row has ON DELETE SET NULL into call_records. Doing that per row
+// scanned the whole call history and froze the dashboard. Clear those links
+// once, then delete the leads with foreign keys off for that batch only.
+// The event loop is free between batches, so the page keeps answering.
 router.delete("/:id", (req, res) => {
   const db = getDb();
   const listId = req.params.id;
@@ -405,7 +409,15 @@ router.delete("/:id", (req, res) => {
 
   res.json({ message: "List deletion started" });
 
-  const BATCH = 1000;
+  const BATCH = 2000;
+  const detachCalls = db.prepare(`
+    UPDATE call_records SET lead_id = NULL
+    WHERE lead_id IN (SELECT id FROM leads WHERE list_id = ?)
+  `);
+  const detachAppts = db.prepare(`
+    UPDATE appointments SET lead_id = NULL
+    WHERE lead_id IN (SELECT id FROM leads WHERE list_id = ?)
+  `);
   const deleteLeadBatch = db.prepare(
     "DELETE FROM leads WHERE rowid IN (SELECT rowid FROM leads WHERE list_id = ? LIMIT ?)"
   );
@@ -413,25 +425,35 @@ router.delete("/:id", (req, res) => {
   const finishListDelete = () => {
     db.prepare("DELETE FROM campaign_lists WHERE list_id = ?").run(listId);
     db.prepare("DELETE FROM lists WHERE id = ?").run(listId);
+    listCountCache.delete(listId);
     delete global._csvCache?.[listId];
   };
 
-  const loop = () => {
+  const deleteLeads = () => {
+    let deleted = 0;
     try {
-      const deleted = deleteLeadBatch.run(listId, BATCH).changes;
-      if (deleted >= BATCH) {
-        setTimeout(loop, 25);
-      } else {
-        finishListDelete();
-      }
+      db.pragma("foreign_keys = OFF");
+      deleted = deleteLeadBatch.run(listId, BATCH).changes;
     } catch (err) {
       console.error(`List delete failed for ${listId}:`, err.message);
+      return;
+    } finally {
+      try { db.pragma("foreign_keys = ON"); } catch { /* keep the connection usable */ }
     }
+    if (deleted >= BATCH) setTimeout(deleteLeads, 20);
+    else finishListDelete();
   };
 
-  // Yield before the first batch so Express can send the response and the
-  // dashboard stays responsive while large lists are removed in the background.
-  setImmediate(loop);
+  setImmediate(() => {
+    try {
+      detachCalls.run(listId);
+      detachAppts.run(listId);
+    } catch (err) {
+      console.error(`List detach failed for ${listId}:`, err.message);
+      return;
+    }
+    deleteLeads();
+  });
 });
 
 // Update list info

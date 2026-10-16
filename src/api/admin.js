@@ -264,12 +264,19 @@ router.post("/users/:id/sip/test", async (req, res) => {
     if (!sip.server) { log("error", "Server is required"); hasErrors = true; }
   } else {
     log("info", `Trunk Host: ${sip.trunkHost}:${sip.trunkPort}`);
-    log("info", `Username: ${sip.username}`);
-    log("info", `Source IP: ${sip.sourceIp || "(NOT SET)"}`);
-    if (!sip.username) { log("error", "Username is required"); hasErrors = true; }
+    const useCreds = sip.trunkAuth === "credentials";
+    log("info", `Auth: ${useCreds ? "username and password" : "IP"}`);
     if (!sip.trunkHost) { log("error", "Trunk Host is required"); hasErrors = true; }
-    if (!sip.sourceIp) { log("error", "Source IP is required for trunk mode"); hasErrors = true; }
-    if (sip.sourceIp && !isValidIp(sip.sourceIp)) { log("error", `Source IP "${sip.sourceIp}" is invalid`); hasErrors = true; }
+    if (useCreds) {
+      log("info", `Username: ${sip.username || "(NOT SET)"}`);
+      if (!sip.username) { log("error", "Username is required"); hasErrors = true; }
+      if (!sip.password) { log("error", "Password is required"); hasErrors = true; }
+    } else {
+      log("info", `Username: ${sip.username}`);
+      log("info", `Source IP: ${sip.sourceIp || "(NOT SET)"}`);
+      if (!sip.sourceIp) { log("error", "Source IP is required for IP authentication"); hasErrors = true; }
+      if (sip.sourceIp && !isValidIp(sip.sourceIp)) { log("error", `Source IP "${sip.sourceIp}" is invalid`); hasErrors = true; }
+    }
   }
 
   if (hasErrors) return res.json({ success: false, logs });
@@ -284,7 +291,7 @@ router.post("/users/:id/sip/test", async (req, res) => {
       const branch = `z9hG4bK-${Date.now()}`;
       const tag = `tag-${Date.now()}`;
       const fromUser = sip.username;
-      const fromHost = sip.mode === "trunk" ? sip.sourceIp : targetHost;
+      const fromHost = sip.mode === "trunk" ? (sip.sourceIp || "0.0.0.0") : targetHost;
       const optionsMsg = [
         `OPTIONS sip:${targetHost}:${targetPort} SIP/2.0`,
         `Via: SIP/2.0/UDP ${fromHost}:5050;branch=${branch}`,

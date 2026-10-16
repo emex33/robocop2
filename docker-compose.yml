@@ -6,7 +6,8 @@ services:
     command: >
       drachtio
       --contact "sip:*:5060;transport=udp"
-      --external-ip 84.32.97.51
+      --external-ip 51.89.247.195
+      --port 19022
       --loglevel info
       --secret cymru
     healthcheck:
@@ -102,10 +103,10 @@ services:
       - drachtio
       - rtpengine
     ports:
-      - "3000:3000"
+      - "3001:3001"
       - "20000-20200:20000-20200/udp"
     environment:
-      - EXTERNAL_RTP_IP=84.32.97.51
+      - EXTERNAL_RTP_IP=51.89.247.195
       - RTP_PORT_MIN=20000
       - RTP_PORT_MAX=20200
       - DRACHTIO_HOST=172.18.0.1
@@ -136,7 +137,7 @@ services:
       - "20201-20400:20201-20400/udp"
     environment:
       - DASHBOARD_PORT=3001
-      - EXTERNAL_RTP_IP=84.32.97.51
+      - EXTERNAL_RTP_IP=51.89.247.195
       - RTP_PORT_MIN=20201
       - RTP_PORT_MAX=20400
       - DRACHTIO_HOST=172.18.0.1

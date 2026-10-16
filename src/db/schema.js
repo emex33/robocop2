@@ -386,6 +386,13 @@ function initSchema() {
   if (!sipCols.includes("trunk_username")) {
     db.exec("ALTER TABLE sip_settings ADD COLUMN trunk_username TEXT DEFAULT ''");
   }
+  // ip = whitelist only. credentials = username + password challenge on the same trunk.
+  if (!sipCols.includes("trunk_auth")) {
+    db.exec("ALTER TABLE sip_settings ADD COLUMN trunk_auth TEXT DEFAULT 'ip'");
+    db.prepare(
+      "UPDATE sip_settings SET trunk_auth = 'credentials' WHERE mode = 'trunk' AND password IS NOT NULL AND trim(password) != ''"
+    ).run();
+  }
 
   // Migration: add name + is_default to sip_settings (multi-trunk support)
   if (!sipCols.includes("name")) {
@@ -597,6 +604,12 @@ function initSchema() {
   // appointments.call_id → call_records.call_id (recording / summary behind a booking)
   db.exec("CREATE INDEX IF NOT EXISTS idx_call_records_call_id ON call_records(call_id)");
   db.exec("CREATE INDEX IF NOT EXISTS idx_appointments_user_created ON appointments(user_id, created_at)");
+  // Deleting a lead runs ON DELETE SET NULL against call_records and
+  // appointments. call_records is over a million rows and had no lead_id
+  // index, so every deleted lead scanned the whole table. A 30k-list delete
+  // froze the dashboard for minutes.
+  db.exec("CREATE INDEX IF NOT EXISTS idx_call_records_lead ON call_records(lead_id)");
+  db.exec("CREATE INDEX IF NOT EXISTS idx_appointments_lead ON appointments(lead_id)");
   db.exec("CREATE INDEX IF NOT EXISTS idx_credit_transactions_user_created ON credit_transactions(user_id, created_at)");
 
   // Migration: platform_settings table for dynamic cost rates
@@ -621,6 +634,10 @@ function initSchema() {
   seedSetting.run("voip_balance_api_key", "");
   seedSetting.run("voip_balance_json_path", "balance");
   seedSetting.run("voip_balance_manual", "");
+  seedSetting.run("voip_trunk_breaker", "off");
+  seedSetting.run("proxy_enabled", "off");
+  seedSetting.run("proxy_url", "");
+  db.prepare("UPDATE platform_settings SET value = 'off' WHERE key = 'voip_trunk_breaker'").run();
 
   // Floor for retiring a Deepgram key from the pool (was 0; $5 leaves a buffer so calls never start on a dying key)
   db.prepare("UPDATE platform_settings SET value = '5' WHERE key = 'deepgram_min_balance' AND CAST(value AS REAL) < 3").run();

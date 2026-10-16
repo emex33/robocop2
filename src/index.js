@@ -23,7 +23,7 @@ import { getUserSipSettings, getUserDeepgramKey, getUserDeepgramKeyInfo } from "
 import { deepgramKeyManager } from "./deepgram/key-manager.js";
 import { getSipConfig } from "../config/sip.js";
 import { sipAgentManager } from "./sip-agent/manager.js";
-import { evaluateBalances, describeBalances } from "./billing/balance-guard.js";
+import { evaluateBalances, describeBalances, getTrunkState, shouldRetrySipFailure } from "./billing/balance-guard.js";
 import { startHeartbeat } from "./utils/heartbeat.js";
 import { scheduleNightlyBackup } from "./db/backup.js";
 import { scheduleRecordingRetention } from "./services/recording-retention.js";
@@ -308,8 +308,9 @@ function pauseForBalance(campaignId, reasons) {
     runner.queue.leads = [];
     runner.queue.stop();
   }
+  const trunkHold = reasons.some(r => /SIP 40[18]/.test(r));
   dashboard.pushCampaignLog(campaignId, runner.userId, "error",
-    `Out of balance — pausing. ${reasons.join("; ")}. Active calls will finish; retrying in a few minutes.`);
+    `${trunkHold ? "Trunk is not completing calls" : "Out of balance"} — pausing. ${reasons.join("; ")} Active calls will finish; retrying in a few minutes.`);
   logger.warn(`[balance-guard] Campaign ${campaignId} paused: ${reasons.join("; ")}`);
 }
 
@@ -471,6 +472,20 @@ async function runCampaign(campaignId, userId, runner) {
     logger.warn(`Campaign ${campaignId} has no agent assigned`);
     dashboard.pushCampaignLog(campaignId, userId, "warn", "No agent assigned to this campaign");
     return;
+  }
+
+  if (!sipDialer?.isConnected) {
+    try {
+      await sipDialer.connect();
+      await sipAgentManager.init(sipDialer.srf);
+      logger.info("Connected to drachtio-server (on campaign start)");
+    } catch (err) {
+      dashboard.pushCampaignLog(campaignId, userId, "error",
+        `Cannot start — SIP server not connected: ${err.message}`);
+      logger.error(`Campaign ${campaignId} blocked: SIP not connected (${err.message})`);
+      db.prepare("UPDATE campaigns SET status = 'paused' WHERE id = ?").run(campaignId);
+      return;
+    }
   }
 
   // Check credit balance before starting
@@ -883,15 +898,24 @@ async function runCampaign(campaignId, userId, runner) {
       const isDialTimeout = errNotes.includes("Dial timeout");
       if (isDialTimeout) dialTimeoutTracker.record();
       if ((sipCode && RETRYABLE_SIP.includes(sipCode)) || isDialTimeout) {
-        lead._retryCount = (lead._retryCount || 0) + 1;
         const reason = isDialTimeout ? "Dial timeout" : `SIP ${sipCode}`;
-        if (lead._retryCount <= retryMax) {
-          logger.info(`[${result.callId}] ${reason} — queueing retry ${lead._retryCount}/${retryMax} for ${displayName} (${lead.phone})`);
-          queue.leads.push(lead);
+        if (sipCode && !shouldRetrySipFailure(sipCode)) {
+          logger.info(`[${result.callId}] ${reason} — not retrying ${displayName} (${lead.phone}); trunk is failing every call`);
         } else {
-          logger.info(`[${result.callId}] ${reason} — max retries reached for ${displayName} (${lead.phone})`);
+          lead._retryCount = (lead._retryCount || 0) + 1;
+          if (lead._retryCount <= retryMax) {
+            logger.info(`[${result.callId}] ${reason} — queueing retry ${lead._retryCount}/${retryMax} for ${displayName} (${lead.phone})`);
+            queue.leads.push(lead);
+          } else {
+            logger.info(`[${result.callId}] ${reason} — max retries reached for ${displayName} (${lead.phone})`);
+          }
         }
       }
+    }
+
+    const trunkNow = getTrunkState();
+    if (!trunkNow.ok && runner.running) {
+      pauseForBalance(campaignId, [trunkNow.reason || "Trunk is not completing calls"]);
     }
 
     // Save appointment if one was booked (fallback - only if not already saved immediately)

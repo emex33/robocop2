@@ -22,6 +22,7 @@ import { getDb } from "../db/schema.js";
 import { getPlatformSetting } from "../db/helpers.js";
 import { deepgramKeyManager } from "../deepgram/key-manager.js";
 import logger from "../utils/logger.js";
+import { isDeepgramUrl, proxyFetch } from "../net/outbound-proxy.js";
 
 const BALANCE_TTL_MS = 5 * 60 * 1000;
 const DEEPGRAM_TTL_MS = 60 * 1000; // pool refresh every minute so a $5 key is swapped before it dies mid-campaign
@@ -39,6 +40,23 @@ async function withCache(cacheKey, compute, ttl = BALANCE_TTL_MS) {
 /** Force the next evaluation to re-query the providers (e.g. after a top-up). */
 export function clearBalanceCache() {
   cache.clear();
+}
+
+/** Clear a tripped VoIP breaker so the operator can retry immediately. */
+export function resetTrunkBreaker(reason = "manual reset") {
+  trunk.trippedAt = null;
+  trunk.reason = "";
+  trunk.kind = null;
+  trunk.tripCount = 0;
+  trunk.consecutiveBlocks = 0;
+  trunk.consecutiveFailures = 0;
+  trunk.consecutiveFunds = 0;
+  trunk.window = [];
+  trunk.connects = 0;
+  trunk.authTimeouts = 0;
+  trunk.holdUntil = 0;
+  trunk.holdReason = "";
+  logger.info(`[balance-guard] VoIP trunk breaker reset (${reason})`);
 }
 
 function numericSetting(key, fallback) {
@@ -82,6 +100,7 @@ function isUnreachableError(err) {
  * enforcement (campaigns then dial around the clock).
  */
 async function fetchWithTimeout(url, options = {}) {
+  if (isDeepgramUrl(url)) return proxyFetch(url, { ...options, timeoutMs: HTTP_TIMEOUT_MS });
   return fetch(url, { ...options, signal: AbortSignal.timeout(HTTP_TIMEOUT_MS) });
 }
 
@@ -407,7 +426,7 @@ async function checkVoip() {
  * -------------------------------------------------------------------------- */
 
 const FUNDS_CODES = new Set([402]);              // explicit "pay up"
-const TRUNK_BLOCK_CODES = new Set([401, 403, 407, 503]); // rejected / unavailable / auth
+const TRUNK_BLOCK_CODES = new Set([401, 403, 407]); // rejected / auth — 503s are normal on this trunk, do not trip
 
 /**
  * Carriers rarely send 402. MMDsmart rejects an unfunded account with
@@ -415,6 +434,9 @@ const TRUNK_BLOCK_CODES = new Set([401, 403, 407, 503]); // rejected / unavailab
  * looks identical to a busy line unless the reason phrase is read.
  */
 const FUNDS_REASON_RE = /low balance|insufficient\s+(funds|balance|credit)|not enough\s+(funds|credit|balance)|no\s+balance|out of credit|negative balance|payment required|balance\s+(is\s+)?(too\s+)?low/i;
+
+/** CLI / number formatting — not a dead trunk or empty account. */
+const FORMAT_REASON_RE = /bad format|malformed|invalid (number|cli|caller)/i;
 
 /**
  * An unfunded account is not a failing trunk: nothing improves by waiting
@@ -454,6 +476,10 @@ const trunk = {
   lastFailureAt: null,
   window: [],   // true = connected, false = failed
   connects: 0,
+  authTimeouts: 0,       // consecutive 401/408 — trunk not completing INVITEs
+  holdUntil: 0,
+  holdReason: "",
+  wouldTripLoggedAt: 0,
 };
 
 function pushWindow(connected) {
@@ -476,12 +502,16 @@ function windowRate() {
  * keep dialing through it. Off = never trip, never hold campaigns for the trunk.
  */
 function breakerEnabled() {
-  return getPlatformSetting("voip_trunk_breaker", "on") !== "off";
+  return getPlatformSetting("voip_trunk_breaker", "off") !== "off";
 }
 
 function tripTrunk(reason, kind = "block") {
   if (!breakerEnabled()) {
-    logger.warn(`[balance-guard] VoIP trunk would trip (${reason}) — breaker is OFF, continuing to dial`);
+    const now = Date.now();
+    if (now - trunk.wouldTripLoggedAt > 60_000) {
+      trunk.wouldTripLoggedAt = now;
+      logger.warn(`[balance-guard] VoIP trunk would trip (${reason}) — breaker is OFF, continuing to dial`);
+    }
     trunk.consecutiveBlocks = 0;
     trunk.consecutiveFailures = 0;
     trunk.consecutiveFunds = 0;
@@ -508,6 +538,9 @@ export function reportTrunkSuccess() {
   trunk.consecutiveBlocks = 0;
   trunk.consecutiveFailures = 0;
   trunk.consecutiveFunds = 0;
+  trunk.authTimeouts = 0;
+  trunk.holdUntil = 0;
+  trunk.holdReason = "";
   pushWindow(true);
 
   if (trunk.trippedAt) {
@@ -551,10 +584,32 @@ export function reportTrunkFailure(status, message = "") {
 
   pushWindow(false);
 
+  // 401 (IP not allowed) and a run of 408s (INVITE timer, ~32s, no answer from
+  // the trunk) are the same outage: the carrier is not completing calls. Each
+  // one used to be retried and printed in the live log, which filled the feed
+  // while 25 lines sat in timeout. Hold dialing for a few minutes instead.
+  if (code === 401 || code === 408) {
+    trunk.authTimeouts++;
+    if (trunk.authTimeouts >= 8 && !(trunk.holdUntil && Date.now() < trunk.holdUntil)) {
+      trunk.holdUntil = Date.now() + 5 * 60 * 1000;
+      trunk.holdReason = code === 401
+        ? "SIP 401 IP not allowed — the trunk is rejecting this server. Paused 5 min so the live log doesn't fill. MMD has to whitelist the IP that sends the INVITEs."
+        : "SIP 408 on every call — the trunk is not answering INVITEs (this follows 401 IP not allowed). Paused 5 min so the live log doesn't fill.";
+      logger.error(`[balance-guard] ${trunk.holdReason}`);
+    }
+  } else {
+    trunk.authTimeouts = 0;
+  }
+
   // Checked first, and before the per-lead codes below: the carrier reports an
   // unfunded account as a 486, which would otherwise be waved through as a busy
   // line until 40 calls had been wasted proving the obvious.
   const reasonText = String(message || "").trim();
+  if (FORMAT_REASON_RE.test(reasonText)) {
+    trunk.consecutiveBlocks = 0;
+    trunk.consecutiveFailures = 0;
+    return;
+  }
   const looksLikeFunds = (code && FUNDS_CODES.has(code)) || FUNDS_REASON_RE.test(reasonText);
   if (looksLikeFunds) {
     trunk.consecutiveFunds++;
@@ -611,8 +666,69 @@ export function reportTrunkFailure(status, message = "") {
   }
 }
 
+/**
+ * Live-log gate for SIP failures that arrive in bursts. The first one is
+ * shown; the rest of the minute is one summary, not a line per lead.
+ * 486 is included because this trunk returns "Busy Here" in about a second
+ * on a large share of INVITEs. That is the carrier refusing the attempt, not
+ * a phone that rang.
+ * @returns {string|null} message to show, or null to stay quiet
+ */
+const QUIET_SIP_CODES = new Set([401, 408, 486, 503]);
+const liveBurst = { code: 0, count: 0, start: 0 };
+export function liveSipError(code, message) {
+  const c = Number(code) || 0;
+  if (!QUIET_SIP_CODES.has(c)) return message || null;
+  const now = Date.now();
+  if (c !== liveBurst.code || now - liveBurst.start > 60_000) {
+    liveBurst.code = c;
+    liveBurst.count = 0;
+    liveBurst.start = now;
+  }
+  liveBurst.count++;
+  if (liveBurst.count === 1) return message || `SIP ${c}`;
+  if (liveBurst.count === 8) {
+    const why = c === 486
+      ? "The trunk is returning Busy Here immediately, so these are not phones that rang."
+      : c === 503
+        ? "The trunk is returning Service Unavailable immediately. These are capacity refusals, not dead numbers."
+        : "The trunk is not completing calls.";
+    return `SIP ${c} on ${liveBurst.count} calls in the last minute. Further repeats are hidden. ${why}`;
+  }
+  return null;
+}
+
+/** False once a code is a trunk-wide burst. A single isolated failure still retries. */
+export function shouldRetrySipFailure(code) {
+  const c = Number(code) || 0;
+  if (trunk.holdUntil && Date.now() < trunk.holdUntil) return false;
+  if ((c === 401 || c === 408) && trunk.authTimeouts >= 5) return false;
+  // Re-dialing a 1-second 486 or 503 just hits the same refusal and triples the log.
+  if ((c === 486 || c === 503) && liveBurst.code === c && liveBurst.count >= 5 && Date.now() - liveBurst.start < 60_000) {
+    return false;
+  }
+  return true;
+}
+
 /** Live breaker state. Expires its own cool-down so dialing can resume. */
 function checkTrunk() {
+  if (trunk.holdUntil && Date.now() < trunk.holdUntil) {
+    const rate = windowRate();
+    return {
+      ok: false,
+      tripped: true,
+      reason: trunk.holdReason,
+      retryInMinutes: Math.max(1, Math.ceil((trunk.holdUntil - Date.now()) / 60000)),
+      lastStatus: trunk.lastStatus,
+      connectRate: rate === null ? null : Math.round(rate * 100),
+    };
+  }
+  if (trunk.holdUntil) {
+    trunk.holdUntil = 0;
+    trunk.holdReason = "";
+    trunk.authTimeouts = 0;
+    logger.info("[balance-guard] trunk hold elapsed — trying calls again");
+  }
   if (!breakerEnabled()) {
     if (trunk.trippedAt) {
       logger.info("[balance-guard] VoIP breaker switched OFF — clearing trip and resuming");

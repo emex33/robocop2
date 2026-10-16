@@ -3,6 +3,7 @@ import logger from "../utils/logger.js";
 import { DeepgramAgent } from "../deepgram/agent.js";
 import { AudioBridge } from "../audio/bridge.js";
 import { getPlatformSetting } from "../db/helpers.js";
+import { liveSipError } from "../billing/balance-guard.js";
 import { detectVoicemail } from "./voicemail.js";
 
 // Lazy-load configStore only for legacy/fallback usage
@@ -407,8 +408,11 @@ export class CallManager {
       });
 
     } catch (err) {
-      emit("error", { message: err.message });
-      logger.error(`[${callId}] Call error: ${err.message}`);
+      const shown = liveSipError(err.status, err.message);
+      if (shown) {
+        emit("error", { message: shown });
+        logger.error(`[${callId}] Call error: ${shown}`);
+      }
       callResult.outcome = "error";
       callResult.notes = err.message;
     } finally {
