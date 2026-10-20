@@ -4,6 +4,7 @@ import { SipDialer } from "./sip/dialer.js";
 import { CallManager } from "./call/manager.js";
 import { CallQueue } from "./leads/loader.js";
 import { isLocalCallingHour } from "./call/local-hours.js";
+import { attachHourCapDatabase, hourCap, hourCapMessage } from "./call/hour-cap.js";
 import { DashboardServer } from "./dashboard/server-new.js";
 import { getDb } from "./db/schema.js";
 import {
@@ -113,6 +114,7 @@ async function main() {
 
   // Initialize database
   getDb();
+  attachHourCapDatabase(getDb);
   logger.info("Database initialized");
   // Worker threads for heavy dashboard reads, so they never block live-call audio.
   startReadPool();
@@ -579,9 +581,9 @@ async function runCampaign(campaignId, userId, runner) {
   queue.refill = () => getCampaignCallableLeads(campaignId, QUEUE_BATCH);
   // Consumer-local calling hours (CRTC: weekdays 09:00–21:30 in the lead's own
   // zone). Western leads wait for their morning instead of being rung at 06:00.
-  queue.eligible = (lead) => isLocalCallingHour(lead.phone);
+  queue.eligible = (lead) => isLocalCallingHour(lead.phone) && hourCap.peek(lead.phone, userId).ok;
   queue.onDeferred = (n) => dashboard.pushCampaignLog(campaignId, userId, "info",
-    `${n} leads are waiting for 09:00 in their own time zone (Canadian calling-hour rules) — dialing resumes automatically`);
+    `${n} leads are waiting — local calling hours or the 5-calls-per-hour cap. Dialing resumes automatically`);
   runner.queue = queue;
 
   const results = await queue.start(async (lead) => {
@@ -620,7 +622,29 @@ async function runCampaign(campaignId, userId, runner) {
       dashboard.pushCampaignLog(campaignId, userId, "warn", `Skipped ${displayName}: "${lead.phone}" is not a phone number — lead retired`);
       return { outcome: "skipped" };
     }
+
+    const hourSlot = hourCap.claim(lead.phone, userId);
+    if (!hourSlot.ok) {
+      const message = hourCapMessage(lead.phone, hourSlot.count);
+      if (hourCap.shouldLogBlock(lead.phone)) {
+        dashboard.pushCampaignLog(campaignId, userId, "warn", `${displayName}: ${message}`);
+        dashboard.broadcastToUser(userId, "live_event", {
+          campaignId,
+          type: "blocked",
+          phone: lead.phone,
+          name: displayName,
+          count: hourSlot.count,
+          max: hourSlot.max,
+          message,
+          time: new Date().toISOString(),
+        });
+      }
+      logger.warn(`[hour-cap] ${displayName} (${lead.phone}) — ${message}`);
+      return { outcome: "skipped" };
+    }
+
     dashboard.pushCampaignLog(campaignId, userId, "info", `Dialing ${displayName} (${lead.phone})`);
+    try {
 
     // Pick the current healthy key at call start (local DB read — no Deepgram HTTP, no delay).
     // If the pool retired a low-balance key since the last call, this is already the replacement.
@@ -741,7 +765,9 @@ async function runCampaign(campaignId, userId, runner) {
     // 402/401 detection — auto-rotate Deepgram key if needed
     if (result.outcome === "error" && deepgramKeyInfo.id) {
       const errMsg = (result.notes || "").toLowerCase();
-      if (errMsg.includes("402") || errMsg.includes("payment required") || errMsg.includes("insufficient")) {
+      if (errMsg.includes("bandwidth limit") || errMsg.includes("using the proxy")) {
+        pauseForBalance(campaignId, ["Webshare proxy is out of bandwidth. The Deepgram key was not rejected."]);
+      } else if (errMsg.includes("402") || errMsg.includes("payment required") || errMsg.includes("insufficient")) {
         const rotated = deepgramKeyManager.report402(userId, deepgramKeyInfo.id);
         if (rotated?.rotated) {
           deepgramKeyInfo = rotated;
@@ -833,6 +859,8 @@ async function runCampaign(campaignId, userId, runner) {
     } catch (e) {
       logger.error(`Failed to record call: ${e.message}`);
     }
+    hourCap.release(lead.phone, hourSlot.token);
+    hourSlot.token = 0;
 
     // Fire-and-forget: push transfer to Google Sheets
     if (result.outcome === "transferred" && callRecordId) {
@@ -901,6 +929,8 @@ async function runCampaign(campaignId, userId, runner) {
         const reason = isDialTimeout ? "Dial timeout" : `SIP ${sipCode}`;
         if (sipCode && !shouldRetrySipFailure(sipCode)) {
           logger.info(`[${result.callId}] ${reason} — not retrying ${displayName} (${lead.phone}); trunk is failing every call`);
+        } else if (!hourCap.peek(lead.phone, userId).ok) {
+          logger.info(`[${result.callId}] ${reason} — not retrying ${displayName} (${lead.phone}); hourly cap of 5 calls reached`);
         } else {
           lead._retryCount = (lead._retryCount || 0) + 1;
           if (lead._retryCount <= retryMax) {
@@ -958,6 +988,9 @@ async function runCampaign(campaignId, userId, runner) {
     });
 
     return result;
+    } finally {
+      hourCap.release(lead.phone, hourSlot.token);
+    }
   });
 
   // Campaign loop ended. If the schedule window closed we auto-paused, so keep

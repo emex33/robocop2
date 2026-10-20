@@ -1,6 +1,6 @@
 import WebSocket from "ws";
 import logger from "../utils/logger.js";
-import { getOutboundProxyUrl, isTransientProxyError, newProxyAgent, proxyDescription } from "../net/outbound-proxy.js";
+import { getOutboundProxyUrl, isProxyQuotaBody, isTransientProxyError, newProxyAgent, proxyDescription } from "../net/outbound-proxy.js";
 
 /**
  * Deepgram Voice Agent API client.
@@ -107,17 +107,21 @@ export class DeepgramAgent {
 
       const maxAttempts = !isLocal && getOutboundProxyUrl() ? 3 : 1;
       let attempt = 0;
+      let skipProxy = false;
+      let hold402 = false;
 
       const openSocket = () => {
       attempt += 1;
       const wsOptions = isLocal ? {} : { headers: { authorization: `token ${apiKey}` } };
-      if (!isLocal) {
+      if (!isLocal && !skipProxy) {
         const agent = newProxyAgent();
         if (agent) {
           wsOptions.agent = agent;
           const where = proxyDescription();
           logger.info(`Deepgram using a new proxy exit via ${where ? where.host : "proxy"}`, { callId: this.callId });
         }
+      } else if (!isLocal && skipProxy) {
+        logger.warn("Deepgram proxy is out of bandwidth, connecting directly", { callId: this.callId });
       }
       this.ws = new WebSocket(url, wsOptions);
 
@@ -139,6 +143,10 @@ export class DeepgramAgent {
       });
 
       this.ws.on("error", (err) => {
+        if (!this.isConnected && !skipProxy && /Unexpected server response: 402/.test(err.message || "")) {
+          hold402 = true;
+          return;
+        }
         if (!this.isConnected && attempt < maxAttempts && isTransientProxyError(err)) {
           logger.warn(`Deepgram proxy exit failed (${err.message}), trying another IP`, { callId: this.callId });
           const failed = this.ws;
@@ -161,6 +169,17 @@ export class DeepgramAgent {
         let body = "";
         res.on("data", (chunk) => { body += chunk; });
         res.on("end", () => {
+          if (status === 402 && isProxyQuotaBody(body) && !skipProxy) {
+            skipProxy = true;
+            logger.warn("Webshare proxy refused Deepgram (bandwidth limit). Connecting directly.", { callId: this.callId });
+            const failed = this.ws;
+            failed.removeAllListeners();
+            hold402 = false;
+            try { failed.terminate(); } catch { /* already closed */ }
+            openSocket();
+            return;
+          }
+          hold402 = false;
           const errMsg = `Deepgram ${status}: ${body || res.statusMessage}`;
           logger.error(errMsg, { callId: this.callId });
           const err = new Error(errMsg);
@@ -175,6 +194,7 @@ export class DeepgramAgent {
       });
 
       this.ws.on("close", (code, reason) => {
+        if (hold402) return;
         logger.info(`Deepgram WebSocket closed: ${code} ${reason}`, { callId: this.callId });
         this.isConnected = false;
         this._stopKeepAlive();

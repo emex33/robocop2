@@ -334,10 +334,12 @@ function LiveCallsPanel({ liveState, recentEvents, connected, onStop, onForceSto
                     <PhoneCall className="w-3 h-3 text-blue-400 shrink-0" />
                   ) : evt.type === 'ended' ? (
                     <PhoneOff className="w-3 h-3 text-gray-400 shrink-0" />
+                  ) : evt.type === 'log' && evt.level === 'warn' ? (
+                    <AlertCircle className="w-3 h-3 text-yellow-300 shrink-0" />
                   ) : (
                     <Info className="w-3 h-3 text-gray-500 shrink-0" />
                   )}
-                  <span className="text-gray-300 truncate">
+                  <span className={`truncate ${evt.type === 'log' && evt.level === 'warn' ? 'text-yellow-300' : 'text-gray-300'}`}>
                     {evt.type === 'started' && `Calling ${evt.call?.name || 'lead'}...`}
                     {evt.type === 'ended' && `${evt.name}: ${evt.outcome} (${evt.duration}s)`}
                     {evt.type === 'log' && evt.message}
@@ -1098,6 +1100,7 @@ function LiveLogsTab({ events, connected, onClear }) {
       case 'function_call': return <Zap className="w-3.5 h-3.5" />;
       case 'barge_in': return <User className="w-3.5 h-3.5" />;
       case 'error': return <AlertCircle className="w-3.5 h-3.5" />;
+      case 'blocked': return <AlertCircle className="w-3.5 h-3.5" />;
       case 'appointment_saved':
       case 'transfer_complete': return <CheckCircle className="w-3.5 h-3.5" />;
       default: return <ArrowRight className="w-3.5 h-3.5" />;
@@ -1110,6 +1113,7 @@ function LiveLogsTab({ events, connected, onClear }) {
     }
     switch (type) {
       case 'error': return 'text-red-600 bg-red-50';
+      case 'blocked': return 'text-yellow-800 bg-yellow-300';
       case 'function_call': return 'text-amber-600 bg-amber-50';
       case 'appointment_saved':
       case 'transfer_complete':
@@ -1157,6 +1161,8 @@ function LiveLogsTab({ events, connected, onClear }) {
         return `🏁 Call complete: ${data.outcome}`;
       case 'error':
         return `❌ Error: ${data.message}`;
+      case 'blocked':
+        return data.message || `Blocked ${data.name || ''} (${data.phone || ''}): already called ${data.count || 5} times this hour — maximum is 5`;
       default:
         return `${type}: ${JSON.stringify(data)}`;
     }
@@ -1241,7 +1247,7 @@ function LiveLogsTab({ events, connected, onClear }) {
                 </span>
 
                 {/* Message */}
-                <span className={`flex-1 ${evt.type === 'transcript' && evt.role === 'assistant' ? 'text-indigo-300' : evt.type === 'transcript' ? 'text-emerald-300' : evt.type === 'error' ? 'text-red-400' : 'text-gray-300'}`}>
+                <span className={`flex-1 ${evt.type === 'transcript' && evt.role === 'assistant' ? 'text-indigo-300' : evt.type === 'transcript' ? 'text-emerald-300' : evt.type === 'error' ? 'text-red-400' : evt.type === 'blocked' ? 'text-yellow-300' : 'text-gray-300'}`}>
                   {formatEventMessage(evt)}
                 </span>
               </div>
@@ -1257,6 +1263,7 @@ function LiveLogsTab({ events, connected, onClear }) {
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-amber-500" /> Function Calls</span>
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-purple-500" /> System</span>
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-red-500" /> Errors</span>
+        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-yellow-400" /> Hourly cap</span>
       </div>
     </div>
   );

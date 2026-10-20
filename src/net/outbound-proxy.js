@@ -1,6 +1,7 @@
 import https from "https";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import { getPlatformSetting } from "../db/helpers.js";
+import logger from "../utils/logger.js";
 
 /**
  * Outbound proxy for Deepgram only.
@@ -39,6 +40,18 @@ export function isTransientProxyError(err) {
   return /self-signed|certificate|CERT_|EPROTO|wrong version|ECONNRESET|ETIMEDOUT|ECONNREFUSED|socket hang up|EAI_AGAIN|ENETUNREACH|timed out|timeout/i.test(msg);
 }
 
+/** Webshare's own 402. This is the proxy plan, not the Deepgram account. */
+export function isProxyQuotaBody(body) {
+  return /bandwidth limit|upgrade to continue using the proxy/i.test(String(body || ""));
+}
+
+let proxyQuotaLogged = false;
+function noteProxyQuota() {
+  if (proxyQuotaLogged) return;
+  proxyQuotaLogged = true;
+  logger.warn("Webshare proxy is out of bandwidth. Deepgram will be reached directly until the proxy plan is upgraded.");
+}
+
 export function isDeepgramUrl(url) {
   try {
     return new URL(url).hostname === "deepgram.com" || new URL(url).hostname.endsWith(".deepgram.com");
@@ -53,9 +66,9 @@ export function isDeepgramUrl(url) {
  */
 export function proxyFetch(url, options = {}, attempt = 1) {
   const timeoutMs = options.timeoutMs || 15000;
-  const agent = isDeepgramUrl(url) || options.forceProxy ? newProxyAgent() : null;
+  const agent = options.direct ? null : (isDeepgramUrl(url) || options.forceProxy ? newProxyAgent() : null);
   if (!agent) {
-    const { timeoutMs: _drop, forceProxy: _force, ...rest } = options;
+    const { timeoutMs: _drop, forceProxy: _force, direct: _direct, ...rest } = options;
     return fetch(url, { ...rest, signal: AbortSignal.timeout(timeoutMs) });
   }
 
@@ -70,6 +83,11 @@ export function proxyFetch(url, options = {}, attempt = 1) {
       res.on("data", (chunk) => chunks.push(chunk));
       res.on("end", () => {
         const body = Buffer.concat(chunks).toString("utf8");
+        if (res.statusCode === 402 && isProxyQuotaBody(body) && !options.direct) {
+          noteProxyQuota();
+          resolve(proxyFetch(url, { ...options, direct: true }));
+          return;
+        }
         resolve({
           ok: res.statusCode >= 200 && res.statusCode < 300,
           status: res.statusCode,
