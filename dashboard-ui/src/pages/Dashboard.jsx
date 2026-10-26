@@ -22,6 +22,7 @@ const OUTCOME_COLORS = {
   no_answer: '#94a3b8',
   callback: '#8b5cf6',
   timeout: '#dc2626',
+  no_speech: '#d97706',
   transferred: '#6366f1',
   do_not_call: '#991b1b',
   interested: '#06b6d4',
@@ -132,8 +133,8 @@ export default function Dashboard() {
           sub={`${appointmentRate.toFixed(1)}% conversion`} color="emerald" />
         <StatCard icon={PhoneOff} label="Voicemail" value={cs.total_voicemail || 0} color="amber" />
         <StatCard icon={AlertTriangle} label="Errors" value={cs.total_errors || 0} color="red" />
-        <StatCard icon={Timer} label="Timeouts" value={cs.total_timeouts || 0}
-          sub="Stuck calls auto-hung" color="rose" />
+        <StatCard icon={Timer} label="No more speech" value={cs.total_no_speech || 0}
+          sub="Ended after silence" color="rose" />
       </div>
 
       {/* Second Row - Duration & Cost */}

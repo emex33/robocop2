@@ -7,6 +7,7 @@ import { Router } from "express";
 import multer from "multer";
 import { parse } from "csv-parse/sync";
 import { getDb, generateId } from "../db/schema.js";
+import { normalizeDialPhone } from "../call/phone.js";
 
 const router = Router();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 50 * 1024 * 1024 } });
@@ -105,7 +106,7 @@ function buildLeadInsert(db, listId, mapping) {
   `);
 
   return (row) => {
-    const phone = String(row[mapping.phone] || "").replace(/\s+/g, "");
+    const phone = normalizeDialPhone(row[mapping.phone]) || String(row[mapping.phone] || "").replace(/\s+/g, "");
     if (!phone) return false;
 
     const extra = {};
@@ -368,7 +369,7 @@ router.post("/:id/leads", (req, res) => {
   db.prepare(`
     INSERT INTO leads (id, list_id, phone, first_name, last_name, email, company, country, notes)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `).run(id, req.params.id, phone.replace(/\s+/g, ""), first_name || "", last_name || "",
+  `).run(id, req.params.id, normalizeDialPhone(phone) || phone.replace(/\s+/g, ""), first_name || "", last_name || "",
     email || "", company || "", country || "", notes || "");
 
   // Update count

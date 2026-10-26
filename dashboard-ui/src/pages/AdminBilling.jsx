@@ -255,6 +255,26 @@ function VoiceEnginePanel() {
             <p className="text-xs text-gray-500">faster-whisper + Coqui TTS</p>
           </div>
         </button>
+        <button onClick={() => setEngine('assembly_google')}
+          className={`flex items-center gap-3 px-4 py-3 rounded-lg border-2 text-left transition ${
+            engine === 'assembly_google' ? 'border-emerald-500 bg-emerald-50' : 'border-gray-200 hover:border-gray-300'
+          }`}>
+          <Cloud className={`w-5 h-5 ${engine === 'assembly_google' ? 'text-emerald-600' : 'text-gray-400'}`} />
+          <div>
+            <p className="text-sm font-semibold text-gray-800">Assembly + Google</p>
+            <p className="text-xs text-gray-500">AssemblyAI STT + Google Cloud TTS</p>
+          </div>
+        </button>
+        <button onClick={() => setEngine('google')}
+          className={`flex items-center gap-3 px-4 py-3 rounded-lg border-2 text-left transition ${
+            engine === 'google' ? 'border-amber-500 bg-amber-50' : 'border-gray-200 hover:border-gray-300'
+          }`}>
+          <Cloud className={`w-5 h-5 ${engine === 'google' ? 'text-amber-600' : 'text-gray-400'}`} />
+          <div>
+            <p className="text-sm font-semibold text-gray-800">Google STT + TTS</p>
+            <p className="text-xs text-gray-500">Cloud Speech streaming + Chirp 3 (~300 sessions)</p>
+          </div>
+        </button>
       </div>
 
       {engine === 'local' && (

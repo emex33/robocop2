@@ -38,7 +38,7 @@ const lastGuard = new Map(); // userId -> last completed provider verdict
 // Outcomes that mean a human (not a machine) was on the line.
 const HUMAN_OUTCOMES = [
   "lead_hangup", "not_interested", "wrong_number", "callback", "not_qualified",
-  "appointment_set", "transferred", "interested", "do_not_call", "timeout", "unknown",
+  "appointment_set", "transferred", "interested", "do_not_call", "timeout", "no_speech", "unknown",
 ];
 const POSITIVE_OUTCOMES = ["appointment_set", "transferred", "callback", "interested"];
 const ENGAGED_SECONDS = 20; // a human call shorter than this never got past the opener

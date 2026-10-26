@@ -13,6 +13,7 @@
     "docker:logs": "docker compose logs -f app"
   },
   "dependencies": {
+    "@google-cloud/speech": "^7.5.0",
     "better-sqlite3": "^11.10.0",
     "cors": "^2.8.5",
     "csv-parse": "^5.5.6",

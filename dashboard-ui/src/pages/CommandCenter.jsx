@@ -38,6 +38,11 @@ function hourDiff(fromTz, toTz) {
   return Math.round((b - a) / 36e5);
 }
 
+function outcomeLabel(outcome) {
+  if (outcome === "no_speech") return "no more speech";
+  return String(outcome || "").replace(/_/g, " ");
+}
+
 const OUTCOME_STYLE = {
   appointment_set: 'bg-emerald-500/20 text-emerald-300 ring-emerald-500/40',
   transferred: 'bg-indigo-500/20 text-indigo-300 ring-indigo-500/40',
@@ -49,6 +54,8 @@ const OUTCOME_STYLE = {
   not_interested: 'bg-orange-500/20 text-orange-300 ring-orange-500/40',
   lead_hangup: 'bg-slate-500/20 text-slate-300 ring-slate-500/40',
   do_not_call: 'bg-red-700/30 text-red-300 ring-red-700/40',
+  timeout: 'bg-amber-500/20 text-amber-300 ring-amber-500/40',
+  no_speech: 'bg-amber-500/20 text-amber-200 ring-amber-500/40',
 };
 
 // ---------------------------------------------------------------------------
@@ -298,8 +305,8 @@ const LIVE_STAGE = {
 function stageOf(status) {
   if (!status) return LIVE_STAGE.dialing;
   if (status.startsWith('ending:')) {
-    const o = status.slice(7).replace(/_/g, ' ');
-    return { label: `Ending · ${o}`, cls: OUTCOME_STYLE[status.slice(7)] || 'bg-slate-500/20 text-slate-300 ring-slate-500/40', dot: 'bg-slate-400' };
+    const o = status.slice(7);
+    return { label: `Ending · ${outcomeLabel(o)}`, cls: OUTCOME_STYLE[o] || 'bg-slate-500/20 text-slate-300 ring-slate-500/40', dot: 'bg-slate-400' };
   }
   return LIVE_STAGE[status] || LIVE_STAGE.dialing;
 }
@@ -492,7 +499,7 @@ function HotLeadsPanel({ rows, player }) {
             {rows.slice(0, 40).map((r) => (
               <tr key={r.id} className="border-t border-slate-800/70">
                 <td className="px-3 py-1.5 text-slate-400 whitespace-nowrap tabular-nums">{fmtDay(r.started_at)} <span className="text-slate-200">{fmtTime(r.started_at)}</span></td>
-                <td className="px-3 py-1.5 whitespace-nowrap"><span className={`text-[10px] px-1.5 py-0.5 rounded ring-1 ${OUTCOME_STYLE[r.outcome] || ''}`}>{r.outcome.replace(/_/g, ' ')}</span></td>
+                <td className="px-3 py-1.5 whitespace-nowrap"><span className={`text-[10px] px-1.5 py-0.5 rounded ring-1 ${OUTCOME_STYLE[r.outcome] || ''}`}>{outcomeLabel(r.outcome)}</span></td>
                 <td className="px-3 py-1.5 text-slate-100 whitespace-nowrap">{r.lead_name || <span className="text-slate-500">unknown</span>}{r.email && <div className="text-[10.5px] text-slate-500">{r.email}</div>}</td>
                 <td className="px-3 py-1.5 text-slate-300 font-mono whitespace-nowrap">{r.phone}</td>
                 <td className="px-3 py-1.5 text-slate-400 whitespace-nowrap max-w-[150px] truncate">{r.campaign}</td>
@@ -911,7 +918,7 @@ export default function CommandCenter() {
                   <td className="px-3 py-1 text-slate-400 font-mono whitespace-nowrap">{c.phone}</td>
                   <td className="px-3 py-1 text-slate-500 truncate max-w-[180px]">{c.campaign}</td>
                   <td className="px-3 py-1 whitespace-nowrap">
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded ring-1 ${OUTCOME_STYLE[c.outcome] || 'bg-slate-500/20 text-slate-300 ring-slate-500/40'}`}>{(c.outcome || '').replace(/_/g, ' ')}</span>
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded ring-1 ${OUTCOME_STYLE[c.outcome] || 'bg-slate-500/20 text-slate-300 ring-slate-500/40'}`}>{outcomeLabel(c.outcome)}</span>
                     {c.outcome === 'error' && c.error_message && <span className="ml-2 text-[10px] text-rose-400/80">{c.error_message.match(/\b[4-6]\d{2}\b/)?.[0] || c.error_message.slice(0, 24)}</span>}
                   </td>
                   <td className="px-3 py-1 text-right text-slate-400 whitespace-nowrap">{secs(c.duration_seconds)}</td>

@@ -667,8 +667,9 @@ function CallsTab({ campaignId }) {
                   c.outcome === 'interested' ? 'bg-blue-100 text-blue-700' :
                   c.outcome === 'not_interested' ? 'bg-amber-100 text-amber-700' :
                   c.outcome === 'error' ? 'bg-red-100 text-red-700' :
+                  c.outcome === 'no_speech' ? 'bg-amber-100 text-amber-800' :
                   'bg-gray-100 text-gray-600'
-                }`}>{c.outcome}</span>
+                }`}>{c.outcome === 'no_speech' ? 'No more speech' : c.outcome}</span>
               </td>
               <td className="px-4 py-2.5 text-gray-500">{c.duration_seconds}s</td>
               <td className="px-4 py-2.5 text-gray-500 text-xs" title={c.started_at}>{fmtLocal(c.started_at)}</td>

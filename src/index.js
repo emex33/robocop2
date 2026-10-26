@@ -19,6 +19,7 @@ import {
   getUserBalance,
   deductCredits,
   getCostRates,
+  getPlatformSetting,
 } from "./db/helpers.js";
 import { getUserSipSettings, getUserDeepgramKey, getUserDeepgramKeyInfo } from "./api/settings.js";
 import { deepgramKeyManager } from "./deepgram/key-manager.js";
@@ -30,6 +31,8 @@ import { scheduleNightlyBackup } from "./db/backup.js";
 import { scheduleRecordingRetention } from "./services/recording-retention.js";
 import { startLoopMonitor, noteActivity } from "./utils/loop-monitor.js";
 import { startReadPool } from "./db/read-pool.js";
+import { skipsDeepgram, voiceEngineLabel } from "./voice/engines.js";
+import { getLlmModel, hasThinkKey } from "./voice/llm.js";
 
 /**
  * ROBOCOP - AI Robot Caller (Enterprise Edition)
@@ -539,15 +542,39 @@ async function runCampaign(campaignId, userId, runner) {
   const sipConfig = getSipConfig(dbSipSettings);
   logger.info(`Campaign SIP trunk: "${dbSipSettings.name}" (${dbSipSettings.id}) mode=${sipConfig.mode}, trunkHost=${sipConfig.trunkHost}, server=${sipConfig.server}`);
 
-  // Load per-user Deepgram API key (pool → legacy single → env var)
-  let deepgramKeyInfo = getUserDeepgramKeyInfo(userId);
-  if (!deepgramKeyInfo) {
-    logger.error(`No Deepgram API key for user ${userId}. Configure in Settings.`);
-    dashboard.pushCampaignLog(campaignId, userId, "error", "No Deepgram API key configured. Go to Settings to set your API key.");
-    db.prepare("UPDATE campaigns SET status = 'paused' WHERE id = ?").run(campaignId);
-    return;
+  const voiceEngine = getPlatformSetting("voice_engine", "deepgram");
+  let deepgramKeyInfo = skipsDeepgram(voiceEngine) ? null : getUserDeepgramKeyInfo(userId);
+  if (skipsDeepgram(voiceEngine)) {
+    if (voiceEngine === "assembly_google" && !process.env.ASSEMBLYAI_API_KEY) {
+      logger.error("ASSEMBLYAI_API_KEY is missing");
+      dashboard.pushCampaignLog(campaignId, userId, "error", "ASSEMBLYAI_API_KEY is missing — cannot run Assembly STT.");
+      db.prepare("UPDATE campaigns SET status = 'paused' WHERE id = ?").run(campaignId);
+      return;
+    }
+    if (!hasThinkKey()) {
+      logger.error("No LLM key (GEMINI_API_KEY, GROQ_API_KEY or ASSEMBLYAI_API_KEY)");
+      dashboard.pushCampaignLog(campaignId, userId, "error", "No LLM key — set GEMINI_API_KEY, GROQ_API_KEY or ASSEMBLYAI_API_KEY.");
+      db.prepare("UPDATE campaigns SET status = 'paused' WHERE id = ?").run(campaignId);
+      return;
+    }
+    if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+      logger.error("GOOGLE_APPLICATION_CREDENTIALS is missing");
+      dashboard.pushCampaignLog(campaignId, userId, "error", "GOOGLE_APPLICATION_CREDENTIALS is missing — cannot run Google voice campaigns.");
+      db.prepare("UPDATE campaigns SET status = 'paused' WHERE id = ?").run(campaignId);
+      return;
+    }
+    logger.info(`Voice engine: ${voiceEngineLabel(voiceEngine)} | Think: ${getLlmModel()}`);
+    dashboard.pushCampaignLog(campaignId, userId, "info", `Voice engine: ${voiceEngineLabel(voiceEngine)} | Think: ${getLlmModel()}`);
+  } else {
+    if (!deepgramKeyInfo) {
+      logger.error(`No Deepgram API key for user ${userId}. Configure in Settings.`);
+      dashboard.pushCampaignLog(campaignId, userId, "error", "No Deepgram API key configured. Go to Settings to set your API key.");
+      db.prepare("UPDATE campaigns SET status = 'paused' WHERE id = ?").run(campaignId);
+      return;
+    }
+    logger.info(`Using Deepgram key: "${deepgramKeyInfo.label}" (source: ${deepgramKeyInfo.source})`);
   }
-  logger.info(`Using Deepgram key: "${deepgramKeyInfo.label}" (source: ${deepgramKeyInfo.source})`);
+  let deepgramApiKey = deepgramKeyInfo?.key || null;
 
   // Register with SIP provider if account mode (trunk mode skips registration)
   if (sipConfig.mode === "account") {
@@ -646,22 +673,41 @@ async function runCampaign(campaignId, userId, runner) {
     dashboard.pushCampaignLog(campaignId, userId, "info", `Dialing ${displayName} (${lead.phone})`);
     try {
 
+    if (voiceEngine === "assembly_google" && !process.env.ASSEMBLYAI_API_KEY) {
+      dashboard.pushCampaignLog(campaignId, userId, "error", "ASSEMBLYAI_API_KEY is missing — cannot start Assembly STT calls.");
+      runner.running = false;
+      if (runner.queue) { runner.queue.leads = []; runner.queue.stop(); }
+      return { outcome: "skipped" };
+    }
+    if (skipsDeepgram(voiceEngine) && !hasThinkKey()) {
+      dashboard.pushCampaignLog(campaignId, userId, "error", "No LLM key — set GEMINI_API_KEY, GROQ_API_KEY or ASSEMBLYAI_API_KEY.");
+      runner.running = false;
+      if (runner.queue) { runner.queue.leads = []; runner.queue.stop(); }
+      return { outcome: "skipped" };
+    }
+    if (skipsDeepgram(voiceEngine) && !process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+      dashboard.pushCampaignLog(campaignId, userId, "error", "GOOGLE_APPLICATION_CREDENTIALS is missing — cannot start Google voice calls.");
+      runner.running = false;
+      if (runner.queue) { runner.queue.leads = []; runner.queue.stop(); }
+      return { outcome: "skipped" };
+    }
+
     // Pick the current healthy key at call start (local DB read — no Deepgram HTTP, no delay).
     // If the pool retired a low-balance key since the last call, this is already the replacement.
-    const liveKey = getUserDeepgramKeyInfo(userId);
-    if (!liveKey) {
+    const liveKey = skipsDeepgram(voiceEngine) ? null : getUserDeepgramKeyInfo(userId);
+    if (!skipsDeepgram(voiceEngine) && !liveKey) {
       dashboard.pushCampaignLog(campaignId, userId, "error", "All Deepgram API keys depleted! Add more keys in Settings.");
       runner.running = false;
       if (runner.queue) { runner.queue.leads = []; runner.queue.stop(); }
       return { outcome: "skipped" };
     }
-    if (!deepgramKeyInfo || liveKey.id !== deepgramKeyInfo.id) {
+    if (liveKey && (!deepgramKeyInfo || liveKey.id !== deepgramKeyInfo.id)) {
       if (deepgramKeyInfo) {
         dashboard.pushCampaignLog(campaignId, userId, "info", `Switched Deepgram key to "${liveKey.label}" — campaign continues.`);
       }
       deepgramKeyInfo = liveKey;
     }
-    const deepgramApiKey = liveKey.key;
+    if (liveKey?.key) deepgramApiKey = liveKey.key;
 
     // Track active call
     const activeCall = { leadId: lead.id, phone: lead.phone, name: displayName, startedAt: new Date().toISOString(), status: "dialing" };
@@ -763,7 +809,7 @@ async function runCampaign(campaignId, userId, runner) {
     const endedAt = new Date().toISOString();
 
     // 402/401 detection — auto-rotate Deepgram key if needed
-    if (result.outcome === "error" && deepgramKeyInfo.id) {
+    if (result.outcome === "error" && deepgramKeyInfo?.id) {
       const errMsg = (result.notes || "").toLowerCase();
       if (errMsg.includes("bandwidth limit") || errMsg.includes("using the proxy")) {
         pauseForBalance(campaignId, ["Webshare proxy is out of bandwidth. The Deepgram key was not rejected."]);
@@ -792,7 +838,7 @@ async function runCampaign(campaignId, userId, runner) {
 
     // Deepgram unreachable: rotating keys cannot help, and every further dial
     // connects a real lead to silence. Stop after a short run.
-    if (result.outcome === "error" && isDeepgramUnreachableError(result.notes)) {
+    if (!skipsDeepgram(voiceEngine) && result.outcome === "error" && isDeepgramUnreachableError(result.notes)) {
       if (deepgramOutageTracker.record()) {
         pauseForBalance(campaignId, [
           `Deepgram unreachable (${result.notes}) — calls would connect to silence; retrying every minute`,
@@ -802,7 +848,7 @@ async function runCampaign(campaignId, userId, runner) {
       deepgramOutageTracker.reset();
     }
     // Report success to reset error counter
-    if (result.outcome !== "error" && deepgramKeyInfo.id) {
+    if (result.outcome !== "error" && deepgramKeyInfo?.id) {
       deepgramKeyManager.reportSuccess(userId, deepgramKeyInfo.id);
       dialTimeoutTracker.reset();
     }

@@ -379,11 +379,15 @@ export class AudioBridge {
    * Queue AI audio (raw PCM from Deepgram) to be sent to the lead as RTP.
    * The audio is buffered and packetized at real-time rate.
    */
-  sendAudioToLead(pcmBuffer) {
+  sendAudioToLead(pcmBuffer, sampleRate = 24000) {
     if (this.isMuted) return;
 
-    // Deepgram sends linear16 at 24kHz
-    const downsampled = downsample24to8(pcmBuffer);
+    // Deepgram is 24kHz; Google Cloud TTS is 16kHz WAV/PCM
+    const downsampled = sampleRate === 16000
+      ? downsample16to8(pcmBuffer)
+      : sampleRate === 8000
+        ? pcmBuffer
+        : downsample24to8(pcmBuffer);
     
     const alawData = this.negotiatedCodec === 0 ? linear16ToMulaw(downsampled) : linear16ToAlaw(downsampled);
 

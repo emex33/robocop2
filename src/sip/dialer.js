@@ -4,6 +4,7 @@ import os from "os";
 import logger from "../utils/logger.js";
 import { getDrachtioConfig, getSipConfig } from "../../config/sip.js";
 import { reportTrunkSuccess, reportTrunkFailure } from "../billing/balance-guard.js";
+import { normalizeDialPhone } from "../call/phone.js";
 
 function isPublicIpv4(ip) {
   if (!ip || !/^\d{1,3}(\.\d{1,3}){3}$/.test(ip.trim())) return false;
@@ -185,11 +186,12 @@ export class SipDialer {
       await this.ensureConnected();
     }
     const sip = sipConfig || getSipConfig();
+    const dest = normalizeDialPhone(phoneNumber) || phoneNumber;
 
     if (sip.mode === "trunk") {
-      return this._makeCallTrunk(phoneNumber, localSdp, sip);
+      return this._makeCallTrunk(dest, localSdp, sip);
     }
-    return this._makeCallAccount(phoneNumber, localSdp, sip);
+    return this._makeCallAccount(dest, localSdp, sip);
   }
 
   /**

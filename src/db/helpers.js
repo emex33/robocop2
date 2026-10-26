@@ -77,18 +77,7 @@ export function buildAgentSettingsFromDb(agent, lead = {}) {
   };
   
   const dateReference = `
-[CURRENT DATE REFERENCE - USE THESE EXACT DATES]
-Today: ${formatDate(today)} (${dayNames[today.getDay()]})
-Tomorrow: ${formatDate(addDays(today, 1))} (${dayNames[addDays(today, 1).getDay()]})
-Day after tomorrow: ${formatDate(addDays(today, 2))}
-Next Monday: ${formatDate(getNextWeekday(1))}
-Next Tuesday: ${formatDate(getNextWeekday(2))}
-Next Wednesday: ${formatDate(getNextWeekday(3))}
-Next Thursday: ${formatDate(getNextWeekday(4))}
-Next Friday: ${formatDate(getNextWeekday(5))}
-Next Saturday: ${formatDate(getNextWeekday(6))}
-Next Sunday: ${formatDate(getNextWeekday(0))}
-IMPORTANT: When client says "el lunes" or "Monday", use the date for Next Monday shown above. Do NOT calculate dates yourself - use these exact values.
+[DATES] Today ${formatDate(today)} (${dayNames[today.getDay()]}). Tomorrow ${formatDate(addDays(today, 1))}. Mon ${formatDate(getNextWeekday(1))} Tue ${formatDate(getNextWeekday(2))} Wed ${formatDate(getNextWeekday(3))} Thu ${formatDate(getNextWeekday(4))} Fri ${formatDate(getNextWeekday(5))} Sat ${formatDate(getNextWeekday(6))} Sun ${formatDate(getNextWeekday(0))}. Use these exact ISO dates. Do not invent dates.
 `;
 
   const langInstruction = langName
@@ -302,6 +291,7 @@ export function updateLeadStatus(leadId, callOutcome, errorMessage = "") {
     no_answer: "no_answer",
     voicemail: "voicemail",
     timeout: "no_answer",
+    no_speech: "no_answer",
     unknown: "contacted",
   };
 
@@ -440,7 +430,8 @@ export function generateCallSummary(transcript, leadName, outcome, notes = "") {
     appointment_set: "Appointment booked", callback: "Client asked to be called back",
     not_interested: "Not interested", not_qualified: "Not qualified", do_not_call: "Asked not to be contacted again",
     transferred: "Transferred to an advisor", interested: "Interested", wrong_number: "Wrong number",
-    voicemail: "Voicemail", lead_hangup: "Client hung up", timeout: "Timed out", error: "Error",
+    voicemail: "Voicemail", lead_hangup: "Client hung up", timeout: "Timed out",
+    no_speech: "No more spoken words", error: "Error",
   };
   const parts = [`${OUTCOME_LABEL[outcome] || outcome}${leadName ? ` — ${leadName}` : ""}.`];
   if (notes) parts.push(notes.trim());

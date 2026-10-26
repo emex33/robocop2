@@ -106,6 +106,7 @@ async function buildDashboard(userId) {
       SUM(CASE WHEN outcome = 'error' THEN 1 ELSE 0 END) as total_errors,
       SUM(CASE WHEN outcome = 'no_answer' THEN 1 ELSE 0 END) as total_no_answer,
       SUM(CASE WHEN outcome = 'timeout' THEN 1 ELSE 0 END) as total_timeouts,
+      SUM(CASE WHEN outcome = 'no_speech' THEN 1 ELSE 0 END) as total_no_speech,
       SUM(CASE WHEN outcome = 'do_not_call' THEN 1 ELSE 0 END) as total_dnc,
       AVG(duration_seconds) as avg_duration,
       MAX(duration_seconds) as max_duration,
@@ -152,6 +153,7 @@ async function buildDashboard(userId) {
     { outcome: "callback", count: combined.total_callbacks },
     { outcome: "appointment_set", count: combined.total_appointments },
     { outcome: "timeout", count: combined.total_timeouts },
+    { outcome: "no_speech", count: combined.total_no_speech },
     { outcome: "do_not_call", count: combined.total_dnc },
   ].filter(o => o.count > 0).sort((a, b) => b.count - a.count);
 

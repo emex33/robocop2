@@ -10,6 +10,7 @@ import { addCredits, getAllPlatformSettings, setPlatformSetting } from "../db/he
 import { deepgramKeyManager } from "../deepgram/key-manager.js";
 import { getSipConfig } from "../../config/sip.js";
 import { evaluateBalances, describeBalances, clearBalanceCache, getTrunkState, testDeepgramKey } from "../billing/balance-guard.js";
+import { VOICE_ENGINES } from "../voice/engines.js";
 
 const router = Router();
 
@@ -364,8 +365,8 @@ router.put("/settings", (req, res) => {
   }
   for (const key of stringKeys) {
     if (updates[key] !== undefined) {
-      if (key === "voice_engine" && !["deepgram", "local"].includes(updates[key])) {
-        return res.status(400).json({ error: `voice_engine must be "deepgram" or "local"` });
+      if (key === "voice_engine" && !VOICE_ENGINES.includes(updates[key])) {
+        return res.status(400).json({ error: `voice_engine must be ${VOICE_ENGINES.map((e) => `"${e}"`).join(", ")}` });
       }
       if (key === "balance_guard_enabled" && !["true", "false"].includes(String(updates[key]))) {
         return res.status(400).json({ error: `balance_guard_enabled must be "true" or "false"` });

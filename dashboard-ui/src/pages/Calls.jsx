@@ -20,6 +20,7 @@ const OUTCOME_CONFIG = {
   test_hangup: { label: 'Test Hangup', color: 'bg-gray-100 text-gray-500', icon: PhoneOff },
   did_not_call: { label: 'Not Called', color: 'bg-slate-100 text-slate-600', icon: Phone },
   timeout: { label: 'Timeout', color: 'bg-amber-100 text-amber-700', icon: Clock },
+  no_speech: { label: 'No more speech', color: 'bg-amber-100 text-amber-800', icon: Clock },
   unknown: { label: 'Unknown', color: 'bg-gray-100 text-gray-500', icon: Phone },
 };
 

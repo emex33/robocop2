@@ -1,6 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
 import logger from "../utils/logger.js";
 import { DeepgramAgent } from "../deepgram/agent.js";
+import { AssemblyGoogleAgent } from "../voice/assembly-google-agent.js";
+import { GoogleAgent } from "../voice/google-agent.js";
+import { skipsDeepgram } from "../voice/engines.js";
 import { AudioBridge } from "../audio/bridge.js";
 import { getPlatformSetting } from "../db/helpers.js";
 import { liveSipError } from "../billing/balance-guard.js";
@@ -59,7 +62,7 @@ export class CallManager {
     emit("call_init", { status: "initializing" });
 
     const audioBridge = new AudioBridge(callId);
-    let deepgramAgent = null;
+    let voiceAgent = null;
     let sipDialog = null;
     let callResult = { outcome: "unknown", notes: "", transcript: [] };
     let aborted = false;
@@ -79,11 +82,11 @@ export class CallManager {
       abort: () => {
         if (aborted) return;
         aborted = true;
-        logger.info(`[${callId}] FORCE ABORT — killing SIP + Deepgram`);
+        logger.info(`[${callId}] FORCE ABORT — killing SIP + voice agent`);
         callResult.outcome = "stopped";
         callResult.notes = "Campaign stopped by user";
         try { if (sipDialog) this.sipDialer.hangup(sipDialog).catch(() => {}); } catch (e) { /* ignore */ }
-        try { if (deepgramAgent) deepgramAgent.disconnect(); } catch (e) { /* ignore */ }
+        try { if (voiceAgent) voiceAgent.disconnect(); } catch (e) { /* ignore */ }
         try { if (audioBridge) audioBridge.stop(); } catch (e) { /* ignore */ }
       },
     };
@@ -118,7 +121,7 @@ export class CallManager {
         }
       }
 
-      // Step 3: Connect to Deepgram Voice Agent API
+      // Step 3: Connect the voice engine (Deepgram or Assembly+Google)
       emit("deepgram", { status: "connecting" });
       let agentSettings = options.agentSettings;
       if (!agentSettings) {
@@ -126,12 +129,18 @@ export class CallManager {
         const cs = await getConfigStore();
         if (cs) agentSettings = cs.buildAgentSettings(lead);
       }
-      deepgramAgent = new DeepgramAgent(callId, {
+      const voiceEngine = getPlatformSetting("voice_engine", "deepgram");
+      const AgentClass = voiceEngine === "google"
+        ? GoogleAgent
+        : voiceEngine === "assembly_google"
+          ? AssemblyGoogleAgent
+          : DeepgramAgent;
+      voiceAgent = new AgentClass(callId, {
         agentSettings,
         responseDelayMs: options.responseDelayMs,
         // AI audio -> play to lead via RTP
-        onAudioReceived: (audioBuffer) => {
-          audioBridge.sendAudioToLead(Buffer.from(audioBuffer));
+        onAudioReceived: (audioBuffer, sampleRate) => {
+          audioBridge.sendAudioToLead(Buffer.from(audioBuffer), sampleRate || 24000);
         },
 
         // Lead interrupted — Deepgram stops old TTS and generates new response.
@@ -223,7 +232,7 @@ export class CallManager {
             logger.info(`[${callId}] Call transferred successfully to ${transferExtension}`);
             // Disconnect Deepgram and stop audio bridge so the AI stops processing.
             // Keep the SIP dialog alive — the provider needs it to bridge client ↔ agent.
-            try { if (deepgramAgent) deepgramAgent.disconnect(); } catch (e) { /* ignore */ }
+            try { if (voiceAgent) voiceAgent.disconnect(); } catch (e) { /* ignore */ }
             try { if (audioBridge) audioBridge.stop(); } catch (e) { /* ignore */ }
             logger.info(`[${callId}] AI disconnected, SIP dialog kept alive for transfer`);
           } catch (err) {
@@ -260,8 +269,8 @@ export class CallManager {
             }
             // Disconnect Deepgram to trigger the promise resolution
             try {
-              if (deepgramAgent) {
-                deepgramAgent.disconnect();
+              if (voiceAgent) {
+                voiceAgent.disconnect();
               }
             } catch (e) { /* ignore */ }
           }, 8000);
@@ -299,15 +308,17 @@ export class CallManager {
         },
       });
 
-      const voiceEngine = getPlatformSetting("voice_engine", "deepgram");
       const localVoiceUrl = getPlatformSetting("local_voice_agent_url", process.env.LOCAL_VOICE_AGENT_URL || "ws://voice-agent:8765");
-      const engineConfig = { engine: voiceEngine, localUrl: localVoiceUrl };
-      await deepgramAgent.connect(options.deepgramApiKey, engineConfig);
+      if (skipsDeepgram(voiceEngine)) {
+        await voiceAgent.connect();
+      } else {
+        await voiceAgent.connect(options.deepgramApiKey, { engine: voiceEngine, localUrl: localVoiceUrl });
+      }
       emit("deepgram", { status: "connected", engine: voiceEngine });
 
       // Step 4: Wire lead audio -> Deepgram
       audioBridge.onAudioFromLead = (pcmData) => {
-        deepgramAgent.sendAudio(pcmData);
+        voiceAgent.sendAudio(pcmData);
       };
 
       // Step 5: Wait for call to end
@@ -328,14 +339,14 @@ export class CallManager {
 
         let lastActivityTime = Date.now();
         
-        const origOnTranscript = deepgramAgent.onTranscript;
-        deepgramAgent.onTranscript = (role, content) => {
+        const origOnTranscript = voiceAgent.onTranscript;
+        voiceAgent.onTranscript = (role, content) => {
           lastActivityTime = Date.now();
           if (origOnTranscript) origOnTranscript(role, content);
         };
         
-        const origOnAudioReceived = deepgramAgent.onAudioReceived;
-        deepgramAgent.onAudioReceived = (buffer) => {
+        const origOnAudioReceived = voiceAgent.onAudioReceived;
+        voiceAgent.onAudioReceived = (buffer) => {
           lastActivityTime = Date.now();
           if (origOnAudioReceived) origOnAudioReceived(buffer);
         };
@@ -344,14 +355,14 @@ export class CallManager {
         const inactivityMonitor = setInterval(() => {
           const silenceSeconds = Math.round((Date.now() - lastActivityTime) / 1000);
           if (silenceSeconds >= MAX_INACTIVITY_SEC) {
-            logger.warn(`[${callId}] AI inactive for ${silenceSeconds}s — auto-hanging up stuck call`);
-            callResult.outcome = "timeout";
-            callResult.notes = `Auto-hangup: AI inactive for ${silenceSeconds}s`;
+            logger.info(`[${callId}] No more spoken words for ${silenceSeconds}s — ending call`);
+            callResult.outcome = "no_speech";
+            callResult.notes = `Ended: no more spoken words for ${silenceSeconds}s`;
             try {
               if (sipDialog) this.sipDialer.hangup(sipDialog).catch(() => {});
             } catch (e) { /* ignore */ }
             try {
-              if (deepgramAgent) deepgramAgent.disconnect();
+              if (voiceAgent) voiceAgent.disconnect();
             } catch (e) { /* ignore */ }
             safeResolve();
           } else if (silenceSeconds >= 10) {
@@ -370,8 +381,8 @@ export class CallManager {
           });
         }
 
-        const origOnClose = deepgramAgent.onClose;
-        deepgramAgent.onClose = (code, reason) => {
+        const origOnClose = voiceAgent.onClose;
+        voiceAgent.onClose = (code, reason) => {
           if (origOnClose) origOnClose(code, reason);
           if (callResult.outcome === "unknown") {
             callResult.outcome = "error";
@@ -386,6 +397,7 @@ export class CallManager {
         const callTimeout = setTimeout(() => {
           logger.warn(`[${callId}] Call timeout (10 min)`);
           callResult.outcome = "timeout";
+          callResult.notes = "Call reached 10 min limit";
           safeResolve();
         }, 600000);
 
@@ -397,7 +409,7 @@ export class CallManager {
             audioBridge.sendQueue = [];
             audioBridge.audioOutBuffer = Buffer.alloc(0);
           } catch (e) { /* ignore */ }
-          try { if (deepgramAgent) deepgramAgent.disconnect(); } catch (e) { /* ignore */ }
+          try { if (voiceAgent) voiceAgent.disconnect(); } catch (e) { /* ignore */ }
           try { if (sipDialog) this.sipDialer.hangup(sipDialog).catch(() => {}); } catch (e) { /* ignore */ }
           try { if (audioBridge) audioBridge.stop(); } catch (e) { /* ignore */ }
           safeResolve();
@@ -417,12 +429,12 @@ export class CallManager {
       callResult.notes = err.message;
     } finally {
       // Capture AI speaking duration before cleanup disconnects Deepgram
-      if (deepgramAgent) {
-        callResult.aiDurationSeconds = deepgramAgent.getAiSpeakingDuration();
-        logger.info(`[${callId}] AI speaking duration: ${callResult.aiDurationSeconds.toFixed(2)}s (bytes: ${deepgramAgent._aiAudioBytesReceived})`);
+      if (voiceAgent) {
+        callResult.aiDurationSeconds = voiceAgent.getAiSpeakingDuration();
+        logger.info(`[${callId}] AI speaking duration: ${callResult.aiDurationSeconds.toFixed(2)}s (bytes: ${voiceAgent._aiAudioBytesReceived})`);
       }
       // Cleanup and get recording path
-      const recordingPath = await this._cleanup(sipDialog, deepgramAgent, audioBridge, callId, callResult.outcome);
+      const recordingPath = await this._cleanup(sipDialog, voiceAgent, audioBridge, callId, callResult.outcome);
       if (recordingPath) {
         callResult.recordingPath = recordingPath;
       }
@@ -438,11 +450,11 @@ export class CallManager {
    * Clean up all resources for a call.
    * Returns the recording path if available.
    */
-  async _cleanup(sipDialog, deepgramAgent, audioBridge, callId, outcome) {
+  async _cleanup(sipDialog, voiceAgent, audioBridge, callId, outcome) {
     let recordingPath = null;
     
     try {
-      if (deepgramAgent) deepgramAgent.disconnect();
+      if (voiceAgent) voiceAgent.disconnect();
     } catch (e) { /* ignore */ }
     try {
       if (audioBridge) {

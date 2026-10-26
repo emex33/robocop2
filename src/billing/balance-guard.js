@@ -23,6 +23,7 @@ import { getPlatformSetting } from "../db/helpers.js";
 import { deepgramKeyManager } from "../deepgram/key-manager.js";
 import logger from "../utils/logger.js";
 import { isDeepgramUrl, proxyFetch } from "../net/outbound-proxy.js";
+import { skipsDeepgram } from "../voice/engines.js";
 
 const BALANCE_TTL_MS = 5 * 60 * 1000;
 const DEEPGRAM_TTL_MS = 60 * 1000; // pool refresh every minute so a $5 key is swapped before it dies mid-campaign
@@ -818,7 +819,8 @@ export async function evaluateBalances(userId) {
   const trunkState = checkTrunk();
 
   const reasons = [];
-  if (!deepgram.ok) {
+  const skipDeepgram = skipsDeepgram(getPlatformSetting("voice_engine", "deepgram"));
+  if (!deepgram.ok && !skipDeepgram) {
     reasons.push(
       deepgram.audioPathDown
         ? `Deepgram audio host (${voiceAgentHost()}) is unreachable — calls would connect to silence; retrying every minute`
